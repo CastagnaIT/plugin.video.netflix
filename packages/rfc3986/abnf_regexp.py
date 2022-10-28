@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module for the regular expressions crafted from ABNF."""
-
 import sys
 
 # https://tools.ietf.org/html/rfc3986#page-13
@@ -73,7 +71,7 @@ URL_PARSING_RE = (
 
 # Host patterns, see: http://tools.ietf.org/html/rfc3986#section-3.2.2
 # The pattern for a regular name, e.g.,  www.google.com, api.github.com
-REGULAR_NAME_RE = REG_NAME = "((?:{0}|[{1}])*)".format(
+REGULAR_NAME_RE = REG_NAME = "((?:{}|[{}])*)".format(
     "%[0-9A-Fa-f]{2}", SUB_DELIMITERS_RE + UNRESERVED_RE
 )
 # The pattern for an IPv4 address, e.g., 192.168.255.255, 127.0.0.1,
@@ -109,9 +107,7 @@ variations = [
     "((%(hex)s:){0,6}%(hex)s)?::" % _subs,
 ]
 
-IPv6_RE = "(({0})|({1})|({2})|({3})|({4})|({5})|({6})|({7})|({8}))".format(
-    *variations
-)
+IPv6_RE = "(({})|({})|({})|({})|({})|({})|({})|({})|({}))".format(*variations)
 
 IPv_FUTURE_RE = r"v[0-9A-Fa-f]+\.[%s]+" % (
     UNRESERVED_RE + SUB_DELIMITERS_RE + ":"
@@ -123,13 +119,13 @@ ZONE_ID = "(?:[" + UNRESERVED_RE + "]|" + PCT_ENCODED + ")+"
 IPv6_ADDRZ_RFC4007_RE = IPv6_RE + "(?:(?:%25|%)" + ZONE_ID + ")?"
 IPv6_ADDRZ_RE = IPv6_RE + "(?:%25" + ZONE_ID + ")?"
 
-IP_LITERAL_RE = r"\[({0}|{1})\]".format(
+IP_LITERAL_RE = r"\[({}|{})\]".format(
     IPv6_ADDRZ_RFC4007_RE,
     IPv_FUTURE_RE,
 )
 
 # Pattern for matching the host piece of the authority
-HOST_RE = HOST_PATTERN = "({0}|{1}|{2})".format(
+HOST_RE = HOST_PATTERN = "({}|{}|{})".format(
     REG_NAME,
     IPv4_RE,
     IP_LITERAL_RE,
@@ -159,7 +155,7 @@ PATH_ROOTLESS = "%(segment-nz)s(/%(segment)s)*" % segments
 PATH_NOSCHEME = "%(segment-nz-nc)s(/%(segment)s)*" % segments
 PATH_ABSOLUTE = "/(%s)?" % PATH_ROOTLESS
 PATH_ABEMPTY = "(/%(segment)s)*" % segments
-PATH_RE = "^(%s|%s|%s|%s|%s)$" % (
+PATH_RE = "^({}|{}|{}|{}|{})$".format(
     PATH_ABEMPTY,
     PATH_ABSOLUTE,
     PATH_NOSCHEME,
@@ -176,7 +172,7 @@ FRAGMENT_RE = QUERY_RE = (
 # ##########################
 
 # See http://tools.ietf.org/html/rfc3986#section-4.2 for details
-RELATIVE_PART_RE = "(//%s%s|%s|%s|%s)" % (
+RELATIVE_PART_RE = "(//{}{}|{}|{}|{})".format(
     COMPONENT_PATTERN_DICT["authority"],
     PATH_ABEMPTY,
     PATH_ABSOLUTE,
@@ -185,7 +181,7 @@ RELATIVE_PART_RE = "(//%s%s|%s|%s|%s)" % (
 )
 
 # See http://tools.ietf.org/html/rfc3986#section-3 for definition
-HIER_PART_RE = "(//%s%s|%s|%s|%s)" % (
+HIER_PART_RE = "(//{}{}|{}|{}|{})".format(
     COMPONENT_PATTERN_DICT["authority"],
     PATH_ABEMPTY,
     PATH_ABSOLUTE,
@@ -199,37 +195,37 @@ HIER_PART_RE = "(//%s%s|%s|%s|%s)" % (
 
 # Only wide-unicode gets the high-ranges of UCSCHAR
 if sys.maxunicode > 0xFFFF:  # pragma: no cover
-    IPRIVATE = u"\uE000-\uF8FF\U000F0000-\U000FFFFD\U00100000-\U0010FFFD"
+    IPRIVATE = "\uE000-\uF8FF\U000F0000-\U000FFFFD\U00100000-\U0010FFFD"
     UCSCHAR_RE = (
-        u"\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF"
-        u"\U00010000-\U0001FFFD\U00020000-\U0002FFFD"
-        u"\U00030000-\U0003FFFD\U00040000-\U0004FFFD"
-        u"\U00050000-\U0005FFFD\U00060000-\U0006FFFD"
-        u"\U00070000-\U0007FFFD\U00080000-\U0008FFFD"
-        u"\U00090000-\U0009FFFD\U000A0000-\U000AFFFD"
-        u"\U000B0000-\U000BFFFD\U000C0000-\U000CFFFD"
-        u"\U000D0000-\U000DFFFD\U000E1000-\U000EFFFD"
+        "\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF"
+        "\U00010000-\U0001FFFD\U00020000-\U0002FFFD"
+        "\U00030000-\U0003FFFD\U00040000-\U0004FFFD"
+        "\U00050000-\U0005FFFD\U00060000-\U0006FFFD"
+        "\U00070000-\U0007FFFD\U00080000-\U0008FFFD"
+        "\U00090000-\U0009FFFD\U000A0000-\U000AFFFD"
+        "\U000B0000-\U000BFFFD\U000C0000-\U000CFFFD"
+        "\U000D0000-\U000DFFFD\U000E1000-\U000EFFFD"
     )
 else:  # pragma: no cover
-    IPRIVATE = u"\uE000-\uF8FF"
-    UCSCHAR_RE = u"\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF"
+    IPRIVATE = "\uE000-\uF8FF"
+    UCSCHAR_RE = "\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF"
 
-IUNRESERVED_RE = u"A-Za-z0-9\\._~\\-" + UCSCHAR_RE
-IPCHAR = u"([" + IUNRESERVED_RE + SUB_DELIMITERS_RE + u":@]|%s)" % PCT_ENCODED
+IUNRESERVED_RE = "A-Za-z0-9\\._~\\-" + UCSCHAR_RE
+IPCHAR = "([" + IUNRESERVED_RE + SUB_DELIMITERS_RE + ":@]|%s)" % PCT_ENCODED
 
 isegments = {
-    "isegment": IPCHAR + u"*",
+    "isegment": IPCHAR + "*",
     # Non-zero length segment
-    "isegment-nz": IPCHAR + u"+",
+    "isegment-nz": IPCHAR + "+",
     # Non-zero length segment without ":"
-    "isegment-nz-nc": IPCHAR.replace(":", "") + u"+",
+    "isegment-nz-nc": IPCHAR.replace(":", "") + "+",
 }
 
-IPATH_ROOTLESS = u"%(isegment-nz)s(/%(isegment)s)*" % isegments
-IPATH_NOSCHEME = u"%(isegment-nz-nc)s(/%(isegment)s)*" % isegments
-IPATH_ABSOLUTE = u"/(?:%s)?" % IPATH_ROOTLESS
-IPATH_ABEMPTY = u"(?:/%(isegment)s)*" % isegments
-IPATH_RE = u"^(?:%s|%s|%s|%s|%s)$" % (
+IPATH_ROOTLESS = "%(isegment-nz)s(/%(isegment)s)*" % isegments
+IPATH_NOSCHEME = "%(isegment-nz-nc)s(/%(isegment)s)*" % isegments
+IPATH_ABSOLUTE = "/(?:%s)?" % IPATH_ROOTLESS
+IPATH_ABEMPTY = "(?:/%(isegment)s)*" % isegments
+IPATH_RE = "^(?:{}|{}|{}|{}|{})$".format(
     IPATH_ABEMPTY,
     IPATH_ABSOLUTE,
     IPATH_NOSCHEME,
@@ -237,35 +233,32 @@ IPATH_RE = u"^(?:%s|%s|%s|%s|%s)$" % (
     PATH_EMPTY,
 )
 
-IREGULAR_NAME_RE = IREG_NAME = u"(?:{0}|[{1}])*".format(
-    u"%[0-9A-Fa-f]{2}", SUB_DELIMITERS_RE + IUNRESERVED_RE
+IREGULAR_NAME_RE = IREG_NAME = "(?:{}|[{}])*".format(
+    "%[0-9A-Fa-f]{2}", SUB_DELIMITERS_RE + IUNRESERVED_RE
 )
 
-IHOST_RE = IHOST_PATTERN = u"({0}|{1}|{2})".format(
+IHOST_RE = IHOST_PATTERN = "({}|{}|{})".format(
     IREG_NAME,
     IPv4_RE,
     IP_LITERAL_RE,
 )
 
 IUSERINFO_RE = (
-    u"^(?:[" + IUNRESERVED_RE + SUB_DELIMITERS_RE + u":]|%s)+" % (PCT_ENCODED)
+    "^(?:[" + IUNRESERVED_RE + SUB_DELIMITERS_RE + ":]|%s)+" % (PCT_ENCODED)
 )
 
 IFRAGMENT_RE = (
-    u"^(?:[/?:@"
-    + IUNRESERVED_RE
-    + SUB_DELIMITERS_RE
-    + u"]|%s)*$" % PCT_ENCODED
+    "^(?:[/?:@" + IUNRESERVED_RE + SUB_DELIMITERS_RE + "]|%s)*$" % PCT_ENCODED
 )
 IQUERY_RE = (
-    u"^(?:[/?:@"
+    "^(?:[/?:@"
     + IUNRESERVED_RE
     + SUB_DELIMITERS_RE
     + IPRIVATE
-    + u"]|%s)*$" % PCT_ENCODED
+    + "]|%s)*$" % PCT_ENCODED
 )
 
-IRELATIVE_PART_RE = u"(//%s%s|%s|%s|%s)" % (
+IRELATIVE_PART_RE = "(//{}{}|{}|{}|{})".format(
     COMPONENT_PATTERN_DICT["authority"],
     IPATH_ABEMPTY,
     IPATH_ABSOLUTE,
@@ -273,7 +266,7 @@ IRELATIVE_PART_RE = u"(//%s%s|%s|%s|%s)" % (
     PATH_EMPTY,
 )
 
-IHIER_PART_RE = u"(//%s%s|%s|%s|%s)" % (
+IHIER_PART_RE = "(//{}{}|{}|{}|{})".format(
     COMPONENT_PATTERN_DICT["authority"],
     IPATH_ABEMPTY,
     IPATH_ABSOLUTE,

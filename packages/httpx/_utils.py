@@ -20,7 +20,7 @@ if typing.TYPE_CHECKING:  # pragma: no cover
 
 _HTML5_FORM_ENCODING_REPLACEMENTS = {'"': "%22", "\\": "\\\\"}
 _HTML5_FORM_ENCODING_REPLACEMENTS.update(
-    {chr(c): "%{:02X}".format(c) for c in range(0x00, 0x1F + 1) if c != 0x1B}
+    {chr(c): "%{:02X}".format(c) for c in range(0x1F + 1) if c != 0x1B}
 )
 _HTML5_FORM_ENCODING_RE = re.compile(
     r"|".join([re.escape(c) for c in _HTML5_FORM_ENCODING_REPLACEMENTS.keys()])
@@ -30,7 +30,7 @@ _HTML5_FORM_ENCODING_RE = re.compile(
 def normalize_header_key(
     value: typing.Union[str, bytes],
     lower: bool,
-    encoding: str = None,
+    encoding: typing.Optional[str] = None,
 ) -> bytes:
     """
     Coerce str/bytes into a strictly byte-wise HTTP header key.
@@ -44,7 +44,7 @@ def normalize_header_key(
 
 
 def normalize_header_value(
-    value: typing.Union[str, bytes], encoding: str = None
+    value: typing.Union[str, bytes], encoding: typing.Optional[str] = None
 ) -> bytes:
     """
     Coerce str/bytes into a strictly byte-wise HTTP header value.
@@ -282,6 +282,21 @@ def same_origin(url: "URL", other: "URL") -> bool:
     )
 
 
+def is_https_redirect(url: "URL", location: "URL") -> bool:
+    """
+    Return 'True' if 'location' is a HTTPS upgrade of 'url'
+    """
+    if url.host != location.host:
+        return False
+
+    return (
+        url.scheme == "http"
+        and port_or_default(url) == 80
+        and location.scheme == "https"
+        and port_or_default(location) == 443
+    )
+
+
 def get_environment_proxies() -> typing.Dict[str, typing.Optional[str]]:
     """Gets proxy information from the environment"""
 
@@ -305,7 +320,7 @@ def get_environment_proxies() -> typing.Dict[str, typing.Optional[str]]:
         # on how names in `NO_PROXY` are handled.
         if hostname == "*":
             # If NO_PROXY=* is used or if "*" occurs as any one of the comma
-            # seperated hostnames, then we should just bypass any information
+            # separated hostnames, then we should just bypass any information
             # from HTTP_PROXY, HTTPS_PROXY, ALL_PROXY, and always ignore
             # proxies.
             return {}
@@ -457,19 +472,18 @@ class URLPattern:
         self.port = url.port
         if not url.host or url.host == "*":
             self.host_regex: typing.Optional[typing.Pattern[str]] = None
+        elif url.host.startswith("*."):
+            # *.example.com should match "www.example.com", but not "example.com"
+            domain = re.escape(url.host[2:])
+            self.host_regex = re.compile(f"^.+\\.{domain}$")
+        elif url.host.startswith("*"):
+            # *example.com should match "www.example.com" and "example.com"
+            domain = re.escape(url.host[1:])
+            self.host_regex = re.compile(f"^(.+\\.)?{domain}$")
         else:
-            if url.host.startswith("*."):
-                # *.example.com should match "www.example.com", but not "example.com"
-                domain = re.escape(url.host[2:])
-                self.host_regex = re.compile(f"^.+\\.{domain}$")
-            elif url.host.startswith("*"):
-                # *example.com should match "www.example.com" and "example.com"
-                domain = re.escape(url.host[1:])
-                self.host_regex = re.compile(f"^(.+\\.)?{domain}$")
-            else:
-                # example.com should match "example.com" but not "www.example.com"
-                domain = re.escape(url.host)
-                self.host_regex = re.compile(f"^{domain}$")
+            # example.com should match "example.com" but not "www.example.com"
+            domain = re.escape(url.host)
+            self.host_regex = re.compile(f"^{domain}$")
 
     def matches(self, other: "URL") -> bool:
         if self.scheme and self.scheme != other.scheme:

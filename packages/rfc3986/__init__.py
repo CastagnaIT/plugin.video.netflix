@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2014 Rackspace
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +11,6 @@
 # implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 An implementation of semantics and validations described in RFC 3986.
 
@@ -21,7 +19,6 @@ See http://rfc3986.readthedocs.io/ for detailed documentation.
 :copyright: (c) 2014 Rackspace
 :license: Apache v2.0, see LICENSE for details
 """
-
 from .api import iri_reference
 from .api import IRIReference
 from .api import is_valid_uri
@@ -36,7 +33,7 @@ __author__ = "Ian Stapleton Cordasco"
 __author_email__ = "graffatcolmingov@gmail.com"
 __license__ = "Apache v2.0"
 __copyright__ = "Copyright 2014 Rackspace; 2016 Ian Stapleton Cordasco"
-__version__ = "1.5.0"
+__version__ = "2.0.0"
 
 __all__ = (
     "ParseResult",

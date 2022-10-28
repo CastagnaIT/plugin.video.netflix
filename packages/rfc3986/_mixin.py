@@ -7,7 +7,7 @@ from . import normalizers
 from . import validators
 
 
-class URIMixin(object):
+class URIMixin:
     """Mixin with all shared methods for URIs and IRIs."""
 
     __hash__ = tuple.__hash__
@@ -257,12 +257,12 @@ class URIMixin(object):
             reference using ``base_uri``.
         :rtype: :class:`URIReference`
         :raises rfc3986.exceptions.ResolutionError:
-            If the ``base_uri`` is not an absolute URI.
+            If the ``base_uri`` does not at least have a scheme.
         """
         if not isinstance(base_uri, URIMixin):
             base_uri = type(self).from_string(base_uri)
 
-        if not base_uri.is_absolute():
+        if not base_uri.is_valid(require_scheme=True):
             raise exc.ResolutionError(base_uri)
 
         # This is optional per

@@ -2,12 +2,11 @@ import datetime
 import enum
 import typing
 import warnings
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 from types import TracebackType
 
 from .__version__ import __version__
 from ._auth import Auth, BasicAuth, FunctionAuth
-from ._compat import asynccontextmanager
 from ._config import (
     DEFAULT_LIMITS,
     DEFAULT_MAX_REDIRECTS,
@@ -23,18 +22,14 @@ from ._exceptions import (
     TooManyRedirects,
     request_context,
 )
-from ._models import URL, Cookies, Headers, QueryParams, Request, Response
+from ._models import Cookies, Headers, Request, Response
 from ._status_codes import codes
 from ._transports.asgi import ASGITransport
-from ._transports.base import (
-    AsyncBaseTransport,
-    AsyncByteStream,
-    BaseTransport,
-    SyncByteStream,
-)
+from ._transports.base import AsyncBaseTransport, BaseTransport
 from ._transports.default import AsyncHTTPTransport, HTTPTransport
 from ._transports.wsgi import WSGITransport
 from ._types import (
+    AsyncByteStream,
     AuthTypes,
     CertTypes,
     CookieTypes,
@@ -44,16 +39,19 @@ from ._types import (
     RequestContent,
     RequestData,
     RequestFiles,
+    SyncByteStream,
     TimeoutTypes,
     URLTypes,
     VerifyTypes,
 )
+from ._urls import URL, QueryParams
 from ._utils import (
     NetRCInfo,
     Timer,
     URLPattern,
     get_environment_proxies,
     get_logger,
+    is_https_redirect,
     same_origin,
 )
 
@@ -81,8 +79,6 @@ class UseClientDefault:
     Note that user code shouldn't need to use the `USE_CLIENT_DEFAULT` constant,
     but it is used internally when a parameter is not included.
     """
-
-    pass  # pragma: nocover
 
 
 USE_CLIENT_DEFAULT = UseClientDefault()
@@ -160,15 +156,19 @@ class BaseClient:
     def __init__(
         self,
         *,
-        auth: AuthTypes = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+        follow_redirects: bool = False,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
-        event_hooks: typing.Mapping[str, typing.List[typing.Callable]] = None,
+        event_hooks: typing.Optional[
+            typing.Mapping[str, typing.List[typing.Callable]]
+        ] = None,
         base_url: URLTypes = "",
         trust_env: bool = True,
+        default_encoding: typing.Union[str, typing.Callable[[bytes], str]] = "utf-8",
     ):
         event_hooks = {} if event_hooks is None else event_hooks
 
@@ -179,12 +179,14 @@ class BaseClient:
         self.headers = Headers(headers)
         self._cookies = Cookies(cookies)
         self._timeout = Timeout(timeout)
+        self.follow_redirects = follow_redirects
         self.max_redirects = max_redirects
         self._event_hooks = {
             "request": list(event_hooks.get("request", [])),
             "response": list(event_hooks.get("response", [])),
         }
         self._trust_env = trust_env
+        self._default_encoding = default_encoding
         self._netrc = NetRCInfo()
         self._state = ClientState.UNOPENED
 
@@ -318,13 +320,15 @@ class BaseClient:
         method: str,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Request:
         """
         Build and return a request instance.
@@ -341,6 +345,14 @@ class BaseClient:
         headers = self._merge_headers(headers)
         cookies = self._merge_cookies(cookies)
         params = self._merge_queryparams(params)
+        extensions = {} if extensions is None else extensions
+        if "timeout" not in extensions:
+            timeout = (
+                self.timeout
+                if isinstance(timeout, UseClientDefault)
+                else Timeout(timeout)
+            )
+            extensions["timeout"] = timeout.as_dict()
         return Request(
             method,
             url,
@@ -351,6 +363,7 @@ class BaseClient:
             params=params,
             headers=headers,
             cookies=cookies,
+            extensions=extensions,
         )
 
     def _merge_url(self, url: URLTypes) -> URL:
@@ -362,7 +375,7 @@ class BaseClient:
         if merge_url.is_relative_url:
             # To merge URLs we always append to the base URL. To get this
             # behaviour correct we always ensure the base URL ends in a '/'
-            # seperator, and strip any leading '/' from the merge URL.
+            # separator, and strip any leading '/' from the merge URL.
             #
             # So, eg...
             #
@@ -376,7 +389,7 @@ class BaseClient:
         return merge_url
 
     def _merge_cookies(
-        self, cookies: CookieTypes = None
+        self, cookies: typing.Optional[CookieTypes] = None
     ) -> typing.Optional[CookieTypes]:
         """
         Merge a cookies argument together with any cookies on the client,
@@ -389,7 +402,7 @@ class BaseClient:
         return cookies
 
     def _merge_headers(
-        self, headers: HeaderTypes = None
+        self, headers: typing.Optional[HeaderTypes] = None
     ) -> typing.Optional[HeaderTypes]:
         """
         Merge a headers argument together with any headers on the client,
@@ -400,7 +413,7 @@ class BaseClient:
         return merged_headers
 
     def _merge_queryparams(
-        self, params: QueryParamTypes = None
+        self, params: typing.Optional[QueryParamTypes] = None
     ) -> typing.Optional[QueryParamTypes]:
         """
         Merge a queryparams argument together with any queryparams on the client,
@@ -408,11 +421,10 @@ class BaseClient:
         """
         if params or self.params:
             merged_queryparams = QueryParams(self.params)
-            merged_queryparams = merged_queryparams.merge(params)
-            return merged_queryparams
+            return merged_queryparams.merge(params)
         return params
 
-    def _build_auth(self, auth: AuthTypes) -> typing.Optional[Auth]:
+    def _build_auth(self, auth: typing.Optional[AuthTypes]) -> typing.Optional[Auth]:
         if auth is None:
             return None
         elif isinstance(auth, tuple):
@@ -427,7 +439,7 @@ class BaseClient:
     def _build_request_auth(
         self,
         request: Request,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
     ) -> Auth:
         auth = (
             self._auth if isinstance(auth, UseClientDefault) else self._build_auth(auth)
@@ -458,7 +470,12 @@ class BaseClient:
         stream = self._redirect_stream(request, method)
         cookies = Cookies(self.cookies)
         return Request(
-            method=method, url=url, headers=headers, cookies=cookies, stream=stream
+            method=method,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            stream=stream,
+            extensions=request.extensions,
         )
 
     def _redirect_method(self, request: Request, response: Response) -> str:
@@ -520,9 +537,10 @@ class BaseClient:
         headers = Headers(request.headers)
 
         if not same_origin(url, request.url):
-            # Strip Authorization headers when responses are redirected away from
-            # the origin.
-            headers.pop("Authorization", None)
+            if not is_https_redirect(request.url, url):
+                # Strip Authorization headers when responses are redirected
+                # away from the origin. (Except for direct HTTP to HTTPS redirects.)
+                headers.pop("Authorization", None)
 
             # Update the Host header.
             headers["Host"] = url.netloc.decode("ascii")
@@ -595,29 +613,36 @@ class Client(BaseClient):
     rather than sending actual network requests.
     * **trust_env** - *(optional)* Enables or disables usage of environment
     variables for configuration.
+    * **default_encoding** - *(optional)* The default encoding to use for decoding
+    response text, if no charset information is included in a response Content-Type
+    header. Set to a callable for automatic character set detection. Default: "utf-8".
     """
 
     def __init__(
         self,
         *,
-        auth: AuthTypes = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         http1: bool = True,
         http2: bool = False,
-        proxies: ProxiesTypes = None,
-        mounts: typing.Mapping[str, BaseTransport] = None,
+        proxies: typing.Optional[ProxiesTypes] = None,
+        mounts: typing.Optional[typing.Mapping[str, BaseTransport]] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+        follow_redirects: bool = False,
         limits: Limits = DEFAULT_LIMITS,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
-        event_hooks: typing.Mapping[str, typing.List[typing.Callable]] = None,
+        event_hooks: typing.Optional[
+            typing.Mapping[str, typing.List[typing.Callable]]
+        ] = None,
         base_url: URLTypes = "",
-        transport: BaseTransport = None,
-        app: typing.Callable = None,
+        transport: typing.Optional[BaseTransport] = None,
+        app: typing.Optional[typing.Callable] = None,
         trust_env: bool = True,
+        default_encoding: typing.Union[str, typing.Callable[[bytes], str]] = "utf-8",
     ):
         super().__init__(
             auth=auth,
@@ -625,10 +650,12 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             timeout=timeout,
+            follow_redirects=follow_redirects,
             max_redirects=max_redirects,
             event_hooks=event_hooks,
             base_url=base_url,
             trust_env=trust_env,
+            default_encoding=default_encoding,
         )
 
         if http2:
@@ -677,12 +704,12 @@ class Client(BaseClient):
     def _init_transport(
         self,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
-        transport: BaseTransport = None,
-        app: typing.Callable = None,
+        transport: typing.Optional[BaseTransport] = None,
+        app: typing.Optional[typing.Callable] = None,
         trust_env: bool = True,
     ) -> BaseTransport:
         if transport is not None:
@@ -704,7 +731,7 @@ class Client(BaseClient):
         self,
         proxy: Proxy,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
@@ -736,16 +763,17 @@ class Client(BaseClient):
         method: str,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Build and send a request.
@@ -781,10 +809,10 @@ class Client(BaseClient):
             params=params,
             headers=headers,
             cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
         )
-        return self.send(
-            request, auth=auth, allow_redirects=allow_redirects, timeout=timeout
-        )
+        return self.send(request, auth=auth, follow_redirects=follow_redirects)
 
     @contextmanager
     def stream(
@@ -792,16 +820,17 @@ class Client(BaseClient):
         method: str,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> typing.Iterator[Response]:
         """
         Alternative to `httpx.request()` that streams the response body
@@ -823,12 +852,13 @@ class Client(BaseClient):
             params=params,
             headers=headers,
             cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
         )
         response = self.send(
             request=request,
             auth=auth,
-            allow_redirects=allow_redirects,
-            timeout=timeout,
+            follow_redirects=follow_redirects,
             stream=True,
         )
         try:
@@ -841,9 +871,8 @@ class Client(BaseClient):
         request: Request,
         *,
         stream: bool = False,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a request.
@@ -862,8 +891,10 @@ class Client(BaseClient):
             raise RuntimeError("Cannot send a request, as the client has been closed.")
 
         self._state = ClientState.OPENED
-        timeout = (
-            self.timeout if isinstance(timeout, UseClientDefault) else Timeout(timeout)
+        follow_redirects = (
+            self.follow_redirects
+            if isinstance(follow_redirects, UseClientDefault)
+            else follow_redirects
         )
 
         auth = self._build_request_auth(request, auth)
@@ -871,20 +902,16 @@ class Client(BaseClient):
         response = self._send_handling_auth(
             request,
             auth=auth,
-            timeout=timeout,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             history=[],
         )
         try:
             if not stream:
                 response.read()
 
-            for hook in self._event_hooks["response"]:
-                hook(response)
-
             return response
 
-        except Exception as exc:
+        except BaseException as exc:
             response.close()
             raise exc
 
@@ -892,22 +919,17 @@ class Client(BaseClient):
         self,
         request: Request,
         auth: Auth,
-        timeout: Timeout,
-        allow_redirects: bool,
+        follow_redirects: bool,
         history: typing.List[Response],
     ) -> Response:
         auth_flow = auth.sync_auth_flow(request)
         try:
             request = next(auth_flow)
 
-            for hook in self._event_hooks["request"]:
-                hook(request)
-
             while True:
                 response = self._send_handling_redirects(
                     request,
-                    timeout=timeout,
-                    allow_redirects=allow_redirects,
+                    follow_redirects=follow_redirects,
                     history=history,
                 )
                 try:
@@ -921,7 +943,7 @@ class Client(BaseClient):
                     request = next_request
                     history.append(response)
 
-                except Exception as exc:
+                except BaseException as exc:
                     response.close()
                     raise exc
         finally:
@@ -930,8 +952,7 @@ class Client(BaseClient):
     def _send_handling_redirects(
         self,
         request: Request,
-        timeout: Timeout,
-        allow_redirects: bool,
+        follow_redirects: bool,
         history: typing.List[Response],
     ) -> Response:
         while True:
@@ -940,27 +961,32 @@ class Client(BaseClient):
                     "Exceeded maximum allowed redirects.", request=request
                 )
 
-            response = self._send_single_request(request, timeout)
+            for hook in self._event_hooks["request"]:
+                hook(request)
+
+            response = self._send_single_request(request)
             try:
+                for hook in self._event_hooks["response"]:
+                    hook(response)
                 response.history = list(history)
 
-                if not response.is_redirect:
+                if not response.has_redirect_location:
                     return response
 
                 request = self._build_redirect_request(request, response)
                 history = history + [response]
 
-                if allow_redirects:
+                if follow_redirects:
                     response.read()
                 else:
                     response.next_request = request
                     return response
 
-            except Exception as exc:
+            except BaseException as exc:
                 response.close()
                 raise exc
 
-    def _send_single_request(self, request: Request, timeout: Timeout) -> Response:
+    def _send_single_request(self, request: Request) -> Response:
         """
         Sends a single request, without handling any redirections.
         """
@@ -974,28 +1000,22 @@ class Client(BaseClient):
             )
 
         with request_context(request=request):
-            (status_code, headers, stream, extensions) = transport.handle_request(
-                request.method.encode(),
-                request.url.raw,
-                headers=request.headers.raw,
-                stream=request.stream,
-                extensions={"timeout": timeout.as_dict()},
-            )
+            response = transport.handle_request(request)
 
-        response = Response(
-            status_code,
-            headers=headers,
-            stream=stream,
-            extensions=extensions,
-            request=request,
+        assert isinstance(response.stream, SyncByteStream)
+
+        response.request = request
+        response.stream = BoundSyncStream(
+            response.stream, response=response, timer=timer
         )
-
-        response.stream = BoundSyncStream(stream, response=response, timer=timer)
         self.cookies.extract_cookies(response)
+        response.default_encoding = self._default_encoding
 
         status = f"{response.status_code} {response.reason_phrase}"
         response_line = f"{response.http_version} {status}"
-        logger.debug(f'HTTP Request: {request.method} {request.url} "{response_line}"')
+        logger.debug(
+            'HTTP Request: %s %s "%s"', request.method, request.url, response_line
+        )
 
         return response
 
@@ -1003,12 +1023,13 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `GET` request.
@@ -1022,20 +1043,22 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def options(
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send an `OPTIONS` request.
@@ -1049,20 +1072,22 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def head(
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `HEAD` request.
@@ -1076,24 +1101,26 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def post(
         self,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `POST` request.
@@ -1111,24 +1138,26 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def put(
         self,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `PUT` request.
@@ -1146,24 +1175,26 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def patch(
         self,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `PATCH` request.
@@ -1181,20 +1212,22 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def delete(
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `DELETE` request.
@@ -1208,8 +1241,9 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def close(self) -> None:
@@ -1225,6 +1259,13 @@ class Client(BaseClient):
                     transport.close()
 
     def __enter__(self: T) -> T:
+        if self._state != ClientState.UNOPENED:
+            msg = {
+                ClientState.OPENED: "Cannot open a client instance more than once.",
+                ClientState.CLOSED: "Cannot reopen a client instance, once it has been closed.",
+            }[self._state]
+            raise RuntimeError(msg)
+
         self._state = ClientState.OPENED
 
         self._transport.__enter__()
@@ -1235,9 +1276,9 @@ class Client(BaseClient):
 
     def __exit__(
         self,
-        exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_type: typing.Optional[typing.Type[BaseException]] = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         self._state = ClientState.CLOSED
 
@@ -1245,13 +1286,6 @@ class Client(BaseClient):
         for transport in self._mounts.values():
             if transport is not None:
                 transport.__exit__(exc_type, exc_value, traceback)
-
-    def __del__(self) -> None:
-        # We use 'getattr' here, to manage the case where '__del__()' is called
-        # on a partically initiallized instance that raised an exception during
-        # the call to '__init__()'.
-        if getattr(self, "_state", None) == ClientState.OPENED:  # noqa: B009
-            self.close()
 
 
 class AsyncClient(BaseClient):
@@ -1300,29 +1334,36 @@ class AsyncClient(BaseClient):
     rather than sending actual network requests.
     * **trust_env** - *(optional)* Enables or disables usage of environment
     variables for configuration.
+    * **default_encoding** - *(optional)* The default encoding to use for decoding
+    response text, if no charset information is included in a response Content-Type
+    header. Set to a callable for automatic character set detection. Default: "utf-8".
     """
 
     def __init__(
         self,
         *,
-        auth: AuthTypes = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         http1: bool = True,
         http2: bool = False,
-        proxies: ProxiesTypes = None,
-        mounts: typing.Mapping[str, AsyncBaseTransport] = None,
+        proxies: typing.Optional[ProxiesTypes] = None,
+        mounts: typing.Optional[typing.Mapping[str, AsyncBaseTransport]] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+        follow_redirects: bool = False,
         limits: Limits = DEFAULT_LIMITS,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
-        event_hooks: typing.Mapping[str, typing.List[typing.Callable]] = None,
+        event_hooks: typing.Optional[
+            typing.Mapping[str, typing.List[typing.Callable]]
+        ] = None,
         base_url: URLTypes = "",
-        transport: AsyncBaseTransport = None,
-        app: typing.Callable = None,
+        transport: typing.Optional[AsyncBaseTransport] = None,
+        app: typing.Optional[typing.Callable] = None,
         trust_env: bool = True,
+        default_encoding: str = "utf-8",
     ):
         super().__init__(
             auth=auth,
@@ -1330,10 +1371,12 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             timeout=timeout,
+            follow_redirects=follow_redirects,
             max_redirects=max_redirects,
             event_hooks=event_hooks,
             base_url=base_url,
             trust_env=trust_env,
+            default_encoding=default_encoding,
         )
 
         if http2:
@@ -1382,12 +1425,12 @@ class AsyncClient(BaseClient):
     def _init_transport(
         self,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
-        transport: AsyncBaseTransport = None,
-        app: typing.Callable = None,
+        transport: typing.Optional[AsyncBaseTransport] = None,
+        app: typing.Optional[typing.Callable] = None,
         trust_env: bool = True,
     ) -> AsyncBaseTransport:
         if transport is not None:
@@ -1409,7 +1452,7 @@ class AsyncClient(BaseClient):
         self,
         proxy: Proxy,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
@@ -1440,16 +1483,17 @@ class AsyncClient(BaseClient):
         method: str,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Build and send a request.
@@ -1477,11 +1521,10 @@ class AsyncClient(BaseClient):
             params=params,
             headers=headers,
             cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
         )
-        response = await self.send(
-            request, auth=auth, allow_redirects=allow_redirects, timeout=timeout
-        )
-        return response
+        return await self.send(request, auth=auth, follow_redirects=follow_redirects)
 
     @asynccontextmanager
     async def stream(
@@ -1489,16 +1532,17 @@ class AsyncClient(BaseClient):
         method: str,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> typing.AsyncIterator[Response]:
         """
         Alternative to `httpx.request()` that streams the response body
@@ -1520,12 +1564,13 @@ class AsyncClient(BaseClient):
             params=params,
             headers=headers,
             cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
         )
         response = await self.send(
             request=request,
             auth=auth,
-            allow_redirects=allow_redirects,
-            timeout=timeout,
+            follow_redirects=follow_redirects,
             stream=True,
         )
         try:
@@ -1538,9 +1583,8 @@ class AsyncClient(BaseClient):
         request: Request,
         *,
         stream: bool = False,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a request.
@@ -1559,8 +1603,10 @@ class AsyncClient(BaseClient):
             raise RuntimeError("Cannot send a request, as the client has been closed.")
 
         self._state = ClientState.OPENED
-        timeout = (
-            self.timeout if isinstance(timeout, UseClientDefault) else Timeout(timeout)
+        follow_redirects = (
+            self.follow_redirects
+            if isinstance(follow_redirects, UseClientDefault)
+            else follow_redirects
         )
 
         auth = self._build_request_auth(request, auth)
@@ -1568,20 +1614,16 @@ class AsyncClient(BaseClient):
         response = await self._send_handling_auth(
             request,
             auth=auth,
-            timeout=timeout,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             history=[],
         )
         try:
             if not stream:
                 await response.aread()
 
-            for hook in self._event_hooks["response"]:
-                await hook(response)
-
             return response
 
-        except Exception as exc:
+        except BaseException as exc:  # pragma: no cover
             await response.aclose()
             raise exc
 
@@ -1589,22 +1631,17 @@ class AsyncClient(BaseClient):
         self,
         request: Request,
         auth: Auth,
-        timeout: Timeout,
-        allow_redirects: bool,
+        follow_redirects: bool,
         history: typing.List[Response],
     ) -> Response:
         auth_flow = auth.async_auth_flow(request)
         try:
             request = await auth_flow.__anext__()
 
-            for hook in self._event_hooks["request"]:
-                await hook(request)
-
             while True:
                 response = await self._send_handling_redirects(
                     request,
-                    timeout=timeout,
-                    allow_redirects=allow_redirects,
+                    follow_redirects=follow_redirects,
                     history=history,
                 )
                 try:
@@ -1618,7 +1655,7 @@ class AsyncClient(BaseClient):
                     request = next_request
                     history.append(response)
 
-                except Exception as exc:
+                except BaseException as exc:
                     await response.aclose()
                     raise exc
         finally:
@@ -1627,8 +1664,7 @@ class AsyncClient(BaseClient):
     async def _send_handling_redirects(
         self,
         request: Request,
-        timeout: Timeout,
-        allow_redirects: bool,
+        follow_redirects: bool,
         history: typing.List[Response],
     ) -> Response:
         while True:
@@ -1637,29 +1673,33 @@ class AsyncClient(BaseClient):
                     "Exceeded maximum allowed redirects.", request=request
                 )
 
-            response = await self._send_single_request(request, timeout)
+            for hook in self._event_hooks["request"]:
+                await hook(request)
+
+            response = await self._send_single_request(request)
             try:
+                for hook in self._event_hooks["response"]:
+                    await hook(response)
+
                 response.history = list(history)
 
-                if not response.is_redirect:
+                if not response.has_redirect_location:
                     return response
 
                 request = self._build_redirect_request(request, response)
                 history = history + [response]
 
-                if allow_redirects:
+                if follow_redirects:
                     await response.aread()
                 else:
                     response.next_request = request
                     return response
 
-            except Exception as exc:
+            except BaseException as exc:
                 await response.aclose()
                 raise exc
 
-    async def _send_single_request(
-        self, request: Request, timeout: Timeout
-    ) -> Response:
+    async def _send_single_request(self, request: Request) -> Response:
         """
         Sends a single request, without handling any redirections.
         """
@@ -1673,33 +1713,21 @@ class AsyncClient(BaseClient):
             )
 
         with request_context(request=request):
-            (
-                status_code,
-                headers,
-                stream,
-                extensions,
-            ) = await transport.handle_async_request(
-                request.method.encode(),
-                request.url.raw,
-                headers=request.headers.raw,
-                stream=request.stream,
-                extensions={"timeout": timeout.as_dict()},
-            )
+            response = await transport.handle_async_request(request)
 
-        response = Response(
-            status_code,
-            headers=headers,
-            stream=stream,
-            extensions=extensions,
-            request=request,
+        assert isinstance(response.stream, AsyncByteStream)
+        response.request = request
+        response.stream = BoundAsyncStream(
+            response.stream, response=response, timer=timer
         )
-
-        response.stream = BoundAsyncStream(stream, response=response, timer=timer)
         self.cookies.extract_cookies(response)
+        response.default_encoding = self._default_encoding
 
         status = f"{response.status_code} {response.reason_phrase}"
         response_line = f"{response.http_version} {status}"
-        logger.debug(f'HTTP Request: {request.method} {request.url} "{response_line}"')
+        logger.debug(
+            'HTTP Request: %s %s "%s"', request.method, request.url, response_line
+        )
 
         return response
 
@@ -1707,12 +1735,13 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
+        auth: typing.Union[AuthTypes, UseClientDefault, None] = USE_CLIENT_DEFAULT,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `GET` request.
@@ -1726,20 +1755,22 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def options(
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send an `OPTIONS` request.
@@ -1753,20 +1784,22 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def head(
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `HEAD` request.
@@ -1780,24 +1813,26 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def post(
         self,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `POST` request.
@@ -1815,24 +1850,26 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def put(
         self,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `PUT` request.
@@ -1850,24 +1887,26 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def patch(
         self,
         url: URLTypes,
         *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        content: typing.Optional[RequestContent] = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
+        json: typing.Optional[typing.Any] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `PATCH` request.
@@ -1885,20 +1924,22 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def delete(
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
-        allow_redirects: bool = True,
+        follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: typing.Optional[dict] = None,
     ) -> Response:
         """
         Send a `DELETE` request.
@@ -1912,8 +1953,9 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             auth=auth,
-            allow_redirects=allow_redirects,
+            follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def aclose(self) -> None:
@@ -1929,6 +1971,13 @@ class AsyncClient(BaseClient):
                     await proxy.aclose()
 
     async def __aenter__(self: U) -> U:
+        if self._state != ClientState.UNOPENED:
+            msg = {
+                ClientState.OPENED: "Cannot open a client instance more than once.",
+                ClientState.CLOSED: "Cannot reopen a client instance, once it has been closed.",
+            }[self._state]
+            raise RuntimeError(msg)
+
         self._state = ClientState.OPENED
 
         await self._transport.__aenter__()
@@ -1939,9 +1988,9 @@ class AsyncClient(BaseClient):
 
     async def __aexit__(
         self,
-        exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_type: typing.Optional[typing.Type[BaseException]] = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         self._state = ClientState.CLOSED
 
@@ -1949,34 +1998,3 @@ class AsyncClient(BaseClient):
         for proxy in self._mounts.values():
             if proxy is not None:
                 await proxy.__aexit__(exc_type, exc_value, traceback)
-
-    def __del__(self) -> None:
-        # We use 'getattr' here, to manage the case where '__del__()' is called
-        # on a partically initiallized instance that raised an exception during
-        # the call to '__init__()'.
-        if getattr(self, "_state", None) == ClientState.OPENED:  # noqa: B009
-            # Unlike the sync case, we cannot silently close the client when
-            # it is garbage collected, because `.aclose()` is an async operation,
-            # but `__del__` is not.
-            #
-            # For this reason we require explicit close management for
-            # `AsyncClient`, and issue a warning on unclosed clients.
-            #
-            # The context managed style is usually preferable, because it neatly
-            # ensures proper resource cleanup:
-            #
-            #     async with httpx.AsyncClient() as client:
-            #         ...
-            #
-            # However, an explicit call to `aclose()` is also sufficient:
-            #
-            #    client = httpx.AsyncClient()
-            #    try:
-            #        ...
-            #    finally:
-            #        await client.aclose()
-            warnings.warn(
-                f"Unclosed {self!r}. "
-                "See https://www.python-httpx.org/async/#opening-and-closing-clients "
-                "for details."
-            )

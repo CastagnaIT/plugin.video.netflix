@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2014 Rackspace
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +17,6 @@ Module containing compiled regular expressions and constants.
 This module contains important constants, patterns, and compiled regular
 expressions for parsing and validating URIs and their components.
 """
-
 import re
 
 from . import abnf_regexp
@@ -51,9 +49,9 @@ URI_MATCHER = re.compile(abnf_regexp.URL_PARSING_RE)
 
 SUBAUTHORITY_MATCHER = re.compile(
     (
-        "^(?:(?P<userinfo>{0})@)?"  # userinfo
-        "(?P<host>{1})"  # host
-        ":?(?P<port>{2})?$"  # port
+        "^(?:(?P<userinfo>{})@)?"  # userinfo
+        "(?P<host>{})"  # host
+        ":?(?P<port>{})?$"  # port
     ).format(
         abnf_regexp.USERINFO_RE, abnf_regexp.HOST_PATTERN, abnf_regexp.PORT_RE
     )
@@ -65,9 +63,7 @@ IPv4_MATCHER = re.compile("^" + abnf_regexp.IPv4_RE + "$")
 IPv6_MATCHER = re.compile(r"^\[" + abnf_regexp.IPv6_ADDRZ_RFC4007_RE + r"\]$")
 
 # Used by host validator
-IPv6_NO_RFC4007_MATCHER = re.compile(
-    r"^\[%s\]$" % (abnf_regexp.IPv6_ADDRZ_RE)
-)
+IPv6_NO_RFC4007_MATCHER = re.compile(r"^\[%s\]$" % (abnf_regexp.IPv6_ADDRZ_RE))
 
 # Matcher used to validate path components
 PATH_MATCHER = re.compile(abnf_regexp.PATH_RE)
@@ -82,7 +78,7 @@ QUERY_MATCHER = re.compile(abnf_regexp.QUERY_RE)
 FRAGMENT_MATCHER = QUERY_MATCHER
 
 # Scheme validation, see: http://tools.ietf.org/html/rfc3986#section-3.1
-SCHEME_MATCHER = re.compile("^{0}$".format(abnf_regexp.SCHEME_RE))
+SCHEME_MATCHER = re.compile(f"^{abnf_regexp.SCHEME_RE}$")
 
 RELATIVE_REF_MATCHER = re.compile(
     r"^%s(\?%s)?(#%s)?$"
@@ -111,9 +107,9 @@ IRI_MATCHER = re.compile(abnf_regexp.URL_PARSING_RE, re.UNICODE)
 
 ISUBAUTHORITY_MATCHER = re.compile(
     (
-        u"^(?:(?P<userinfo>{0})@)?"  # iuserinfo
-        u"(?P<host>{1})"  # ihost
-        u":?(?P<port>{2})?$"  # port
+        "^(?:(?P<userinfo>{})@)?"  # iuserinfo
+        "(?P<host>{})"  # ihost
+        ":?(?P<port>{})?$"  # port
     ).format(
         abnf_regexp.IUSERINFO_RE, abnf_regexp.IHOST_RE, abnf_regexp.PORT_RE
     ),

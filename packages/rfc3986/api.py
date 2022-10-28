@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2014 Rackspace
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +17,6 @@ Module containing the simple and functional API for rfc3986.
 This module defines functions and provides access to the public attributes
 and classes of rfc3986.
 """
-
 from .iri import IRIReference
 from .parseresult import ParseResult
 from .uri import URIReference

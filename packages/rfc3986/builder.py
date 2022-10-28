@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2017 Ian Stapleton Cordasco
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +18,7 @@ from . import uri
 from . import uri_reference
 
 
-class URIBuilder(object):
+class URIBuilder:
     """Object to aid in building up a URI Reference from parts.
 
     .. note::
@@ -204,7 +203,7 @@ class URIBuilder(object):
             scheme=self.scheme,
             userinfo=self.userinfo,
             host=self.host,
-            port="{}".format(port_int),
+            port=f"{port_int}",
             path=self.path,
             query=self.query,
             fragment=self.fragment,
@@ -225,7 +224,7 @@ class URIBuilder(object):
 
         """
         if not path.startswith("/"):
-            path = "/{}".format(path)
+            path = f"/{path}"
 
         return URIBuilder(
             scheme=self.scheme,

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2017 Ian Stapleton Cordasco
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +17,7 @@ from . import misc
 from . import normalizers
 
 
-class Validator(object):
+class Validator:
     """Object used to configure validation of all objects in rfc3986.
 
     .. versionadded:: 1.0
@@ -159,9 +158,7 @@ class Validator(object):
         components = [c.lower() for c in components]
         for component in components:
             if component not in self.COMPONENT_NAMES:
-                raise ValueError(
-                    '"{}" is not a valid component'.format(component)
-                )
+                raise ValueError(f'"{component}" is not a valid component')
         self.validated_components.update(
             {component: True for component in components}
         )
@@ -184,9 +181,7 @@ class Validator(object):
         components = [c.lower() for c in components]
         for component in components:
             if component not in self.COMPONENT_NAMES:
-                raise ValueError(
-                    '"{}" is not a valid component'.format(component)
-                )
+                raise ValueError(f'"{component}" is not a valid component')
         self.required_components.update(
             {component: True for component in components}
         )
@@ -259,11 +254,9 @@ def ensure_one_of(allowed_values, uri, attribute):
 def ensure_required_components_exist(uri, required_components):
     """Assert that all required components are present in the URI."""
     missing_components = sorted(
-        [
-            component
-            for component in required_components
-            if getattr(uri, component) is None
-        ]
+        component
+        for component in required_components
+        if getattr(uri, component) is None
     )
     if missing_components:
         raise exceptions.MissingComponentError(uri, *missing_components)
@@ -400,7 +393,7 @@ _COMPONENT_VALIDATORS = {
     "fragment": fragment_is_valid,
 }
 
-_SUBAUTHORITY_VALIDATORS = set(["userinfo", "host", "port"])
+_SUBAUTHORITY_VALIDATORS = {"userinfo", "host", "port"}
 
 
 def subauthority_component_is_valid(uri, component):
@@ -429,7 +422,7 @@ def subauthority_component_is_valid(uri, component):
 
 def ensure_components_are_valid(uri, validated_components):
     """Assert that all components are valid in the URI."""
-    invalid_components = set([])
+    invalid_components = set()
     for component in validated_components:
         if component in _SUBAUTHORITY_VALIDATORS:
             if not subauthority_component_is_valid(uri, component):

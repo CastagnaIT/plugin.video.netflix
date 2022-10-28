@@ -8,6 +8,7 @@ from typing import (
     Dict,
     Iterable,
     Iterator,
+    Optional,
     Tuple,
     Union,
 )
@@ -15,8 +16,14 @@ from urllib.parse import urlencode
 
 from ._exceptions import StreamClosed, StreamConsumed
 from ._multipart import MultipartStream
-from ._transports.base import AsyncByteStream, SyncByteStream
-from ._types import RequestContent, RequestData, RequestFiles, ResponseContent
+from ._types import (
+    AsyncByteStream,
+    RequestContent,
+    RequestData,
+    RequestFiles,
+    ResponseContent,
+    SyncByteStream,
+)
 from ._utils import peek_filelike_length, primitive_value_to_str
 
 
@@ -32,6 +39,8 @@ class ByteStream(AsyncByteStream, SyncByteStream):
 
 
 class IteratorByteStream(SyncByteStream):
+    CHUNK_SIZE = 65_536
+
     def __init__(self, stream: Iterable[bytes]):
         self._stream = stream
         self._is_stream_consumed = False
@@ -42,11 +51,23 @@ class IteratorByteStream(SyncByteStream):
             raise StreamConsumed()
 
         self._is_stream_consumed = True
-        for part in self._stream:
-            yield part
+        if hasattr(self._stream, "read") and not isinstance(
+            self._stream, SyncByteStream
+        ):
+            # File-like interfaces should use 'read' directly.
+            chunk = self._stream.read(self.CHUNK_SIZE)  # type: ignore
+            while chunk:
+                yield chunk
+                chunk = self._stream.read(self.CHUNK_SIZE)  # type: ignore
+        else:
+            # Otherwise iterate.
+            for part in self._stream:
+                yield part
 
 
 class AsyncIteratorByteStream(AsyncByteStream):
+    CHUNK_SIZE = 65_536
+
     def __init__(self, stream: AsyncIterable[bytes]):
         self._stream = stream
         self._is_stream_consumed = False
@@ -57,8 +78,18 @@ class AsyncIteratorByteStream(AsyncByteStream):
             raise StreamConsumed()
 
         self._is_stream_consumed = True
-        async for part in self._stream:
-            yield part
+        if hasattr(self._stream, "aread") and not isinstance(
+            self._stream, AsyncByteStream
+        ):
+            # File-like interfaces should use 'aread' directly.
+            chunk = await self._stream.aread(self.CHUNK_SIZE)  # type: ignore
+            while chunk:
+                yield chunk
+                chunk = await self._stream.aread(self.CHUNK_SIZE)  # type: ignore
+        else:
+            # Otherwise iterate.
+            async for part in self._stream:
+                yield part
 
 
 class UnattachedStream(AsyncByteStream, SyncByteStream):
@@ -119,7 +150,7 @@ def encode_urlencoded_data(
 
 
 def encode_multipart_data(
-    data: dict, files: RequestFiles, boundary: bytes = None
+    data: dict, files: RequestFiles, boundary: Optional[bytes] = None
 ) -> Tuple[Dict[str, str], MultipartStream]:
     multipart = MultipartStream(data=data, files=files, boundary=boundary)
     headers = multipart.get_headers()
@@ -151,18 +182,18 @@ def encode_json(json: Any) -> Tuple[Dict[str, str], ByteStream]:
 
 
 def encode_request(
-    content: RequestContent = None,
-    data: RequestData = None,
-    files: RequestFiles = None,
-    json: Any = None,
-    boundary: bytes = None,
+    content: Optional[RequestContent] = None,
+    data: Optional[RequestData] = None,
+    files: Optional[RequestFiles] = None,
+    json: Optional[Any] = None,
+    boundary: Optional[bytes] = None,
 ) -> Tuple[Dict[str, str], Union[SyncByteStream, AsyncByteStream]]:
     """
     Handles encoding the given `content`, `data`, `files`, and `json`,
     returning a two-tuple of (<headers>, <stream>).
     """
     if data is not None and not isinstance(data, dict):
-        # We prefer to seperate `content=<bytes|str|byte iterator|bytes aiterator>`
+        # We prefer to separate `content=<bytes|str|byte iterator|bytes aiterator>`
         # for raw request content, and `data=<form data>` for url encoded or
         # multipart form content.
         #
@@ -186,10 +217,10 @@ def encode_request(
 
 
 def encode_response(
-    content: ResponseContent = None,
-    text: str = None,
-    html: str = None,
-    json: Any = None,
+    content: Optional[ResponseContent] = None,
+    text: Optional[str] = None,
+    html: Optional[str] = None,
+    json: Optional[Any] = None,
 ) -> Tuple[Dict[str, str], Union[SyncByteStream, AsyncByteStream]]:
     """
     Handles encoding the given `content`, returning a two-tuple of

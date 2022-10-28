@@ -5,13 +5,16 @@ import socketserver
 import threading
 from contextlib import closing, contextmanager
 from http.server import SimpleHTTPRequestHandler
+from typing import Callable, Generator
 from urllib.request import urlopen
 
 import h11
 
 
 @contextmanager
-def socket_server(handler):
+def socket_server(
+    handler: Callable[..., socketserver.BaseRequestHandler]
+) -> Generator[socketserver.TCPServer, None, None]:
     httpd = socketserver.TCPServer(("127.0.0.1", 0), handler)
     thread = threading.Thread(
         target=httpd.serve_forever, kwargs={"poll_interval": 0.01}
@@ -30,23 +33,23 @@ with open(test_file_path, "rb") as f:
 
 
 class SingleMindedRequestHandler(SimpleHTTPRequestHandler):
-    def translate_path(self, path):
+    def translate_path(self, path: str) -> str:
         return test_file_path
 
 
-def test_h11_as_client():
+def test_h11_as_client() -> None:
     with socket_server(SingleMindedRequestHandler) as httpd:
         with closing(socket.create_connection(httpd.server_address)) as s:
             c = h11.Connection(h11.CLIENT)
 
             s.sendall(
-                c.send(
+                c.send(  # type: ignore[arg-type]
                     h11.Request(
                         method="GET", target="/foo", headers=[("Host", "localhost")]
                     )
                 )
             )
-            s.sendall(c.send(h11.EndOfMessage()))
+            s.sendall(c.send(h11.EndOfMessage()))  # type: ignore[arg-type]
 
             data = bytearray()
             while True:
@@ -67,7 +70,7 @@ def test_h11_as_client():
 
 
 class H11RequestHandler(socketserver.BaseRequestHandler):
-    def handle(self):
+    def handle(self) -> None:
         with closing(self.request) as s:
             c = h11.Connection(h11.SERVER)
             request = None
@@ -82,6 +85,7 @@ class H11RequestHandler(socketserver.BaseRequestHandler):
                     request = event
                 if type(event) is h11.EndOfMessage:
                     break
+            assert request is not None
             info = json.dumps(
                 {
                     "method": request.method.decode("ascii"),
@@ -92,12 +96,12 @@ class H11RequestHandler(socketserver.BaseRequestHandler):
                     },
                 }
             )
-            s.sendall(c.send(h11.Response(status_code=200, headers=[])))
+            s.sendall(c.send(h11.Response(status_code=200, headers=[])))  # type: ignore[arg-type]
             s.sendall(c.send(h11.Data(data=info.encode("ascii"))))
             s.sendall(c.send(h11.EndOfMessage()))
 
 
-def test_h11_as_server():
+def test_h11_as_server() -> None:
     with socket_server(H11RequestHandler) as httpd:
         host, port = httpd.server_address
         url = "http://{}:{}/some-path".format(host, port)

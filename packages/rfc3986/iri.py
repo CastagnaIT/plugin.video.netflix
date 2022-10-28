@@ -1,5 +1,4 @@
 """Module containing the implementation of the IRIReference class."""
-# -*- coding: utf-8 -*-
 # Copyright (c) 2014 Rackspace
 # Copyright (c) 2015 Ian Stapleton Cordasco
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +47,7 @@ class IRIReference(
         cls, scheme, authority, path, query, fragment, encoding="utf-8"
     ):
         """Create a new IRIReference."""
-        ref = super(IRIReference, cls).__new__(
+        ref = super().__new__(
             cls,
             scheme or None,
             authority or None,
@@ -69,7 +68,7 @@ class IRIReference(
                 other_ref = self.__class__.from_string(other)
             except TypeError:
                 raise TypeError(
-                    "Unable to compare {0}() to {1}()".format(
+                    "Unable to compare {}() to {}()".format(
                         type(self).__name__, type(other).__name__
                     )
                 )

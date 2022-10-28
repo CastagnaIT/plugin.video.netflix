@@ -1,5 +1,4 @@
 """Module containing the implementation of the URIReference class."""
-# -*- coding: utf-8 -*-
 # Copyright (c) 2014 Rackspace
 # Copyright (c) 2015 Ian Stapleton Cordasco
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,7 +85,7 @@ class URIReference(namedtuple("URIReference", misc.URI_COMPONENTS), URIMixin):
         cls, scheme, authority, path, query, fragment, encoding="utf-8"
     ):
         """Create a new URIReference."""
-        ref = super(URIReference, cls).__new__(
+        ref = super().__new__(
             cls,
             scheme or None,
             authority or None,
@@ -109,7 +108,7 @@ class URIReference(namedtuple("URIReference", misc.URI_COMPONENTS), URIMixin):
                 other_ref = URIReference.from_string(other)
             except TypeError:
                 raise TypeError(
-                    "Unable to compare URIReference() to {0}()".format(
+                    "Unable to compare URIReference() to {}()".format(
                         type(other).__name__
                     )
                 )

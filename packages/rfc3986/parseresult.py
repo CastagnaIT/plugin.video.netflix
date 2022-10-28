@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2015 Ian Stapleton Cordasco
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,20 +33,16 @@ PARSED_COMPONENTS = (
 )
 
 
-class ParseResultMixin(object):
+class ParseResultMixin:
     def _generate_authority(self, attributes):
         # I swear I did not align the comparisons below. That's just how they
         # happened to align based on pep8 and attribute lengths.
         userinfo, host, port = (
             attributes[p] for p in ("userinfo", "host", "port")
         )
-        if (
-            self.userinfo != userinfo
-            or self.host != host
-            or self.port != port
-        ):
+        if self.userinfo != userinfo or self.host != host or self.port != port:
             if port:
-                port = "{0}".format(port)
+                port = f"{port}"
             return normalizers.normalize_authority(
                 (
                     compat.to_str(userinfo, self.encoding),
@@ -103,7 +98,7 @@ class ParseResult(
         encoding="utf-8",
     ):
         """Create a new ParseResult."""
-        parse_result = super(ParseResult, cls).__new__(
+        parse_result = super().__new__(
             cls,
             scheme or None,
             userinfo or None,
@@ -136,7 +131,7 @@ class ParseResult(
         if host is not None:
             authority += host
         if port is not None:
-            authority += ":{0}".format(port)
+            authority += f":{port}"
         uri_ref = uri.URIReference(
             scheme=scheme,
             authority=authority,
@@ -272,7 +267,7 @@ class ParseResultBytes(
         lazy_normalize=True,
     ):
         """Create a new ParseResultBytes instance."""
-        parse_result = super(ParseResultBytes, cls).__new__(
+        parse_result = super().__new__(
             cls,
             scheme or None,
             userinfo or None,
@@ -307,7 +302,7 @@ class ParseResultBytes(
         if host is not None:
             authority += host
         if port is not None:
-            authority += ":{0}".format(int(port))
+            authority += f":{int(port)}"
         uri_ref = uri.URIReference(
             scheme=scheme,
             authority=authority,
@@ -408,7 +403,7 @@ class ParseResultBytes(
             uri_ref=ref,
             encoding=self.encoding,
             lazy_normalize=lazy_normalize,
-            **attrs_dict
+            **attrs_dict,
         )
 
     def unsplit(self, use_idna=False):
