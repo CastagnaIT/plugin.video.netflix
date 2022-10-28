@@ -70,6 +70,10 @@ class ManifestError(MSLError):
     """Manifest processing error"""
 
 
+class ManifestPINError(ManifestError):
+    """Manifest incorrect PIN error"""
+
+
 # Exceptions for ACCOUNT / LOGIN
 
 class MissingCredentialsError(Exception):

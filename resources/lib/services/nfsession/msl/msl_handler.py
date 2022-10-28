@@ -16,9 +16,10 @@ import xbmcaddon
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
-from resources.lib.common.exceptions import MSLError
+from resources.lib.common.exceptions import MSLError, ManifestPINError, ErrorMessage
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
+from resources.lib.kodi import ui
 from resources.lib.utils.esn import get_esn, set_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
@@ -94,7 +95,21 @@ class MSLHandler:
             # When the add-on is installed from scratch or you logout the account the ESN will be empty
             if not esn:
                 esn = set_esn()
-            manifest = self._get_manifest(viewable_id, esn, challenge, sid)
+            # Check if the video require pre-release PIN (require an enabled account with unique access PIN)
+            # TODO: path_request maybe can be merged to the already existing path request on player.py
+            raw_data = self.nfsession.path_request([['videos', viewable_id, ['requiresPreReleasePin']]])
+            is_pre_release_pin_required = raw_data['videos'][str(viewable_id)]['requiresPreReleasePin']['value']
+            pin = None
+            while True:
+                try:
+                    if is_pre_release_pin_required:  # Request PIN for pre-release videos
+                        pin = ui.show_dlg_input_numeric(common.get_local_string(30003))
+                        if not pin:  # User cancelled or wrong PIN
+                            raise ErrorMessage(common.get_local_string(30106))
+                    manifest = self._get_manifest(viewable_id, esn, challenge, sid, pin)
+                    break
+                except ManifestPINError as exc:  # Wrong PIN try again
+                    ui.show_ok_dialog(common.get_local_string(30105), str(exc))
         except MSLError as exc:
             if 'Email or password is incorrect' in str(exc):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
@@ -107,7 +122,7 @@ class MSLHandler:
         return self._tranform_to_dash(manifest)
 
     @measure_exec_time_decorator(is_immediate=True)
-    def _get_manifest(self, viewable_id, esn, challenge, sid):
+    def _get_manifest(self, viewable_id, esn, challenge, sid, pin):
         if common.get_system_platform() != 'android' and (not challenge or not sid):
             LOG.error('DRM session data not valid (Session ID: {}, Challenge: {})', challenge, sid)
 
@@ -140,13 +155,14 @@ class MSLHandler:
         if manifest_ver == 'v1':
             endpoint_url, request_data = self._build_manifest_v1(viewable_id=viewable_id, hdcp_version=hdcp_version,
                                                                  hdcp_override=hdcp_override, profiles=profiles,
-                                                                 challenge=challenge)
+                                                                 challenge=challenge, pin=pin)
         else:  # Default - most recent version
             endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id,
                                                                  hdcp_version=hdcp_version,
                                                                  hdcp_override=hdcp_override,
                                                                  profiles=profiles,
-                                                                 challenge=challenge, sid=sid, xid=xid)
+                                                                 challenge=challenge, sid=sid, xid=xid,
+                                                                 pin=pin)
         manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn)
 
         # The xid must be used also for each future MSL requests, until playback stops
@@ -210,6 +226,11 @@ class MSLHandler:
         }
         if kwargs['challenge']:
             params['challenge'] = kwargs['challenge']
+        # TODO: SPECIFY THE PIN HERE NOT WORKS CORRECTLY MAYBE IS MISSING SOME OTHER THING,
+        #  OR THE PIN VALUE NEED TO BE SET IN DIFFERENT WAY
+        if kwargs['pin']:  # Pre-release PIN
+            params['pin'] = kwargs['pin']
+
         endpoint_url = ENDPOINTS['manifest_v1'] + create_req_params('prefetch/manifest')
         request_data = self.msl_requests.build_request_data('/manifest', params)
         return endpoint_url, request_data
@@ -273,6 +294,11 @@ class MSLHandler:
             'licenseType': 'standard',
             'xid': kwargs['xid']
         }
+
+        # TODO: SPECIFY THE PIN HERE NOT WORKS CORRECTLY MAYBE IS MISSING SOME OTHER THING,
+        #  OR THE PIN VALUE NEED TO BE SET IN DIFFERENT WAY
+        if kwargs['pin']:  # Pre-release PIN
+            params['pin'] = kwargs['pin']
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
         request_data = self.msl_requests.build_request_data('licensedManifest', params)

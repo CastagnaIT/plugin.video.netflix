@@ -36,7 +36,9 @@ msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
 msgstr ""
 
-# Unused 30003
+msgctxt "#30003"
+msgid "Enter PIN to watch pre-release content"
+msgstr ""
 
 msgctxt "#30004"
 msgid "Password"

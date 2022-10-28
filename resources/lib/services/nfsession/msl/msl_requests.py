@@ -17,7 +17,7 @@ import httpx
 
 import resources.lib.common as common
 from resources.lib.common import get_system_platform
-from resources.lib.common.exceptions import MSLError
+from resources.lib.common.exceptions import MSLError, ErrorMessage, ManifestPINError
 from resources.lib.globals import G
 
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
@@ -260,6 +260,9 @@ def _raise_if_error(decoded_response):
         if 'error' in decoded_response['result'][0]:
             raise_error = True
     if raise_error:
+        if decoded_response.get('error', {}).get('code') == 'INCORRECT_PIN':
+            # Has been provided a wrong pre-release PIN to the manifest
+            raise ManifestPINError(decoded_response['error']['display'])
         LOG.error('Full MSL error information:')
         LOG.error(json.dumps(decoded_response))
         err_message, err_number = _get_error_details(decoded_response)
