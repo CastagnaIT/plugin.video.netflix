@@ -112,11 +112,6 @@
                     </constraints>
                     <control type="spinner" format="string"/>
                 </setting>
-                <setting id="disable_startup_notification" type="boolean" label="30141" help="">
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                </setting>
             </group>
         </category>
         <!--CATEGORY: Library-->

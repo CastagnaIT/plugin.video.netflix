@@ -8,10 +8,17 @@
 """
 import threading
 from socket import gaierror
-from resources.lib.common import select_port, get_local_string, WndHomeProps
+from resources.lib.common import select_port, WndHomeProps
 from resources.lib.globals import G
 from resources.lib.upgrade_controller import check_service_upgrade
 from resources.lib.utils.logging import LOG
+
+
+def _set_service_status(status, message=None):
+    """Save the service status to Kodi homepage property"""
+    from json import dumps
+    status = {'status': status, 'message': message}
+    WndHomeProps[WndHomeProps.SERVICE_STATUS] = dumps(status)
 
 
 class NetflixService:
@@ -45,7 +52,7 @@ class NetflixService:
                            f'Error details: {exc}')
             else:
                 message = str(exc)
-            self._set_service_status('error', message)
+            _set_service_status(G.SERVICE_STATUS_ERROR, message)
         return False
 
     def start_services(self):
@@ -60,14 +67,11 @@ class NetflixService:
         # We reset the value in case of any eventuality (add-on disabled, update, etc)
         WndHomeProps[WndHomeProps.CURRENT_DIRECTORY] = None
         # Mark the service as active
-        self._set_service_status('running')
-        if not G.ADDON.getSettingBool('disable_startup_notification'):
-            from resources.lib.kodi.ui import show_notification
-            show_notification(get_local_string(30110))
+        _set_service_status(G.SERVICE_STATUS_RUNNING)
 
     def shutdown(self):
         """Stop the background services"""
-        self._set_service_status('stopped')
+        _set_service_status(G.SERVICE_STATUS_STOPPED)
         self.nf_server_instance.shutdown()
         self.nf_server_instance.server_close()
         self.nf_server_instance = None
@@ -80,7 +84,7 @@ class NetflixService:
         try:
             self.start_services()
         except Exception as exc:  # pylint: disable=broad-except
-            self._set_service_status('stopped')
+            _set_service_status(G.SERVICE_STATUS_ERROR, 'Internal add-on service error.')
             import traceback
             from resources.lib.kodi.ui import show_addon_error_info
             LOG.error(traceback.format_exc())
@@ -103,19 +107,15 @@ class NetflixService:
             show_notification(': '.join((exc.__class__.__name__, str(exc))))
         return G.SETTINGS_MONITOR.waitForAbort(1)
 
-    def _set_service_status(self, status, message=None):
-        """Save the service status to a Kodi property"""
-        from json import dumps
-        status = {'status': status, 'message': message}
-        WndHomeProps[WndHomeProps.SERVICE_STATUS] = dumps(status)
-
 
 def run(argv):
     # Initialize globals right away to avoid stale values from the last addon invocation.
     # Otherwise Kodi's reuseLanguageInvoker will cause some really quirky behavior!
     # PR: https://github.com/xbmc/xbmc/pull/13814
     G.init_globals(argv)
+    _set_service_status(G.SERVICE_STATUS_UPGRADE)
     check_service_upgrade()
+    _set_service_status(G.SERVICE_STATUS_STARTUP)
     netflix_service = NetflixService()
     if netflix_service.init_servers():
         netflix_service.run()

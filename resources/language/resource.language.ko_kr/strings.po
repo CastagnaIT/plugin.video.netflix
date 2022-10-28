@@ -430,10 +430,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "로그인 성공"
 
-msgctxt "#30110"
-msgid "Background services started"
-msgstr "백그라운드 서비스를 시작했습니다."
-
+# Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "없습니다."
@@ -520,7 +517,10 @@ msgctxt "#30135"
 msgid "Cache cleared"
 msgstr "캐쉬를 지웠습니다."
 
-# Unused 30136
+msgctxt "#30136"
+msgid "Waiting for service start-up..."
+msgstr ""
+
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
 msgstr "VP9사용(문제가 있으면 사용하지 마십시오.)"
@@ -537,11 +537,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "라이브러리에서 가져오기"
 
-msgctxt "#30141"
-msgid "Disable startup notification"
-msgstr "기동알림을 사용하지 않습니다."
-
-# Unused 30142, 30143
+# Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "WebVTT 자막 지원 안함"
