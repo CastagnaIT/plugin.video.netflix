@@ -11,6 +11,7 @@ from .._exceptions import (
     WriteTimeout,
     map_exceptions,
 )
+from .tcp_keep_alive import enable_tcp_keep_alive
 from .._utils import is_socket_readable
 from .base import NetworkBackend, NetworkStream
 
@@ -86,6 +87,8 @@ class SyncBackend(NetworkBackend):
             sock = socket.create_connection(
                 address, timeout, source_address=source_address
             )
+            # Enable TCP Keep-Alive
+            enable_tcp_keep_alive(sock)
         return SyncStream(sock)
 
     def connect_unix_socket(
