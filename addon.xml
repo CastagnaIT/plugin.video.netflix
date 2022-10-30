@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.20.0+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.20.1+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.addon.signals" version="0.0.6+matrix.1"/>
@@ -86,18 +86,11 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.20.0 (2022-10-27)
-- Fixed limitation on Android devices to playback from main profile only
-- Fixed trailers context menu and list
-- Add color setting for videos set as "Remind me"
-- Add "Remember PIN" feature, can be set by opening profile context menu
-- Updated "Remove watched status" context menu (continue watching menu)
-- Cleanup add-on library settings
-- Cleanup profiles context menus
-- Removed Expert setting "Force MSL with idtoken authentication" not more needed
-- Removed language code descriptions workaround to Kodi 20 only, for details see Wiki FAQ:
-"Audio/Subtitles language codes have a wrong/incomplete descriptions"
-- Update translations it, de, fr, zh_cn
+v1.20.1 (2022-10-30)
+- Fixed playback on linux devices
+- Protected Logout setting with a confirmation dialog
+- Wait for service startup without notification
+- Add support info on add-on settings
     </news>
   </extension>
 </addon>
