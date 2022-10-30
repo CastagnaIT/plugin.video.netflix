@@ -82,7 +82,10 @@ msgctxt "#30015"
 msgid "Other options"
 msgstr "其他選項"
 
-# Unused 30016
+msgctxt "#30016"
+msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
+msgstr ""
+
 msgctxt "#30017"
 msgid "Logout"
 msgstr "登出"
@@ -1184,4 +1187,12 @@ msgstr ""
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
+msgstr ""
+
+msgctxt "#30734"
+msgid "Support"
+msgstr ""
+
+msgctxt "#30735"
+msgid "About Netflix add-on"
 msgstr ""

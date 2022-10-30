@@ -31,7 +31,9 @@ class AddonActionExecutor:
 
     def logout(self, pathitems=None):  # pylint: disable=unused-argument
         """Perform account logout"""
-        api.logout()
+        if ui.ask_for_confirmation(common.get_local_string(30017),
+                                   common.get_local_string(30016)):
+            api.logout()
 
     def profile_autoselect(self, pathitems):  # pylint: disable=unused-argument
         """Set or remove the GUID for profile auto-selection when addon start-up"""
@@ -228,6 +230,22 @@ class AddonActionExecutor:
                 xbmc.Player().play(trailer_path, list_item)
         else:
             ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'), msg)
+
+    def profile_options(self, pathitems=None):  # pylint: disable=unused-argument
+        ui.show_ok_dialog('Netflix', common.get_local_string(30013))
+
+    def show_support_info(self, pathitems=None):  # pylint: disable=unused-argument
+        text = f'[B]Netflix add-on[/B] version {G.VERSION}\n\n'
+        text += ('This is an unofficial Netflix platform for watching Netflix content on Kodi, '
+                 'this project is neither commissioned nor supported by the Netflix company, '
+                 'so we invest our free time to provide constant updates for your entertainment.\n\n'
+                 'If you enjoy using this add-on, please consider supporting our efforts with a donation.\n\n')
+        text += ('[B]Homepage:[/B] http://tiny.one/netflix-kodi-addon\n'
+                 '[B]Wiki:[/B] http://tiny.one/netflix-addon-wiki\n'
+                 '[B]Forum:[/B] http://tiny.one/netflix-addon-forum\n'
+                 '[B]For donations:[/B] See [I]Sponsor links[/I] on homepage or open https://beacons.ai/castagnait')
+        from xbmcgui import Dialog
+        Dialog().textviewer(heading=common.get_local_string(30735), text=text)
 
 
 def sync_library(videoid, operation):

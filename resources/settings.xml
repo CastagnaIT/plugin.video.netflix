@@ -3,8 +3,18 @@
     <section id="plugin.video.netflix">
         <!--CATEGORY: General-->
         <category id="general" label="30031" help="">
+            <!--GROUP: Support-->
+            <group id="1" label="30734">
+                <setting id="purge_complete_cache" type="action" label="30735">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://$ID/action/show_support_info/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
+                    </control>
+                </setting>
+            </group>
             <!--GROUP: Account-->
-            <group id="1" label="30014">
+            <group id="2" label="30014">
                 <setting id="logout" type="action" label="30017">
                     <level>0</level>
                     <data>RunPlugin(plugin://$ID/action/logout/)</data>
@@ -12,19 +22,12 @@
                         <close>false</close>
                     </control>
                 </setting>
-            </group>
-            <!--GROUP: Profile options info-->
-            <group id="2" label="30012">
-                <setting id="profile_options_info" type="string" label="30013" help="">
+                <setting id="profile_options_info" type="action" label="30012">
                     <level>0</level>
-                    <default/>
-                    <constraints>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <control type="edit" format="string">
-                        <heading>30013</heading>
+                    <data>RunPlugin(plugin://$ID/action/profile_options/)</data>
+                    <control type="button" format="action">
+                        <close>false</close>
                     </control>
-                    <enable>false</enable>
                 </setting>
             </group>
             <!--GROUP: Other options-->
