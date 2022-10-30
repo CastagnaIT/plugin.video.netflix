@@ -1,3 +1,9 @@
+v1.20.1 (2022-10-30)
+- Fixed playback on linux devices
+- Protected Logout setting with a confirmation dialog
+- Wait for service startup without notification
+- Add support info on add-on settings
+
 v1.20.0 (2022-10-27)
 - Fixed limitation on Android devices to playback from main profile only
 - Fixed trailers context menu and list

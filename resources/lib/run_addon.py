@@ -85,7 +85,7 @@ def lazy_login(func):
     """
     @wraps(func)
     def lazy_login_wrapper(*args, **kwargs):
-        if _check_valid_credentials():
+        if G.REQUEST_PARAMS.get('ignore_login') or _check_valid_credentials():
             try:
                 return func(*args, **kwargs)
             except NotLoggedInError:
