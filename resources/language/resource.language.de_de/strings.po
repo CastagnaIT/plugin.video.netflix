@@ -84,7 +84,7 @@ msgstr "Andere Einstellungen"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Wenn Sie sich abmelden werden alle Daten zu Ihrem Konto gelöscht, aber exportierte Video-Dateien in der Kodi-Bibliothek bleiben erhalten.[CR]Möchten Sie fortfahren?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -733,7 +733,7 @@ msgstr "[CR]Diese Dateien werden benutzt um Informationen über Filme und Serien
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "NFO-Details in Serien einschließen"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -1191,8 +1191,8 @@ msgstr "Nur aktivieren falls \"Lokale Information\"-Informationsbeschaffungsscra
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Unterstützung"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "Über das Netflix-Addon"
