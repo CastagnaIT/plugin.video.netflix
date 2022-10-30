@@ -270,9 +270,14 @@ class MSLHandler:
             # - 'standard' no license data provided in the manifest response
             # TODO: Currently on linux only the license type set to "limited" cause this error on ISA:
             #  License update not successful (no keys)
-            'licenseType': 'standard',
-            'xid': kwargs['xid']
+            'licenseType': 'standard'
         }
+        # 30/10/2022 on linux xid must be specified on the challenge dict
+        # otherwise ISA raise error: License update not successful (no keys)
+        if common.get_system_platform() == 'linux':
+            params['challenges']['default'][0]['xid'] = kwargs['xid']
+        else:
+            params['xid'] = kwargs['xid']
 
         endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
         request_data = self.msl_requests.build_request_data('licensedManifest', params)
