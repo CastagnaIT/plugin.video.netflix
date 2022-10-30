@@ -7,7 +7,7 @@
             <group id="1" label="30734">
                 <setting id="purge_complete_cache" type="action" label="30735">
                     <level>0</level>
-                    <data>RunPlugin(plugin://$ID/action/show_support_info/)</data>
+                    <data>RunPlugin(plugin://$ID/action/show_support_info/?ignore_login=True)</data>
                     <control type="button" format="action">
                         <close>false</close>
                     </control>
@@ -24,7 +24,7 @@
                 </setting>
                 <setting id="profile_options_info" type="action" label="30012">
                     <level>0</level>
-                    <data>RunPlugin(plugin://$ID/action/profile_options/)</data>
+                    <data>RunPlugin(plugin://$ID/action/profile_options/?ignore_login=True)</data>
                     <control type="button" format="action">
                         <close>false</close>
                     </control>
@@ -128,7 +128,7 @@
                 </setting>
                 <setting id="lib_add_sources" type="action" label="30728">
                     <level>0</level>
-                    <data>RunPlugin(plugin://$ID/library/add_folders_to_library/)</data>
+                    <data>RunPlugin(plugin://$ID/library/add_folders_to_library/?ignore_login=True)</data>
                     <control type="button" format="action">
                         <close>false</close>
                     </control>
