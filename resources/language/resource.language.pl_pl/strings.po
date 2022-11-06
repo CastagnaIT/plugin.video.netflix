@@ -208,7 +208,7 @@ msgstr "Bibilioteka"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Włącz zarządzanie biblioteką Kodi"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
@@ -220,13 +220,13 @@ msgstr "{} Ustaw do odtwarzania z biblioteki"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "Ustaw przy uruchomieniu"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "Zapamiętaj PIN"
 
 # Unused 30058
 msgctxt "#30059"
@@ -255,7 +255,7 @@ msgstr "Wykonaj aktualizację automatycznie"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Aktualizacja biblioteki wideo"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -733,7 +733,7 @@ msgstr "[CR]Pliki te są wykorzystywane przez scrapery informacji do integracji 
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Uwzględnij szczegóły programu telewizyjnego NFO"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -825,7 +825,7 @@ msgstr "Podświetl tytuły znajdujące się na Mojej liście kolorem"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Kolor tytułów oznaczonych jako "Przypomnij mi""
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -867,7 +867,7 @@ msgstr "Ustaw profil dla synchronizacji"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "Przy starcie Kodi"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1093,7 +1093,7 @@ msgstr "Ten tytuł będzie dostępny od:[CR]{}"
 
 msgctxt "#30621"
 msgid "Do you want to play the promo trailer?"
-msgstr "Czy chcesz odtowrzyć trailer promocyjny?"
+msgstr "Czy chcesz odtworzyć trailer promocyjny?"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
@@ -1107,20 +1107,20 @@ msgstr "Nowe i popularne"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr ""
+msgstr "Oznacz rozpoczęte programy telewizyjne jako obejrzane"
 
 #. Description of setting ID #30701
 msgctxt "#30702"
 msgid "Please note that by enabling this setting if filters are enabled in your Skin settings, items marked as watched may not be visible."
-msgstr ""
+msgstr "Pamiętaj, że włączając to ustawienie, jeśli filtry są włączone w ustawieniach skórek, elementy oznaczone jako obserwowane mogą nie być widoczne."
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "Zastąp typ wyboru strumienia"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "Zastąp ustawienie Typ wyboru strumienia w dodatku InputStream Adaptive, aby określić sposób wyboru jakości strumieni audio/wideo podczas odtwarzania."
 
 msgctxt "#30705"
 msgid "Adaptive quality"
@@ -1132,20 +1132,20 @@ msgstr ""
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "Pytaj o jakość wideo"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "Należy pamiętać, że włączenie tego ustawienia wymusi usunięcie strumieni, które nie mieszczą się w ustawionym zakresie, co może wpłynąć na działanie InputStream Adaptive. Jeśli to możliwe, spróbuj najpierw ograniczyć jakość w ustawieniach InputStream Adaptive."
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Maksymalna wysokość czarnych pasów (eksperymentalna)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "Przycięte filmy zostaną rozciągnięte przez ustawienie „Trybu widoku” Kodi na „Powiększenie”, aby zminimalizować czarne paski przy maksymalnej ustawionej wysokości. Na przykład 10% oznacza, że czarne paski mogą zajmować maksymalnie 10% ekranu. Aby go wyłączyć, ustaw na 50%."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
@@ -1159,11 +1159,11 @@ msgstr ""
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Włącz profile AV1 – TYLKO DO TESTÓW ROZWOJOWYCH"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "Dodaj foldery Netflix do źródeł biblioteki Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
@@ -1191,8 +1191,8 @@ msgstr ""
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Wsparcie"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "O dodatku Netflix"
