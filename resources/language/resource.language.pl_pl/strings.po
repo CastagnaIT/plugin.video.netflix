@@ -733,7 +733,7 @@ msgstr "[CR]Pliki te są wykorzystywane przez scrapery informacji do integracji 
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr "Uwzględnij szczegóły programu telewizyjnego NFO"
+msgstr "Uwzględnij szczegóły serialu NFO"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -1107,7 +1107,7 @@ msgstr "Nowe i popularne"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr "Oznacz rozpoczęte programy telewizyjne jako obejrzane"
+msgstr "Oznacz rozpoczęte seriale jako obejrzane"
 
 #. Description of setting ID #30701
 msgctxt "#30702"
