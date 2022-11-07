@@ -1145,7 +1145,7 @@ msgstr "Maksymalna wysokość czarnych pasów (eksperymentalna)"
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr "Przycięte filmy zostaną rozciągnięte przez ustawienie „Trybu widoku” Kodi na „Powiększenie”, aby zminimalizować czarne paski przy maksymalnej ustawionej wysokości. Na przykład 10% oznacza, że czarne paski mogą zajmować maksymalnie 10% ekranu. Aby go wyłączyć, ustaw na 50%."
+msgstr "Przycięte filmy zostaną rozciągnięte przez ustawienie Kodi \"Trybu widoku"\ na \"Powiększenie"\, aby zminimalizować czarne paski przy maksymalnej ustawionej wysokości. Na przykład 10% oznacza, że czarne paski mogą zajmować maksymalnie 10% ekranu. Aby go wyłączyć, ustaw na 50%."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
