@@ -825,7 +825,7 @@ msgstr "Podświetl tytuły znajdujące się na Mojej liście kolorem"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr "Kolor tytułów oznaczonych jako "Przypomnij mi""
+msgstr "Kolor tytułów oznaczonych jako \"Przypomnij mi\""
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -1177,7 +1177,7 @@ msgstr ""
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Synchronizuje bibliotekę z Moją listą, jeśli moja lista została zmodyfikowana zewnętrznie, np. w aplikacji mobilnej lub stronie internetowej, aktualizacja zostanie przesunięta na zaplanowany czas."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
