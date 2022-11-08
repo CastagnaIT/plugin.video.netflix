@@ -60,7 +60,7 @@ PROFILES = {
     'hdr':
         _profile_strings(base=HDR,
                          tails=[(LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK),
-                                (LEVELS_3 + LEVELS_4, CENC_PRK_DO)]),
+                                (LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK_DO)]),
     'dolbyvision':
         _profile_strings(base=DV5,
                          tails=[(LEVELS_3 + LEVELS_4 + LEVELS_5, CENC_PRK),
