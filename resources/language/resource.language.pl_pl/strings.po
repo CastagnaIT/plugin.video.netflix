@@ -220,13 +220,13 @@ msgstr "{} Ustaw do odtwarzania z biblioteki"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr "Ustaw przy uruchomieniu"
+msgstr "{} Ustaw przy uruchomieniu"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr "Zapamiętaj PIN"
+msgstr "{} Zapamiętaj PIN"
 
 # Unused 30058
 msgctxt "#30059"
