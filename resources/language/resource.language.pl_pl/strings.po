@@ -84,7 +84,7 @@ msgstr "Pozostałe opcje"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Jeśli się wylogujesz, wszystkie dane konta zostaną usunięte, ale wyeksportowane pliki wideo w bibliotece Kodi zostaną zachowane.[CR]Czy chcesz kontynuować?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -522,7 +522,7 @@ msgstr "Pamięć podręczna wyczyszczona"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Czekaj na uruchomienie usługi..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -1145,11 +1145,11 @@ msgstr "Maksymalna wysokość czarnych pasów (eksperymentalna)"
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr "Przycięte filmy zostaną rozciągnięte przez ustawienie Kodi \"Trybu widoku"\ na \"Powiększenie"\, aby zminimalizować czarne paski przy maksymalnej ustawionej wysokości. Na przykład 10% oznacza, że czarne paski mogą zajmować maksymalnie 10% ekranu. Aby go wyłączyć, ustaw na 50%."
+msgstr "Przycięte filmy zostaną rozciągnięte przez ustawienie Kodi \"Trybu widoku\" na \"Powiększenie\", aby zminimalizować czarne paski przy maksymalnej ustawionej wysokości. Na przykład 10% oznacza, że czarne paski mogą zajmować maksymalnie 10% ekranu. Aby go wyłączyć, ustaw na 50%."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Wymuś zresetowanie ustawienia \"Tryb widoku\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
