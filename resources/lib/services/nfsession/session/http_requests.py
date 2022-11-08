@@ -89,6 +89,12 @@ class SessionHTTPRequests(SessionBase):
                     raise
                 retry += 1
                 LOG.warn('Another attempt will be performed ({})', retry)
+            except httpx.ReadError as exc:
+                if retry == 3 or 'Try again' not in str(exc):
+                    raise
+                LOG.error('HTTP request error: {}', exc)
+                retry += 1
+                LOG.warn('Another attempt will be performed ({})', retry)
         # for redirect in response.history:
         #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
         if not session_refreshed:
