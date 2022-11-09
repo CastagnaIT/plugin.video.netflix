@@ -72,7 +72,7 @@ SEASONS_PARTIAL_PATHS = [
 ] + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
-    [['requestId', 'summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
+    [['requestId', 'summary', 'synopsis', 'regularSynopsis', 'title', 'runtime', 'releaseYear', 'queue',
       'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
       'watched', 'delivery', 'trackIds', 'availability']],
     [['genres', 'tags', 'creators', 'directors', 'cast'],
@@ -80,7 +80,7 @@ EPISODES_PARTIAL_PATHS = [
 ] + ART_PARTIAL_PATHS
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackIds', 'delivery', 'runtime',
+    [['availability', 'summary', 'synopsis', 'regularSynopsis', 'title', 'trackIds', 'delivery', 'runtime',
       'bookmarkPosition', 'creditsOffset']]
 ] + ART_PARTIAL_PATHS
 
