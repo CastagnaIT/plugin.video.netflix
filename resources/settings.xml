@@ -5,7 +5,7 @@
         <category id="general" label="30031" help="">
             <!--GROUP: Support-->
             <group id="1" label="30734">
-                <setting id="purge_complete_cache" type="action" label="30735">
+                <setting id="show_support_info" type="action" label="30735">
                     <level>0</level>
                     <data>RunPlugin(plugin://$ID/action/show_support_info/?ignore_login=True)</data>
                     <control type="button" format="action">
