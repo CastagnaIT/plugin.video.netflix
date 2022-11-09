@@ -47,6 +47,7 @@ class SessionHTTPRequests(SessionBase):
     def _request_call(self, method, endpoint, **kwargs):
         return self._request(method, endpoint, None, **kwargs)
 
+    # pylint: disable=too-many-branches
     def _request(self, method, endpoint, session_refreshed, **kwargs):
         endpoint_conf = ENDPOINTS[endpoint]
         url = (_api_url(endpoint_conf['address'])
