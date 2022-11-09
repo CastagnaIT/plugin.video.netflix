@@ -1124,11 +1124,11 @@ msgstr "Zastąp ustawienie Typ wyboru strumienia w dodatku InputStream Adaptive,
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "Jakość dostosowana"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "Poprawiona jakość wideo"
 
 msgctxt "#30707"
 msgid "Ask video quality"
@@ -1154,7 +1154,7 @@ msgstr "Wymuś zresetowanie ustawienia \"Tryb widoku\""
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi zapisuje na stałe ustawienie \"Tryb widoku\" \"Powiększenie\", włącz to ustawienie, aby przywrócić \"Normalny\" tryb widoku podczas odtwarzania wcześniej obejrzanego filmu."
 
 # Unused 30725, 30726
 msgctxt "#30727"
@@ -1167,12 +1167,12 @@ msgstr "Dodaj foldery Netflix do źródeł biblioteki Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "Foldery \"Netflix-Movies\" i \"Netflix-Shows\" zostały dodane do źródeł Kodi, uruchom ponownie Kodi, aby wyświetlić je w menu Kodi [Seriale] / [Filmy]. Następnie edytuj foldery, aby ustawić odpowiedni typ zawartości i dostawcę informacji."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Ręcznie] aktualizacje muszą być wykonywane ręcznie za pomocą menu kontekstowego \"Eksportuj nowe odcinki\" w każdym serialu, [Zaplanowane] możesz ustawić automatyczne aktualizacje w zaplanowanych godzinach, [Kiedy Kodi uruchamia się] automatyczne aktualizacje rozpoczą się po uruchomieniu Kodi i będą robione tylko raz dziennie."
 
 #. Description of setting ID 30227
 msgctxt "#30731"
@@ -1182,12 +1182,12 @@ msgstr "Synchronizuje bibliotekę z Moją listą, jeśli moja lista została zmo
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Jeśli ta opcja jest włączona, dodaje informacje do odcinków lub filmów, które są przydatne, gdy dostawca informacji Kodi nie dostarcza danych. Spowoduje to również dodanie czasu trwania wideo."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Włącz tylko wtedy, gdy używany jest dostawca informacji \"Informacje lokalne\" lub jeśli niektóre tytuły nie są wyświetlane w bibliotece Kodi, mimo że zostały dodane."
 
 msgctxt "#30734"
 msgid "Support"
