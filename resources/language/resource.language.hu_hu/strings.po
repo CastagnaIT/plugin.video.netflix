@@ -84,7 +84,7 @@ msgstr "Opciók"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Ha kijelentkezik, minden fiókadat törlődik, de a Kodi-médiatárban lévő, exportált videofájlok megmaradnak.[CR]Folytatja?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -1128,7 +1128,7 @@ msgstr "Alkalmazkodó minőség"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr "Fixált videó minőség"
+msgstr "Rögzített videó minőség"
 
 msgctxt "#30707"
 msgid "Ask video quality"
@@ -1191,8 +1191,8 @@ msgstr "Csak akkor engedélyezze, ha a \"helyi információk\" információszolg
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Támogatás"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "A Netflix kiegészítőről"
