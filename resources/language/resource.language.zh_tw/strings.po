@@ -84,7 +84,7 @@ msgstr "其他選項"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "如果你登出，所有帳號資訊將會被刪除，但已經匯出至Kodi資料庫的影片檔案將會保留下來。[CR]你確定要繼續嗎?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -208,7 +208,7 @@ msgstr "資料庫"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "啟用Kodi資料庫管理"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
@@ -220,13 +220,13 @@ msgstr "{} 設為資料庫播放設置"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} 設為自動啟用"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} 記住PIN碼"
 
 # Unused 30058
 msgctxt "#30059"
@@ -255,7 +255,7 @@ msgstr "執行自動更新"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "影片資料庫更新"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -522,7 +522,7 @@ msgstr "暫存已清除"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "等待服務啟動..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -733,7 +733,7 @@ msgstr "[CR]這些檔由提供商資訊收集器用來集成電影和電視節�
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "包含電視節目NFO詳細資訊"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -821,11 +821,11 @@ msgstr "強制更新"
 
 msgctxt "#30215"
 msgid "Color of the titles included in \"My list\""
-msgstr "我的清單中標題顏色"
+msgstr "存在於\"我的清單\"中的標題顏色"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "標記為\"提醒我\"的標題顏色"
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -867,7 +867,7 @@ msgstr "為同步設置一個設定檔"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "當Kodi啟動"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1140,59 +1140,59 @@ msgstr "請注意，啟用此設定將強制刪除不在設定範圍內的串流
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "黑邊最大高度 (實驗性)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "設定 Kodi \"顯示模式\" 為 \"填滿螢幕(無黑邊)\" 將會拉伸裁切的影片至設定的最大黑邊高度。例如10%代表黑邊最多能覆蓋 10% 的螢幕。若要取消，請設定為 50%。"
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "強制重設 \"顯示模式\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi 將永久的儲存 \"顯示模式\" \"填滿螢幕(無黑邊)\" 設定，啟用此設定以便在撥放先前觀看過的影片時還原為 \"標準\" 顯示模式。"
 
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "啟用AV1 - 僅供開發者測試"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "將Netflix資料夾新增至Kodi資料庫來源"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "\"Netflix-電影\" 與 \"Netflix-節目\" 資料夾已經加入至Kodi來源，重新啟動Kodi並於 [電視劇] / [電影] 選單中檢視。然後為資料夾設定合適的內容類型以及資訊提供者抓取器。"
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[手動] 更新必須透過手動對於每一個電視劇使用 \"匯出新影集\" 內容選單，[排程] 你可以設定自動在排定的時間更新，[當Kodi啟動時] 在Kodi啟動時自動更新一天僅會執行一次。"
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "與我的清單同步，如果我的清單被外部修改過，例如手機應用程式或是網站，更新將會延後至下一個排定時間。"
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "如果啟用，將會在Kodi資訊提供者抓取器沒有提供資訊時把資訊新增至影集或電影。此選項也會一併新增影片時長。"
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "只有在使用 \"本地資料\" 資訊提供者抓取器時啟用，或是某些標題儘管已經被加入於Kodi資料庫卻沒有顯示。"
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "支援"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "關於 Netflix套件"
