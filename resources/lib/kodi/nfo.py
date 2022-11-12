@@ -101,10 +101,12 @@ def create_episode_nfo(episode, season, show):
         'episode': episode.get('seq'),
         'plot': episode.get('synopsis'),
         'runtime': episode.get('runtime', 0) / 60,
-        'year': season.get('year'),
         'id': episode.get('id')
     }
-
+    year = episode.get('year')
+    if year:
+        # Since we have the year only, so we hardcode the month/day
+        tags['premiered'] = f'{year}-01-01'
     root = _build_root_node('episodedetails', tags)
     _add_episode_thumb(root, episode)
     return root
