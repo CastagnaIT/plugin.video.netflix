@@ -136,9 +136,12 @@ def create_movie_nfo(movie):
         'plot': movie.get('synopsis'),
         'id': movie.get('id'),
         'mpaa': movie.get('rating'),
-        'year': movie.get('year'),
         'runtime': movie.get('runtime', 0) / 60,
     }
+    year = movie.get('year')
+    if year:
+        # Since we have the year only, so we hardcode the month/day
+        tags['premiered'] = f'{year}-01-01'
     root = _build_root_node('movie', tags)
     _add_poster(root, movie)
     _add_fanart(root, movie)
