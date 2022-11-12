@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="Netflix" version="1.20.1+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
+<addon id="plugin.video.netflix" name="Netflix" version="1.20.2+matrix.1" provider-name="libdev, jojo, asciidisco, caphm, castagnait">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.addon.signals" version="0.0.6+matrix.1"/>
@@ -86,11 +86,14 @@
     <forum>https://forum.kodi.tv/showthread.php?tid=329767</forum>
     <source>https://github.com/CastagnaIT/plugin.video.netflix</source>
     <news>
-v1.20.1 (2022-10-30)
-- Fixed playback on linux devices
-- Protected Logout setting with a confirmation dialog
-- Wait for service startup without notification
-- Add support info on add-on settings
+v1.20.2 (2022-11-12)
+- Fixed 4k HDR
+- Fixed missing plot
+- Fix/workaround for error "ReadError [Errno 11] Try again"
+- Fixed broken Clean cache menu
+- Fix year/premiered date on NFO files.
+Only the year is available, required optional full resync for existing files, on new files will be add by default.
+- Update translations pl, it, de, hu, zh_tw
     </news>
   </extension>
 </addon>
