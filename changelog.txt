@@ -1,3 +1,12 @@
+v1.20.2 (2022-11-12)
+- Fixed 4k HDR
+- Fixed missing plot
+- Fix/workaround for error "ReadError [Errno 11] Try again"
+- Fixed broken Clean cache menu
+- Fix year/premiered date on NFO files.
+Only the year is available, required optional full resync for existing files, on new files will be add by default.
+- Update translations pl, it, de, hu, zh_tw
+
 v1.20.1 (2022-10-30)
 - Fixed playback on linux devices
 - Protected Logout setting with a confirmation dialog
