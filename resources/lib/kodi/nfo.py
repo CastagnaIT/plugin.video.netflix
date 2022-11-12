@@ -119,6 +119,11 @@ def create_show_nfo(show):
         'id': show['id'],
         'mpaa': show.get('rating')
     }
+    # Try get the year from the first season
+    year = show.get('seasons', [{}])[0].get('year')
+    if year:
+        # Since we have the year only, so we hardcode the month/day
+        tags['premiered'] = f'{year}-01-01'
     root = _build_root_node('tvshow', tags)
     _add_poster(root, show)
     _add_fanart(root, show)
