@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2021-05-22 7:40+0000\n"
+"PO-Revision-Date: 2022-11-13 7:40+0000\n"
 "Last-Translator: frodo19\n"
 "Language-Team: Hungarian\n"
 "Language: hu\n"
@@ -208,7 +208,7 @@ msgstr "Médiatár"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Kodi médiatár kezelés engedélyezve"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
@@ -220,13 +220,13 @@ msgstr "{} Beállítva a médiatár lejátszásához"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} Beállítva intításkor"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} Ne feledje a PIN-kódot"
 
 # Unused 30058
 msgctxt "#30059"
@@ -255,7 +255,7 @@ msgstr "Automatikus frissítés teljesítése"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Médiatár frissítése"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -522,7 +522,7 @@ msgstr "Gyorsítótár törölve"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Várakozás a kiszolgáló indítására..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
