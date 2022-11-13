@@ -59,7 +59,13 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
         infos, quality_infos = parse_info(videoid, item, raw_data, common_data)
         G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos},
                     delayed_db_op=delayed_db_op)
-    return infos, quality_infos
+    # Use a deepcopy of dict to not reflect changes of the dictionary also to the cache
+    infos_copy = copy.deepcopy(infos)
+    # Not all skins support PlotOutline, so copy over Plot if it does not exist
+    if 'Plot' not in infos_copy and 'PlotOutline' in infos_copy:
+        infos_copy['Plot'] = infos_copy['PlotOutline']
+    _add_supplemental_plot_info(infos_copy, item, common_data)
+    return infos_copy, quality_infos
 
 
 def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None,
@@ -67,27 +73,21 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
     """Add infolabels and art to a ListItem"""
     infos, quality_infos = get_info(videoid, item, raw_data, delayed_db_op=True, common_data=common_data)
     list_item.addStreamInfoFromDict(quality_infos)
-    # Use a deepcopy of dict to not reflect future changes to the dictionary also to the cache
-    infos_copy = copy.deepcopy(infos)
-    if 'Plot' not in infos_copy and 'PlotOutline' in infos_copy:
-        # Not all skins support read value from PlotOutline
-        infos_copy['Plot'] = infos_copy['PlotOutline']
-    _add_supplemental_plot_info(infos_copy, item, common_data)
     if is_in_mylist and common_data.get('mylist_titles_color'):
         # Highlight ListItem title when the videoid is contained in "My list"
         list_item.setLabel(_colorize_text(common_data['mylist_titles_color'], list_item.getLabel()))
     elif is_in_remind_me:
         # Highlight ListItem title when a video is marked as "Remind me"
         list_item.setLabel(_colorize_text(common_data['rememberme_titles_color'], list_item.getLabel()))
-    infos_copy['Title'] = list_item.getLabel()
+    infos['Title'] = list_item.getLabel()
     if videoid.mediatype == common.VideoId.SHOW and not common_data['marks_tvshow_started']:
-        infos_copy.pop('PlayCount', None)
-    list_item.setInfo('video', infos_copy)
+        infos.pop('PlayCount', None)
+    list_item.setInfo('video', infos)
     list_item.setArt(get_art(videoid, art_item or item or {}, common_data['profile_language_code'],
                              delayed_db_op=True))
 
 
-def _add_supplemental_plot_info(infos_copy, item, common_data):
+def _add_supplemental_plot_info(infos, item, common_data):
     """Add supplemental info to plot description"""
     suppl_info = []
     suppl_msg = item.get('dpSupplementalMessage', {}).get('value')
@@ -110,16 +110,18 @@ def _add_supplemental_plot_info(infos_copy, item, common_data):
             # Short info about the actors career/awards and similarities/connections with others films or tv shows
             suppl_info.append(hook_value['text'])
     suppl_text = '[CR][CR]'.join(suppl_info)
-    plot = infos_copy.get('Plot', '')
-    plotoutline = infos_copy.get('PlotOutline', '')
     if suppl_text:
-        suppl_text = _colorize_text(common_data['supplemental_info_color'], suppl_text)
+        suppl_text = _colorize_text(common_data.get('supplemental_info_color',
+                                                    get_color_name(G.ADDON.getSettingInt('supplemental_info_color'))),
+                                    suppl_text)
+        plot = infos.get('Plot', '')
         if plot:
             plot += '[CR][CR]'
+        plotoutline = infos.get('PlotOutline', '')
         if plotoutline:
             plotoutline += '[CR][CR]'
-        infos_copy.update({'Plot': plot + suppl_text})
-        infos_copy.update({'PlotOutline': plotoutline + suppl_text})
+        infos.update({'Plot': plot + suppl_text})
+        infos.update({'PlotOutline': plotoutline + suppl_text})
 
 
 def get_art(videoid, item, profile_language_code='', delayed_db_op=False):

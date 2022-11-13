@@ -23,7 +23,8 @@ from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
 from resources.lib.utils import cookies
-from resources.lib.utils.api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
+from resources.lib.utils.api_paths import (EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths,
+                                           VIDEO_LIST_PARTIAL_PATHS)
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
 
@@ -259,9 +260,11 @@ class NFSessionOperations(SessionPathRequests):
             infos = get_info(videoid, None, None, profile_language_code)[0]
             art = get_art(videoid, None, profile_language_code)
         except (AttributeError, TypeError):
-            paths = build_paths(['videos', int(videoid.value)], EPISODES_PARTIAL_PATHS)
             if videoid.mediatype == common.VideoId.EPISODE:
-                paths.extend(build_paths(['videos', int(videoid.tvshowid)], ART_PARTIAL_PATHS + [['title']]))
+                paths = (build_paths(['videos', int(videoid.value)], EPISODES_PARTIAL_PATHS) +
+                         build_paths(['videos', int(videoid.tvshowid)], ART_PARTIAL_PATHS + [['title']]))
+            else:
+                paths = build_paths(['videos', int(videoid.value)], VIDEO_LIST_PARTIAL_PATHS)
             raw_data = self.path_request(paths)
             infos = get_info(videoid, raw_data['videos'][videoid.value], raw_data, profile_language_code)[0]
             art = get_art(videoid, raw_data['videos'][videoid.value], profile_language_code)
