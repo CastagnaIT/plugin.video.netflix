@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2022-10-26 00:00+0000\n"
+"PO-Revision-Date: 2022-11-15 00:00+0000\n"
 "Last-Translator: Liqianyu <>\n"
 "Language-Team: Chinese\n"
 "Language: zh_CN\n"
@@ -22,7 +22,7 @@ msgstr "Netflix"
 
 msgctxt "Addon Description"
 msgid "Netflix VOD Services Add-on"
-msgstr "Netflix VOD服务 附加组件"
+msgstr "Netflix VOD服务附加组件"
 
 msgctxt "Addon Disclaimer"
 msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
@@ -84,7 +84,7 @@ msgstr "其他选项"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "如果您注销，所有账户数据将被删除，但Kodi资料库中导出的视频文件将被保留。[CR]您要继续吗？"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -522,7 +522,7 @@ msgstr "缓存已清除"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "等待服务启动..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -644,7 +644,7 @@ msgstr "最佳推荐"
 
 msgctxt "#30170"
 msgid "New releases"
-msgstr "最新发行"
+msgstr "过去一年推出的影片"
 
 msgctxt "#30171"
 msgid "Trending now"
@@ -1103,7 +1103,7 @@ msgstr "{} 提醒我"
 # Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
-msgstr "最新与排行榜"
+msgstr "最新热门影片"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
@@ -1191,8 +1191,8 @@ msgstr "仅在使用\"Local Information\"信息提供者刮削器的情况下启
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "支持"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "关于Netflix附加组件"
