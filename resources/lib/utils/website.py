@@ -281,6 +281,7 @@ def extract_json(content, name):
         json_str_replace = json_str_replace.replace(r'\r', r'\\r')  # Escape return
         json_str_replace = json_str_replace.replace(r'\n', r'\\n')  # Escape line feed
         json_str_replace = json_str_replace.replace(r'\t', r'\\t')  # Escape tab
+        json_str_replace = json_str_replace.replace(r'\p', r'/p')  # Unicode property not supported, we change slash to avoid unescape it
         json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
         json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
         return json.loads(json_str_replace)
