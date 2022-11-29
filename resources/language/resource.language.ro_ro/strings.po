@@ -84,7 +84,7 @@ msgstr "Alte opțiuni"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Dacă vă deconectați, datele contului vor fi șterse, dar fișierele video exportate în librăria Kodi vor fi păstrate.[CR]Doriți să continuați"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -1191,8 +1191,8 @@ msgstr "Activează doar dacă este folosit furnizorul de informații \"Informaț
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Asistență"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "Despre addon-ul Netflix"
