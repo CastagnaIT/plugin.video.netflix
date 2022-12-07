@@ -227,9 +227,9 @@ def get_quality_infos(item, video_codec_hint):
         else:
             quality_infos['audio']['codec'] = 'aac'
         if delivery.get('hasDolbyVision', False):
-            quality_infos['video']['hdrType'] = 'dolbyvision'
+            quality_infos['video']['hdrtype'] = 'dolbyvision'
         elif delivery.get('hasHDR', False):
-            quality_infos['video']['hdrType'] = 'hdr10'
+            quality_infos['video']['hdrtype'] = 'hdr10'
     return quality_infos
 
 
