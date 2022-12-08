@@ -194,46 +194,64 @@ def run_threaded(non_blocking, target_func, *args, **kwargs):
 class CmpVersion:
     """Comparator for version numbers"""
     def __init__(self, version):
-        self.version = version
+        self.__version = str(version or '')
+        self.__ver_list = (self.__version or '0').split('.')
 
     def __str__(self):
-        return self.version
+        return self.__version
 
     def __repr__(self):
-        return self.version
+        return self.__version
+
+    def __bool__(self):
+        """
+        Allow "if" operator to check if there is a version set.
+        Will return False only when "version" set is an empty string or None.
+        """
+        return bool(self.__version)
+
+    def __iter__(self):
+        """Allow to get the version list by using "list" command builtin"""
+        return iter(self.__ver_list)
 
     def __lt__(self, other):
         """Operator <"""
         return operator.lt(*zip(*map(lambda x, y: (x or 0, y or 0),
-                                     map(int, self.version.split('.')),
-                                     map(int, other.split('.')))))
+                                     map(int, self.__ver_list),
+                                     map(int, self.__conv_to_list(other)))))
 
     def __le__(self, other):
         """Operator <="""
         return operator.le(*zip(*map(lambda x, y: (x or 0, y or 0),
-                                     map(int, self.version.split('.')),
-                                     map(int, other.split('.')))))
+                                     map(int, self.__ver_list),
+                                     map(int, self.__conv_to_list(other)))))
 
     def __gt__(self, other):
         """Operator >"""
         return operator.gt(*zip(*map(lambda x, y: (x or 0, y or 0),
-                                     map(int, self.version.split('.')),
-                                     map(int, other.split('.')))))
+                                     map(int, self.__ver_list),
+                                     map(int, self.__conv_to_list(other)))))
 
     def __ge__(self, other):
         """Operator >="""
         return operator.ge(*zip(*map(lambda x, y: (x or 0, y or 0),
-                                     map(int, self.version.split('.')),
-                                     map(int, other.split('.')))))
+                                     map(int, self.__ver_list),
+                                     map(int, self.__conv_to_list(other)))))
 
     def __eq__(self, other):
         """Operator =="""
         return operator.eq(*zip(*map(lambda x, y: (x or 0, y or 0),
-                                     map(int, self.version.split('.')),
-                                     map(int, other.split('.')))))
+                                     map(int, self.__ver_list),
+                                     map(int, self.__conv_to_list(other)))))
 
     def __ne__(self, other):
         """Operator !="""
         return operator.ne(*zip(*map(lambda x, y: (x or 0, y or 0),
-                                     map(int, self.version.split('.')),
-                                     map(int, other.split('.')))))
+                                     map(int, self.__ver_list),
+                                     map(int, self.__conv_to_list(other)))))
+
+    def __conv_to_list(self, value):
+        """Convert a string or number or CmpVersion object to a list of strings"""
+        if isinstance(value, CmpVersion):
+            return list(value)
+        return str(value or '0').split('.')
