@@ -11,10 +11,11 @@ from resources.lib.common import CmpVersion
 from resources.lib.globals import G
 
 
-def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disable=unused-argument
+# pylint: disable=unused-argument
+def run_local_db_updates(current_version: CmpVersion, upgrade_to_version: CmpVersion):
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
-    if CmpVersion(current_version) < '0.2':
+    if current_version < '0.2':
         # Changes: added table 'search'
         import sqlite3 as sql
         from resources.lib.database.db_base_sqlite import CONN_ISOLATION_LEVEL
@@ -34,15 +35,16 @@ def run_local_db_updates(current_version, upgrade_to_version):  # pylint: disabl
         cur.execute(table)
         shared_db_conn.close()
 
-    if CmpVersion(current_version) < '0.3':
+    if current_version < '0.3':
         pass
 
 
-def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disable=unused-argument
+# pylint: disable=unused-argument
+def run_shared_db_updates(current_version: CmpVersion, upgrade_to_version: CmpVersion):
     """Perform database actions for a db version change"""
     # The changes must be left in sequence to allow cascade operations on non-updated databases
 
-    if CmpVersion(current_version) < '0.2':
+    if current_version < '0.2':
         # Changes: added table 'watched_status_override'
 
         # SQLite
@@ -91,5 +93,5 @@ def run_shared_db_updates(current_version, upgrade_to_version):  # pylint: disab
                 cur.execute(alter_tbl)
                 shared_db_conn.conn.close()
 
-    if CmpVersion(current_version) < '0.3':
+    if current_version < '0.3':
         pass
