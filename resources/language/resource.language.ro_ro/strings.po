@@ -84,7 +84,7 @@ msgstr "Alte opțiuni"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr "Dacă vă deconectați, datele contului vor fi șterse, dar fișierele video exportate în librăria Kodi vor fi păstrate.[CR]Doriți să continuați"
+msgstr "Dacă vă deconectați, datele contului vor fi șterse, dar fișierele video exportate în librăria Kodi vor fi păstrate.[CR]Doriți să continuați?"
 
 msgctxt "#30017"
 msgid "Logout"
