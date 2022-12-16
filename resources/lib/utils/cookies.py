@@ -76,8 +76,10 @@ def load():
     try:
         cookie_jar = pickle.loads(cookie_file.readBytes())
         # Clear flwssn cookie if present, as it is trouble with early expiration
-        if 'flwssn' in cookie_jar:
-            cookie_jar.clear(domain='.netflix.com', path='/', name='flwssn')
+        # Commented: this seem not produce any change
+        # for cookie in cookie_jar:
+        #    if cookie.name == 'flwssn':
+        #        cookie_jar.clear(cookie.domain, cookie.path, cookie.name)
         log_cookie(cookie_jar)
         return cookie_jar
     except Exception as exc:  # pylint: disable=broad-except
