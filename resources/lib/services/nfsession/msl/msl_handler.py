@@ -233,6 +233,9 @@ class MSLHandler:
             'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
             'uiPlatform': 'SHAKTI',
             'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
+            'platform': G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION),
+            'osVersion': G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
+            'osName': G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION),
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
             'showAllSubDubTracks': False,
@@ -256,6 +259,7 @@ class MSLHandler:
             'supportsPartialHydration': False,
             'contentPlaygraph': ['start'],
             'liveMetadataFormat': 'INDEXED_SEGMENT_TEMPLATE',
+            'useBetterTextUrls': True,
             'profileGroups': [{
                 'name': 'default',
                 'profiles': kwargs['profiles']

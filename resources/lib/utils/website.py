@@ -48,9 +48,9 @@ PAGE_ITEMS_API_URL = {
     'request_id': 'models/serverDefs/data/requestId',
     'asset_core': 'models/playerModel/data/config/core/assets/core',
     'ui_version': 'models/playerModel/data/config/ui/initParams/uiVersion',
-    'browser_info_version': 'models/browserInfo/data/version',
-    'browser_info_os_name': 'models/browserInfo/data/os/name',
-    'browser_info_os_version': 'models/browserInfo/data/os/version',
+    'browser_info_version': 'models/playerModel/data/config/core/initParams/browserInfo/version',
+    'browser_info_os_name': 'models/playerModel/data/config/core/initParams/browserInfo/os/name',
+    'browser_info_os_version': 'models/playerModel/data/config/core/initParams/browserInfo/os/version',
 }
 
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
