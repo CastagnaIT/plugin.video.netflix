@@ -21,7 +21,7 @@
 
 			<control type="group">
 				<width>1520</width>
-				<height>490</height>
+				<height>600</height>
 				<!-- Window Background -->
 				<control type="image">
 					<left>0</left>
@@ -75,7 +75,7 @@
 				<left>10</left>
 				<top>80</top>
 				<width>1200</width>
-				<height>400</height>
+				<height>510</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				<aspectratio>stretch</aspectratio>
 			</control>
@@ -85,7 +85,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>1200</width>
-				<height>400</height>
+				<height>550</height>
 				<defaultcontrol>30010</defaultcontrol>
 				<visible>true</visible>
 				<onright>10090</onright>
@@ -118,17 +118,37 @@
 					<scroll>true</scroll>
 					<label>-</label>
 					<textcolor>FFFFFFFF</textcolor>
+					<align>left</align>
 					<aligny>top</aligny>
 					<haspath>false</haspath>
 					<font>font14</font>
 					<wrapmultiline>false</wrapmultiline>
 				</control>
-				
-				<control type="button" id="30010">
-					<description>CHANGE ESN button</description>
+
+				<control type="label" id="10004">
+					<description>Warning to avoid use the original device ESN</description>
 					<posy>200</posy>
 					<posx>65</posx>
 					<top>200</top>
+					<left>65</left>
+					<width>1000</width>
+					<height>90</height>
+					<visible>true</visible>
+					<scroll>false</scroll>
+					<label>$ADDON[plugin.video.netflix 30737]</label>
+					<textcolor>red</textcolor>
+					<align>left</align>
+					<aligny>top</aligny>
+					<haspath>false</haspath>
+					<font>font10</font>
+					<wrapmultiline>false</wrapmultiline>
+				</control>
+
+				<control type="button" id="30010">
+					<description>CHANGE ESN button</description>
+					<posy>240</posy>
+					<posx>65</posx>
+					<top>240</top>
 					<left>65</left>
 					<width>300</width>
 					<height>100</height>
@@ -142,15 +162,15 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<pulseonselect>no</pulseonselect>
-					<ondown>40000</ondown>
+					<ondown>40100</ondown>
 					<onright>30011</onright>
 				</control>
 				
 				<control type="button" id="30011">
 					<description>Reset button</description>
-					<posy>200</posy>
+					<posy>240</posy>
 					<posx>365</posx>
-					<top>200</top>
+					<top>240</top>
 					<left>365</left>
 					<width>300</width>
 					<height>100</height>
@@ -164,16 +184,16 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<pulseonselect>no</pulseonselect>
-					<ondown>40000</ondown>
+					<ondown>40100</ondown>
 					<onleft>30010</onleft>
 					<onright>30012</onright>
 				</control>
 
 				<control type="button" id="30012">
 					<description>Save system info button</description>
-					<posy>200</posy>
+					<posy>240</posy>
 					<posx>665</posx>
-					<top>200</top>
+					<top>240</top>
 					<left>665</left>
 					<width>300</width>
 					<height>100</height>
@@ -187,16 +207,45 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<pulseonselect>no</pulseonselect>
-					<ondown>40000</ondown>
+					<ondown>40100</ondown>
 					<onleft>30011</onleft>
+					<onright>40020</onright>
+				</control>
+
+				<control type="radiobutton" id="40100">
+					<description>Radiobutton to auto generate ESN's</description>
+					<type>radiobutton</type>
+					<left>65</left>
+					<top>310</top>
+					<width>920</width>
+					<height>110</height>
+					<visible>true</visible>
+					<texturefocus>myfocustexture.png</texturefocus>
+					<texturenofocus>mynormaltexture.png</texturenofocus>
+					<textureradioonfocus colordiffuse="red">buttons/radio-button-on.png</textureradioonfocus>
+					<textureradioonnofocus>buttons/radio-button-on.png</textureradioonnofocus>
+					<textureradioofffocus colordiffuse="red">buttons/radio-button-off.png</textureradioofffocus>
+					<textureradiooffnofocus>buttons/radio-button-off.png</textureradiooffnofocus>
+					<label>$ADDON[plugin.video.netflix 30736]</label>
+					<font>font12</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>red</focusedcolor>
+					<disabledcolor>80FFFFFF</disabledcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textoffsetx>4</textoffsetx>
+					<textoffsety>5</textoffsety>
+					<pulseonselect>false</pulseonselect>
+					<onup>30010</onup>
+					<ondown>40000</ondown>
 					<onright>40020</onright>
 				</control>
 
 				<control type="label" id="10004">
 					<description>Widevine security level</description>
-					<posy>310</posy>
+					<posy>430</posy>
 					<posx>65</posx>
-					<top>310</top>
+					<top>430</top>
 					<left>65</left>
 					<width>1000</width>
 					<height>110</height>
@@ -214,17 +263,16 @@
 					<description>Widevine force sec.lev. DISABLED</description>
 					<type>radiobutton</type>
 					<left>65</left>
-					<top>350</top>
+					<top>470</top>
 					<width>300</width>
 					<height>110</height>
 					<visible>true</visible>
-					<colordiffuse>red</colordiffuse>
 					<texturefocus>myfocustexture.png</texturefocus>
 					<texturenofocus>mynormaltexture.png</texturenofocus>
 					<textureradioonfocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonfocus>
-					<textureradioonnofocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonnofocus>
+					<textureradioonnofocus>buttons/radio-button-on-sm.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradioofffocus>
-					<textureradiooffnofocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradiooffnofocus>
+					<textureradiooffnofocus>buttons/radio-button-off-sm.png</textureradiooffnofocus>
 					<label>$LOCALIZE[13106]</label>
 					<font>font12</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -235,24 +283,23 @@
 					<textoffsetx>4</textoffsetx>
 					<textoffsety>5</textoffsety>
 					<pulseonselect>false</pulseonselect>
-					<onup>30010</onup>
+					<onup>40100</onup>
 					<onright>40001</onright>
 				</control>
 				<control type="radiobutton" id="40001">
 					<description>Widevine force sec.lev. L3</description>
 					<type>radiobutton</type>
 					<left>375</left>
-					<top>350</top>
+					<top>470</top>
 					<width>300</width>
 					<height>110</height>
 					<visible>true</visible>
-					<colordiffuse>red</colordiffuse>
 					<texturefocus>myfocustexture.png</texturefocus>
 					<texturenofocus>mynormaltexture.png</texturenofocus>
 					<textureradioonfocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonfocus>
-					<textureradioonnofocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonnofocus>
+					<textureradioonnofocus>buttons/radio-button-on-sm.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradioofffocus>
-					<textureradiooffnofocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradiooffnofocus>
+					<textureradiooffnofocus>buttons/radio-button-off-sm.png</textureradiooffnofocus>
 					<label/>
 					<font>font12</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -263,7 +310,7 @@
 					<textoffsetx>4</textoffsetx>
 					<textoffsety>5</textoffsety>
 					<pulseonselect>false</pulseonselect>
-					<onup>30010</onup>
+					<onup>40100</onup>
 					<onleft>40000</onleft>
 					<onright>40002</onright>
 				</control>
@@ -271,17 +318,16 @@
 					<description>Widevine force sec.lev. L3 (ID 4445)</description>
 					<type>radiobutton</type>
 					<left>685</left>
-					<top>350</top>
+					<top>470</top>
 					<width>300</width>
 					<height>110</height>
 					<visible>true</visible>
-					<colordiffuse>red</colordiffuse>
 					<texturefocus>myfocustexture.png</texturefocus>
 					<texturenofocus>mynormaltexture.png</texturenofocus>
 					<textureradioonfocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonfocus>
-					<textureradioonnofocus colordiffuse="red">buttons/radio-button-on-sm.png</textureradioonnofocus>
+					<textureradioonnofocus>buttons/radio-button-on-sm.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradioofffocus>
-					<textureradiooffnofocus colordiffuse="red">buttons/radio-button-off-sm.png</textureradiooffnofocus>
+					<textureradiooffnofocus>buttons/radio-button-off-sm.png</textureradiooffnofocus>
 					<label/>
 					<font>font12</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -292,7 +338,7 @@
 					<textoffsetx>4</textoffsetx>
 					<textoffsety>5</textoffsety>
 					<pulseonselect>false</pulseonselect>
-					<onup>30010</onup>
+					<onup>40100</onup>
 					<onleft>40001</onleft>
 					<onright>40020</onright>
 				</control>
