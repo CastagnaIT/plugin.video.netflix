@@ -7,7 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from re import sub
+import time
+import re
 
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
@@ -51,6 +52,41 @@ def set_website_esn(esn):
     G.LOCAL_DB.set_value('website_esn', esn, TABLE_SESSION)
 
 
+def regen_esn(esn):
+    """
+    Regenerate the ESN on the basis of the existing one,
+    to preserve possible user customizations,
+    this method will only be executed every 20 hours.
+    """
+    # From the beginning of December 2022 if you are using an ESN for more than about 20 hours
+    # Netflix limits the resolution to 540p. The reasons behind this are unknown, there are no changes on website
+    # or Android apps. Moreover, if you set the full-length ESN of android app on the add-on, also the original app
+    # will be downgraded to 540p without any kind of message.
+    if not G.LOCAL_DB.get_value('esn_auto_generate', True):
+        return esn
+    from resources.lib.common.device_utils import get_system_platform
+    ts_now = int(time.time())
+    ts_esn = G.LOCAL_DB.get_value('esn_timestamp', default_value=0)
+    # When an ESN has been used for more than 20 hours ago, generate a new ESN
+    if ts_esn == 0 or ts_now - ts_esn > 72000:
+        if get_system_platform() == 'android':
+            if esn[-1] == '-':
+                # We have a partial ESN without last 64 chars, so generate and add the 64 chars
+                esn += _create_id64chars()
+            elif re.search(r'-[0-9]+-[A-Z0-9]{64}', esn):
+                # Replace last 64 chars with the new generated one
+                esn = esn[:-64] + _create_id64chars()
+            else:
+                LOG.warn('ESN format not recognized, will be reset with a new ESN')
+                esn = generate_android_esn()
+        else:
+            esn = generate_esn(esn[:-30])
+        set_esn(esn)
+        G.LOCAL_DB.set_value('esn_timestamp', ts_now)
+        LOG.debug('The ESN has been regenerated (540p workaround).')
+    return esn
+
+
 def generate_android_esn(wv_force_sec_lev=None):
     """Generate an ESN if on android or return the one from user_data"""
     from resources.lib.common.device_utils import get_system_platform
@@ -63,15 +99,25 @@ def generate_android_esn(wv_force_sec_lev=None):
     return None
 
 
-def generate_esn(prefix=''):
-    """Generate a random ESN"""
-    # For possibles prefixes see website, are based on browser user agent
-    import random
-    esn = prefix
+def generate_esn(init_part=None):
+    """
+    Generate a random ESN
+    :param init_part: Specify the initial part to be used e.g. "NFCDCH-02-",
+                      if not set will be obtained from the last retrieved from the website
+    :return: The generated ESN
+    """
+    # The initial part of the ESN e.g. "NFCDCH-02-" depends on the web browser used and then the user agent,
+    # refer to website to know all types available.
+    if not init_part:
+        esn_w_split = get_website_esn().split('-', 2)
+        if len(esn_w_split) != 3:
+            raise Exception('Cannot generate ESN due to unexpected website ESN')
+        init_part = '-'.join(esn_w_split[:2]) + '-'
+    esn = init_part
     possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    from secrets import choice
     for _ in range(0, 30):
-        esn += random.choice(possible)
-    LOG.debug('Generated random ESN: {}', esn)
+        esn += choice(possible)
     return esn
 
 
@@ -110,8 +156,9 @@ def _generate_esn_android(props, wv_force_sec_lev):
     model = model[:45].strip()
 
     prod = manufacturer + model
-    prod = sub(r'[^A-Za-z0-9=-]', '=', prod)
-    return 'NFANDROID1-PRV-' + device_category + sec_lev + prod + '-' + system_id + '-'
+    prod = re.sub(r'[^A-Za-z0-9=-]', '=', prod)
+
+    return 'NFANDROID1-PRV-' + device_category + sec_lev + prod + '-' + system_id + '-' + _create_id64chars()
 
 
 def _generate_esn_android_tv(props, wv_force_sec_lev):
@@ -134,7 +181,7 @@ def _generate_esn_android_tv(props, wv_force_sec_lev):
 
     if not model_group:
         model_group = '0'
-    model_group = sub(r'[^A-Za-z0-9=-]', '=', model_group)
+    model_group = re.sub(r'[^A-Za-z0-9=-]', '=', model_group)
 
     if len(manufacturer) < 5:
         manufacturer += '       '
@@ -142,10 +189,11 @@ def _generate_esn_android_tv(props, wv_force_sec_lev):
     model = model[:45].strip()
 
     prod = manufacturer + model
-    prod = sub(r'[^A-Za-z0-9=-]', '=', prod)
+    prod = re.sub(r'[^A-Za-z0-9=-]', '=', prod)
 
     _, system_id = _get_drm_info(wv_force_sec_lev)
-    return 'NFANDROID2-PRV-' + model_group + '-' + prod + '-' + system_id + '-'
+
+    return 'NFANDROID2-PRV-' + model_group + '-' + prod + '-' + system_id + '-' + _create_id64chars()
 
 
 def _get_drm_info(wv_force_sec_lev):
@@ -192,3 +240,11 @@ def _get_android_system_props():
     except OSError:
         LOG.error('Cannot get "getprop" data due to system error.')
         return {}
+
+def _create_id64chars():
+    # The Android full length ESN include to the end a hashed ID of 64 chars,
+    # this value is created from the android app by using the Widevine "deviceUniqueId" property value
+    # hashed in various ways, not knowing the correct formula, we create a random value.
+    # Starting from 12/2022 this value is mandatory to obtain HD resolutions
+    from secrets import token_hex
+    return re.sub(r'[^A-Za-z0-9=-]', '=', token_hex(32).upper())

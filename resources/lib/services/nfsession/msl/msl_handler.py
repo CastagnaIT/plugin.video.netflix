@@ -19,7 +19,7 @@ from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.utils.esn import get_esn, set_esn
+from resources.lib.utils.esn import get_esn, set_esn, regen_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
@@ -94,6 +94,8 @@ class MSLHandler:
             # When the add-on is installed from scratch or you logout the account the ESN will be empty
             if not esn:
                 esn = set_esn()
+            else:
+                esn = regen_esn(esn)
             manifest = self._get_manifest(viewable_id, esn, challenge, sid)
         except MSLError as exc:
             if 'Email or password is incorrect' in str(exc):

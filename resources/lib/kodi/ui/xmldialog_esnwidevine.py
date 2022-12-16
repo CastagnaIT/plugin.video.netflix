@@ -7,6 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import time
+
 import xbmc
 import xbmcgui
 import xbmcvfs
@@ -55,6 +57,8 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
         self.getControl(40002).setLabel(common.get_local_string(30605).format(WidevineForceSecLev.L3_4445))
         # Set the current ESN to Label
         self.getControl(30000).setLabel(self.esn)
+        # Set [Auto generate ESN] radio button value
+        self.getControl(40100).setSelected(G.LOCAL_DB.get_value('esn_auto_generate', True))
         # Set the current Widevine security level to the radio buttons
         self.getControl(self.WV_SECLEV_MAP_BTN[self.wv_force_sec_lev]).setSelected(True)
         # Hide force L3 on non-android systems (L1 is currently supported only to android)
@@ -88,6 +92,11 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
                 G.LOCAL_DB.set_value('widevine_force_seclev',
                                      self.wv_sec_lev_new or self.wv_force_sec_lev,
                                      TABLE_SESSION)
+            # Reset ESN timestamp to prevent to replace the stored ESN immediately
+            G.LOCAL_DB.set_value('esn_timestamp', int(time.time()))
+            # Update value for auto generate ESN
+            is_checked = self.getControl(40100).isSelected()
+            G.LOCAL_DB.set_value('esn_auto_generate', is_checked)
             # Delete manifests cache, to prevent possible problems in relation to previous ESN used
             from resources.lib.common.cache_utils import CACHE_MANIFESTS
             G.CACHE.clear([CACHE_MANIFESTS])
@@ -105,14 +114,13 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
             self._revert_changes()
             self.close()
 
-    def _esn_checks(self):
-        """Sanity checks for custom ESN"""
-        esn = self.esn_new or self.esn
+    def _esn_checks(self, esn):
+        """Sanity checks for ESN"""
         if self.is_android:
-            if not esn.startswith(('NFANDROID1-PRV-', 'NFANDROID2-PRV-')) or len(esn.split('-')) < 5:
+            if not esn.startswith(('NFANDROID1-PRV-', 'NFANDROID2-PRV-')) or esn.count('-') < 5:
                 return False
         else:
-            if len(esn.split('-')) != 3 or len(esn) != 40:
+            if esn.count('-') != 3 or len(esn) != 40:
                 return False
         return True
 
@@ -138,7 +146,7 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
     def _change_esn(self):
         esn_custom = ui.ask_for_input(common.get_local_string(30602), self.esn_new or self.esn)
         if esn_custom:
-            if not self._esn_checks():
+            if not self._esn_checks(esn_custom):
                 # Wrong custom ESN format type
                 ui.show_ok_dialog(common.get_local_string(30600), common.get_local_string(30608))
             else:
