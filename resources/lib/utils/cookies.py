@@ -71,15 +71,15 @@ def load():
     if not xbmcvfs.exists(file_path):
         LOG.debug('Cookies file does not exist')
         raise MissingCookiesError
-    LOG.debug('Loading cookies from {}', file_path)
     cookie_file = xbmcvfs.File(file_path, 'rb')
     try:
-        cookie_jar = pickle.loads(cookie_file.readBytes())
+        cookie_jar: PickleableCookieJar = pickle.loads(cookie_file.readBytes())
         # Clear flwssn cookie if present, as it is trouble with early expiration
         # Commented: this seem not produce any change
         # for cookie in cookie_jar:
         #    if cookie.name == 'flwssn':
         #        cookie_jar.clear(cookie.domain, cookie.path, cookie.name)
+        LOG.debug('Cookies loaded from file')
         log_cookie(cookie_jar)
         return cookie_jar
     except Exception as exc:  # pylint: disable=broad-except
@@ -95,7 +95,7 @@ def log_cookie(cookie_jar):
     """Print cookie info to the log"""
     if not LOG.is_enabled:
         return
-    debug_output = 'Cookies currently loaded:\n'
+    debug_output = 'Current cookies:\n'
     for cookie in cookie_jar:
         remaining_ttl = int((cookie.expires or 0) - time()) if cookie.expires else None
         debug_output += f'{cookie.name} (expires ts {cookie.expires} - remaining TTL {remaining_ttl} sec)\n'

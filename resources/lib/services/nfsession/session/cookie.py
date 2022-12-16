@@ -34,7 +34,6 @@ class SessionCookie(SessionBase):
                 LOG.error('Failed to load stored cookies: {}', type(exc).__name__)
                 LOG.error(traceback.format_exc())
                 return False
-            LOG.info('Successfully loaded stored cookies')
         return True
 
     def _verify_session_cookies(self):
