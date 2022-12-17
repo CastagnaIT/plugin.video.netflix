@@ -30,7 +30,7 @@ def get_esn():
 def set_esn(esn=None):
     """
     Set the ESN to be used
-    :param esn: if None the ESN will be generated or retrieved
+    :param esn: if None the ESN will be generated or retrieved, and updated the ESN timestamp
     :return: The ESN set
     """
     if not esn:
@@ -38,6 +38,7 @@ def set_esn(esn=None):
         esn = generate_android_esn() or get_website_esn()
         if not esn:
             raise Exception('It was not possible to obtain an ESN')
+        G.LOCAL_DB.set_value('esn_timestamp', int(time.time()))
     G.LOCAL_DB.set_value('esn', esn, TABLE_SESSION)
     return esn
 
