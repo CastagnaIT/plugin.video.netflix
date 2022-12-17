@@ -145,6 +145,7 @@
     <setting id="view_esn" type="action" label="30216" action="RunPlugin(plugin://$ID/action/view_esn/)"/>
     <setting id="esn" type="text" label="30034" value="" default=""/>
     <setting id="reset_esn" type="action" label="30217" action="RunPlugin(plugin://$ID/action/reset_esn/)" option="close"/>
+    <setting id="esn_auto_generate" type="bool" label="30503" default="true"/>
     <setting label="30117" type="lsep"/><!--Cache-->
     <setting id="cache_ttl" type="slider" option="int" range="5,5,2880" label="30084" default="180"/>
     <setting id="cache_mylist_ttl" type="slider" option="int" range="10,10,1440" label="30086" default="60"/>

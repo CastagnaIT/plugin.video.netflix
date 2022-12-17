@@ -21,7 +21,7 @@ from resources.lib.common.cache_utils import CACHE_MANIFESTS
 from resources.lib.common.exceptions import CacheMiss, MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
-from resources.lib.utils.esn import get_esn
+from resources.lib.utils.esn import get_esn, regen_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .converter import convert_to_dash
 from .events_handler import EventsHandler
@@ -131,7 +131,10 @@ class MSLHandler(object):
         :return: MPD XML Manifest or False if no success
         """
         try:
-            manifest = self._load_manifest(viewable_id, get_esn())
+            esn = get_esn()
+            if not G.ADDON.getSetting('esn'):  # Do this only when "Manual ESN" setting is not set
+                esn = regen_esn(esn)
+            manifest = self._load_manifest(viewable_id, esn)
         except MSLError as exc:
             if 'Email or password is incorrect' in G.py2_decode(str(exc)):
                 # Known cases when MSL error "Email or password is incorrect." can happen:
@@ -288,6 +291,9 @@ class MSLHandler(object):
             'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION),
             'uiPlatform': 'SHAKTI',
             'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
+            'platform': G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION),
+            'osVersion': G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
+            'osName': G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION),
             'supportsPreReleasePin': True,
             'supportsWatermark': True,
             'showAllSubDubTracks': False,
@@ -309,7 +315,9 @@ class MSLHandler(object):
             'desiredSegmentVmaf': 'plus_lts',
             'requestSegmentVmaf': False,
             'supportsPartialHydration': False,
-            'contentPlaygraph': [],
+            'contentPlaygraph': ['start'],
+            'liveMetadataFormat': 'INDEXED_SEGMENT_TEMPLATE',
+            'useBetterTextUrls': True,
             'profileGroups': [{
                 'name': 'default',
                 'profiles': kwargs['profiles']

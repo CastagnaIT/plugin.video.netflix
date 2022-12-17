@@ -1091,3 +1091,7 @@ msgstr ""
 msgctxt "#30502"
 msgid "MSL manifest version"
 msgstr ""
+
+msgctxt "#30503"
+msgid "Auto generates new ESNs (workaround for 540p limit) not works when Manual ESN is set"
+msgstr ""

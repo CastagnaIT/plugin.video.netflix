@@ -9,7 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
-from re import sub
+import re
+import time
 
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
@@ -53,6 +54,36 @@ def get_esn():
     """Get the generated esn or if set get the custom esn"""
     custom_esn = G.ADDON.getSetting('esn')
     return custom_esn if custom_esn else G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
+
+
+def regen_esn(esn):
+    # From the beginning of December 2022 if you are using an ESN for more than about 20 hours
+    # Netflix limits the resolution to 540p. The reasons behind this are unknown, there are no changes on website
+    # or Android apps. Moreover, if you set the full-length ESN of android app on the add-on, also the original app
+    # will be downgraded to 540p without any kind of message.
+    if not G.ADDON.getSettingBool('esn_auto_generate'):
+        return esn
+    from resources.lib.common.device_utils import get_system_platform
+    ts_now = int(time.time())
+    ts_esn = G.LOCAL_DB.get_value('esn_timestamp', default_value=0)
+    # When an ESN has been used for more than 20 hours ago, generate a new ESN
+    if ts_esn == 0 or ts_now - ts_esn > 72000:
+        if get_system_platform() == 'android':
+            if esn[-1] == '-':
+                # We have a partial ESN without last 64 chars, so generate and add the 64 chars
+                esn += _create_id64chars()
+            elif re.search(r'-[0-9]+-[A-Z0-9]{64}', esn):
+                # Replace last 64 chars with the new generated one
+                esn = esn[:-64] + _create_id64chars()
+            else:
+                LOG.warn('ESN format not recognized, will be reset with a new ESN')
+                esn = generate_android_esn()
+        else:
+            esn = generate_esn(esn[:-30])
+        G.LOCAL_DB.set_value('esn', esn, table=TABLE_SESSION)
+        G.LOCAL_DB.set_value('esn_timestamp', ts_now)
+        LOG.debug('The ESN has been regenerated (540p workaround).')
+    return esn
 
 
 def generate_android_esn():
@@ -101,9 +132,8 @@ def generate_android_esn():
 
                 esn += '{:=<5.5}'.format(manufacturer)
                 esn += model[:45].replace(' ', '=')
-                esn = sub(r'[^A-Za-z0-9=-]', '=', esn)
-                if system_id:
-                    esn += '-' + system_id + '-'
+                esn = re.sub(r'[^A-Za-z0-9=-]', '=', esn)
+                esn += '-' + system_id + '-' + _create_id64chars()
                 LOG.debug('Generated Android ESN: {} (force widevine is set as "{}")', esn, force_widevine)
                 return esn
         except OSError:
@@ -111,13 +141,29 @@ def generate_android_esn():
     return None
 
 
-def generate_esn(prefix=''):
-    """Generate a random ESN"""
-    # For possibles prefixes see website, are based on browser user agent
-    import random
-    esn = prefix
+def generate_esn(init_part=None):
+    """
+    Generate a random ESN
+    :param init_part: Specify the initial part to be used e.g. "NFCDCH-02-",
+                      if not set will be obtained from the last retrieved from the website
+    :return: The generated ESN
+    """
+    # The initial part of the ESN e.g. "NFCDCH-02-" depends on the web browser used and then the user agent,
+    # refer to website to know all types available.
+    if not init_part:
+        raise Exception('Cannot generate ESN due to missing initial ESN part')
+    esn = init_part
     possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    from random import choice
     for _ in range(0, 30):
-        esn += random.choice(possible)
-    LOG.debug('Generated random ESN: {}', esn)
+        esn += choice(possible)
     return esn
+
+
+def _create_id64chars():
+    # The Android full length ESN include to the end a hashed ID of 64 chars,
+    # this value is created from the android app by using the Widevine "deviceUniqueId" property value
+    # hashed in various ways, not knowing the correct formula, we create a random value.
+    # Starting from 12/2022 this value is mandatory to obtain HD resolutions
+    from os import urandom
+    return re.sub(r'[^A-Za-z0-9=-]', '=', urandom(32).encode('hex').upper())

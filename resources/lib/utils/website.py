@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import json
+import time
 from re import search, compile as recompile, DOTALL, sub
 
 from future.utils import iteritems, raise_from
@@ -55,9 +56,9 @@ PAGE_ITEMS_API_URL = {
     'request_id': 'models/serverDefs/data/requestId',
     'asset_core': 'models/playerModel/data/config/core/assets/core',
     'ui_version': 'models/playerModel/data/config/ui/initParams/uiVersion',
-    'browser_info_version': 'models/browserInfo/data/version',
-    'browser_info_os_name': 'models/browserInfo/data/os/name',
-    'browser_info_os_version': 'models/browserInfo/data/os/version',
+    'browser_info_version': 'models/playerModel/data/config/core/initParams/browserInfo/version',
+    'browser_info_os_name': 'models/playerModel/data/config/core/initParams/browserInfo/os/name',
+    'browser_info_os_version': 'models/playerModel/data/config/core/initParams/browserInfo/os/version',
 }
 
 PAGE_ITEM_ERROR_CODE = 'models/flow/data/fields/errorCode/value'
@@ -92,6 +93,7 @@ def extract_session_data(content, validate=False, update_profiles=False):
     # Save only some info of the current profile from user data
     G.LOCAL_DB.set_value('build_identifier', user_data.get('BUILD_IDENTIFIER'), TABLE_SESSION)
     if not G.LOCAL_DB.get_value('esn', table=TABLE_SESSION):
+        G.LOCAL_DB.set_value('esn_timestamp', int(time.time()))
         G.LOCAL_DB.set_value('esn', generate_android_esn() or user_data['esn'], TABLE_SESSION)
     G.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Extract the client version from assets core
@@ -286,6 +288,7 @@ def extract_json(content, name):
         json_str_replace = json_str_replace.replace(r'\r', r'\\r')  # Escape return
         json_str_replace = json_str_replace.replace(r'\n', r'\\n')  # Escape line feed
         json_str_replace = json_str_replace.replace(r'\t', r'\\t')  # Escape tab
+        json_str_replace = json_str_replace.replace(r'\p', r'/p')  # Unicode property not supported, we change slash to avoid unescape it
         json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
         json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
         return json.loads(json_str_replace)
