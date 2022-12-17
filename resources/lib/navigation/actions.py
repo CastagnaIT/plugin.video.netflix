@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import, division, unicode_literals
 
+import time
+
 import xbmc
 
 import resources.lib.common as common
@@ -184,6 +186,7 @@ class AddonActionExecutor(object):
         G.LOCAL_DB.set_value('custom_esn', '', TABLE_SETTINGS_MONITOR)
         # Save the new ESN
         G.LOCAL_DB.set_value('esn', generated_esn, TABLE_SESSION)
+        G.LOCAL_DB.set_value('esn_timestamp', int(time.time()))
         # Reinitialize the MSL handler (delete msl data file, then reset everything)
         common.send_signal(signal=common.Signals.REINITIALIZE_MSL_HANDLER, data=True)
         # Show login notification
