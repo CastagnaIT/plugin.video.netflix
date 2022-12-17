@@ -1199,8 +1199,8 @@ msgstr "Über das Netflix-Addon"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Automatisch neue ESNs generieren (Workaround für 540p Begrenzung)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "WARNUNG: Nutzen Sie nicht die originale Geräte-ESN der offiziellen App."
