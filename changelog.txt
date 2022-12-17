@@ -1,3 +1,13 @@
+v1.12.15 (2022-12-17)
+- IMPORTANT NOTICE: New changes to website is causing video quality to drop to 540p after about 20h,
+this add-on update implements a workaround to fix this problem by changing ESNs every 20h.
+The workaround works only when "Manual ESN" is not set, so if needed remove the previously Manual ESN set.
+You can find the new setting under add-on Expert settings.
+If necessary, you can manually generate new ESN's by selecting "Reset ESN" setting, or you can also disable the 540p workaround.
+- IMPORTANT NOTICE FOR ANDROID: Do NOT USE the ESN of the original app with the add-on, or will cause video quality drop
+to 540p also on the original android app for an unknown period of time. This problem cannot be solved by the add-on,
+there are no know solutions yet, so you can only report the 540p problem to customer service.
+
 v1.12.14 (2022-09-26)
 - Fixed MSL error when playing videos from non-owner Netflix profiles
 
