@@ -303,7 +303,11 @@ def _convert_text_track(text_track, period, default, cdn_index, isa_version):
         'Representation',  # Tag
         id=str(list(text_track['downloadableIds'].values())[0]),
         nflxProfile=content_profile)
-    _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[cdn_index])
+    if 'urls' in downloadable[content_profile]:
+        # The path change when "useBetterTextUrls" param is enabled on manifest
+        _add_base_url(representation, downloadable[content_profile]['urls'][cdn_index]['url'])
+    else:
+        _add_base_url(representation, list(downloadable[content_profile]['downloadUrls'].values())[cdn_index])
 
 
 def _get_id_default_audio_tracks(manifest):
