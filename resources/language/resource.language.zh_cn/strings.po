@@ -1196,3 +1196,11 @@ msgstr "支持"
 msgctxt "#30735"
 msgid "About Netflix add-on"
 msgstr "关于Netflix附加组件"
+
+msgctxt "#30736"
+msgid "Automatically generates new ESNs (workaround for 540p limit)"
+msgstr ""
+
+msgctxt "#30737"
+msgid "WARNING: Do not use the original device ESN of the official app."
+msgstr ""
