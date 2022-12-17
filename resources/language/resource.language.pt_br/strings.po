@@ -733,7 +733,7 @@ msgstr "[CR]Esses arquivos são usados pelos buscadores de informações do prov
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Incluir os detalhes NFO de seriados"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
