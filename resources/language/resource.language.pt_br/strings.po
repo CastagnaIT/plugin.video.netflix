@@ -84,7 +84,7 @@ msgstr "Outras opções"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Se você sair, todos os dados da conta serão excluídos, mas os arquivos de vídeo exportados na biblioteca Kodi serão preservados.[CR]Deseja continuar?""
 
 msgctxt "#30017"
 msgid "Logout"
@@ -208,7 +208,7 @@ msgstr "Coleção"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Ativar gerenciamento de coleção no Kodi"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
@@ -220,13 +220,13 @@ msgstr "{} Definir para reprodução na coleção"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} Setar ao inicializar"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} Lembrar PIN""
 
 # Unused 30058
 msgctxt "#30059"
@@ -255,7 +255,7 @@ msgstr "Realizar atualização automática"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Atualizar coleção de vídeo"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -522,7 +522,7 @@ msgstr "Cache limpo"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Aguardando inicialização do serviço..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -733,7 +733,7 @@ msgstr "[CR]Esses arquivos são usados pelos buscadores de informações do prov
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "ncluir detalhes de NFO do programa de TV"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -825,7 +825,7 @@ msgstr "Destacar os títulos incluídos em minha lista com uma cor"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Cor dos títulos marcados como \"Lembre-me\""
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -867,7 +867,7 @@ msgstr "Definir um perfil para sincronização"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "Quanto o Kodi inicializar"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1116,91 +1116,91 @@ msgstr "Observe que, ao ativar essa configuração, se os filtros estiverem ativ
 
 msgctxt "#30703"
 msgid "Override stream selection type"
-msgstr ""
+msgstr "Substituir o tipo de seleção de stream"
 
 msgctxt "#30704"
 msgid "Override the Stream selection type setting of the InputStream Adaptive add-on, to set how the audio / video streams quality will be chosen during playback."
-msgstr ""
+msgstr "Substitua a configuração do tipo de seleção de fluxo do complemento InputStream Adaptive para definir como a qualidade dos fluxos de áudio/vídeo será escolhida durante a reprodução."
 
 msgctxt "#30705"
 msgid "Adaptive quality"
-msgstr ""
+msgstr "Qualidade adaptável"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr ""
+msgstr "Qualidade do vídeo fixa"
 
 msgctxt "#30707"
 msgid "Ask video quality"
-msgstr ""
+msgstr "Perguntar pela qualidade do vídeo"
 
 msgctxt "#30720"
 msgid "Please note that enabling this setting will force the removal of streams that are not within the set range and this may affect the operation of InputStream Adaptive. If possible try limiting the quality from the InputStream Adaptive settings first."
-msgstr ""
+msgstr "Observe que habilitar essa configuração forçará a remoção de fluxos que não estão dentro do intervalo definido e isso pode afetar a operação do InputStream Adaptive. Se possível, tente limitar a qualidade das configurações adaptativas do InputStream primeiro."
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Altura máxima das barras pretas (Experimental)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "Os vídeos recortados serão esticados configurando o Kodi \"Modo de exibição\" como \"Zoom\" para minimizar as barras pretas na altura máxima definida. Por exemplo, 10% significa que as barras pretas podem cobrir no máximo 10% da tela. Para desativá-lo, defina como 50%."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Forçar a redefinição da configuração \"Modo de visualização\"
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "O Kodi salva a configuração \"Modo de exibição\" \"Zoom\" permanentemente, habilite essa configuração para restaurar o modo de exibição \"Normal\" ao reproduzir um vídeo assistido anteriormente."
 
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Habilitar perfis AV1 - APENAS PARA TESTE DE DESENVOLVIMENTO"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "Adicione pastas Netflix às fontes da biblioteca Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "As pastas \"Netflix-Movies\" e \"Netflix-Shows\" foram adicionadas às fontes Kodi, reinicie o Kodi para visualizá-las nos menus Kodi [Programas de TV] / [Filmes]. Em seguida, edite as pastas para definir o tipo de conteúdo apropriado e o scraper do provedor de informações."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "As atualizações [manuais] devem ser feitas manualmente usando o menu de contexto \"Exportar novos episódios\" em cada programa de TV, [Agendado] você pode estabelecer atualizações automáticas em horários programados, [Quando o Kodi inicia] as atualizações automáticas começam na inicialização do Kodi e será feito apenas uma vez por dia."
 
-#. Description of setting ID 30227
+#. Description of setting ID 30227%A7%C3%A3o%5C%22%20como%20%5C%22Zoom%5C%22%20para%20min
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Sincroniza a biblioteca com Minha lista, se minha lista foi modificada externamente, por ex. aplicativo móvel ou site, a atualização será adiada para o horário agendado."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Se ativado, adiciona informações a episódios ou filmes que são úteis quando o scraper do provedor de informações Kodi não fornece dados. Isso também adicionará a duração dos vídeos"
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Ative apenas se o raspador do provedor de informações \"Informações locais\" for usado ou se determinados títulos não forem exibidos na biblioteca Kodi, apesar de terem sido adicionados."
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Suporte"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "Sobre o add-on Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Gerar automaticamente novos ESNs (solução alternativa para limite de 540p)""
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "AVISO: Não use o dispositivo original ESN do aplicativo oficial"
