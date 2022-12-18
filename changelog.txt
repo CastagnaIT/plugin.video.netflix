@@ -1,3 +1,18 @@
+v1.20.3 (2022-12-17)
+- IMPORTANT NOTICE: New changes to website is causing video quality to drop to 540p after about 20h,
+this add-on update implements a workaround to fix this problem by changing ESNs every 20h.
+If necessary, you can open "Widevine / ESN settings" on the Expert settings, to manually generate new ESN's
+by selecting the "Reset" button, or you can also disable the 540p workaround.
+- IMPORTANT NOTICE FOR ANDROID: Do NOT USE the ESN of the original app with the add-on, or will cause video quality drop
+to 540p also on the original android app for an unknown period of time. This problem cannot be solved by the add-on,
+there are no know solutions yet, so you can only report the 540p problem to customer service.
+- FOR ANDROID, KNOWN SIDE EFFECTS: You will receive a notification that a new device has logged in every time ESN changes.
+- Add new 540p workaround setting to "Widevine / ESN settings" on the Expert settings
+- Supplemental plot info are now consistent in all use cases
+- Fix a possible website JSON parsing problem on login/refresh session
+- Fix "hdrType" TypeError (Kodi 20)
+- Update translations hu, zh_cn, ro, it, de
+
 v1.20.2 (2022-11-12)
 - Fixed 4k HDR
 - Fixed missing plot
