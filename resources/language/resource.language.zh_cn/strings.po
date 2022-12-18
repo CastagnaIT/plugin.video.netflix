@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2022-11-15 00:00+0000\n"
+"PO-Revision-Date: 2022-12-18 10:00+0000\n"
 "Last-Translator: Liqianyu <>\n"
 "Language-Team: Chinese\n"
 "Language: zh_CN\n"
@@ -108,7 +108,7 @@ msgstr "添加到'我的片单'"
 
 msgctxt "#30022"
 msgid "(between 0 and 10)"
-msgstr "（介于0和10之间）"
+msgstr "（介于0到10之间）"
 
 msgctxt "#30023"
 msgid "Expert"
@@ -295,7 +295,7 @@ msgstr "查看导出"
 
 msgctxt "#30075"
 msgid "Ask to skip intro and recap"
-msgstr "询问跳过片头和前情回顾"
+msgstr "询问跳过片头和回顾"
 
 msgctxt "#30076"
 msgid "Skip intro"
@@ -303,7 +303,7 @@ msgstr "跳过片头"
 
 msgctxt "#30077"
 msgid "Skip recap"
-msgstr "跳过前情回顾"
+msgstr "跳过回顾"
 
 msgctxt "#30078"
 msgid "Playback"
@@ -331,15 +331,15 @@ msgstr "仅在设置音频语言后显示强制字幕"
 
 msgctxt "#30084"
 msgid "Cache objects TTL (minutes)"
-msgstr "缓存对象TTL（分钟）"
+msgstr "对象缓存TTL（分钟）"
 
 msgctxt "#30085"
 msgid "Cache metadata TTL (days)"
-msgstr "缓存元数据TTL（天）"
+msgstr "元数据缓存TTL（天）"
 
 msgctxt "#30086"
 msgid "Cache objects 'My list' TTL (minutes)"
-msgstr "缓存对象'我的片单' TTL（分钟）"
+msgstr "对象缓存'我的片单'TTL（分钟）"
 
 msgctxt "#30087"
 msgid "Contains {} and more..."
@@ -668,7 +668,7 @@ msgstr "电影类型"
 
 msgctxt "#30176"
 msgid "Enable STRM resume workaround"
-msgstr "启用STRM继续播放解决方法"
+msgstr "启用STRM继续播放变通方法"
 
 msgctxt "#30177"
 msgid "Ask to resume the video"
@@ -912,7 +912,7 @@ msgstr "由于以下问题而无法启动后台服务:[CR]{}"
 
 msgctxt "#30241"
 msgid "Open Connect CDN (the lower index is better)"
-msgstr "Open Connect CDN（索引越低越好）"
+msgstr "Open Connect CDN（索引越小越好）"
 
 msgctxt "#30242"
 msgid "Top 10"
@@ -1199,8 +1199,8 @@ msgstr "关于Netflix附加组件"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "自动生成新ESN（540p限制变通方法）"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "警告：不要使用官方应用程序的原始设备ESN"
