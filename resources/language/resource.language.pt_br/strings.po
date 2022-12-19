@@ -1199,7 +1199,7 @@ msgstr "Sobre o add-on Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr "Gerar automaticamente novos ESNs (solução alternativa para limite de 540p)""
+msgstr "Gerar automaticamente novos ESNs (solução alternativa para limite de 540p)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
