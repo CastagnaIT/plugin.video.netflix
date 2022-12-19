@@ -1149,7 +1149,7 @@ msgstr "Os vídeos recortados serão esticados configurando o Kodi \"Modo de exi
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr "Forçar a redefinição da configuração \"Modo de visualização\"
+msgstr "Forçar a redefinição da configuração \"Modo de visualização\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
