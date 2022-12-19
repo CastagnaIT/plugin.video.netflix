@@ -226,7 +226,7 @@ msgstr "{} Setar ao inicializar"
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr "{} Lembrar PIN""
+msgstr "{} Lembrar PIN"
 
 # Unused 30058
 msgctxt "#30059"
