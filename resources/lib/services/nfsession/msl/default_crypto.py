@@ -13,14 +13,12 @@ import json
 
 
 try:  # The crypto package depends on the library installed (see Wiki)
-    from Cryptodome.Random import get_random_bytes
     from Cryptodome.Hash import HMAC, SHA256
     from Cryptodome.Cipher import PKCS1_OAEP
     from Cryptodome.PublicKey import RSA
     from Cryptodome.Util import Padding
     from Cryptodome.Cipher import AES
 except ImportError:
-    from Crypto.Random import get_random_bytes
     from Crypto.Hash import HMAC, SHA256
     from Crypto.Cipher import PKCS1_OAEP
     from Crypto.PublicKey import RSA
@@ -74,10 +72,13 @@ class DefaultMSLCrypto(MSLBaseCrypto):
         :param plaintext:
         :return: Serialized JSON String of the encryption Envelope
         """
-        init_vector = get_random_bytes(16)
+        from secrets import token_bytes
+        init_vector = token_bytes(16)
+
         cipher = AES.new(self.encryption_key, AES.MODE_CBC, init_vector)
         ciphertext = base64.standard_b64encode(
             cipher.encrypt(Padding.pad(plaintext.encode('utf-8'), 16))).decode('utf-8')
+
         encryption_envelope = {
             'ciphertext': ciphertext,
             'keyid': '_'.join((esn, str(self.sequence_number))),
