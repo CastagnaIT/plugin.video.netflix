@@ -85,7 +85,7 @@ class MSLRequestBuilder:
     def _headerdata(self, auth_data, esn=None, compression=None, is_handshake=False):
         """
         Function that generates a MSL header dict
-        :return: The base64 encoded JSON String of the header
+        :return: The header JSON data as string
         """
         self.current_message_id = self.rndm.randint(0, pow(2, 52))
         header_data = {
