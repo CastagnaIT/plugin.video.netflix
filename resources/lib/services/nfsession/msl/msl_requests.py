@@ -22,8 +22,8 @@ from resources.lib.globals import G
 
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, create_req_params, generate_logblobs_params,
-                                                            MSL_DATA_FILENAME, MSL_AUTH_NETFLIXID,
-                                                            MSL_AUTH_USER_ID_TOKEN, MSL_AUTH_EMAIL_PASSWORD)
+                                                            MSL_AUTH_NETFLIXID, MSL_AUTH_USER_ID_TOKEN,
+                                                            MSL_AUTH_EMAIL_PASSWORD)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 
@@ -105,10 +105,7 @@ class MSLRequests(MSLRequestBuilder):
             LOG.debug('MSL MasterToken is not available, a new key handshake will be performed')
             is_handshake_required = True
         if is_handshake_required:
-            if self.perform_key_handshake():
-                msl_data = json.loads(common.load_file_def(MSL_DATA_FILENAME))
-                self.crypto.load_msl_data(msl_data)
-                self.crypto.load_crypto_session(msl_data)
+            self.perform_key_handshake()
 
     def _get_user_auth_data(self):
         """
