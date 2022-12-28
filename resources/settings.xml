@@ -890,6 +890,40 @@
                         </dependency>
                     </dependencies>
                 </setting>
+                <setting id="audio_offset_enabled" type="boolean" label="30738" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <or>
+                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition> <!-- v21 pre-releases -->
+                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
+                            </or>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="audio_offset" type="number" label="30739" help="30740" parent="audio_offset_enabled">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                      <minimum>-10</minimum>
+                      <step>0.025</step>
+                      <maximum>10</maximum>
+                    </constraints>
+                    <control type="slider" format="percentage">
+                      <format>{:.3f}s</format>
+                    </control>
+                    <dependencies>
+                        <dependency type="visible">
+                            <or>
+                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition> <!-- v21 pre-releases -->
+                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
+                            </or>
+                        </dependency>
+                        <dependency type="visible" setting="audio_offset_enabled">true</dependency>
+                    </dependencies>
+                </setting>
             </group>
             <!--GROUP: Library-->
             <group id="2" label="30049">

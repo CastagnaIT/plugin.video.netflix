@@ -48,6 +48,11 @@ class AMPlayback(ActionManager):
             self.watched_threshold = data['metadata'][0]['creditsOffset'] - lower_value
 
     def on_playback_started(self, player_state):
+        self._set_black_bar_minimizer(player_state)
+        self._set_audio_offset(player_state)
+        self._set_strm_resume_workaround()
+
+    def _set_black_bar_minimizer(self, player_state):
         # The black bar minimizer zoom the video to show the same height of black bars for all cropped videos,
         # so this calculation takes into account the different black band heights between various videos.
         # NOTE: Kodi save viewmode permanently
@@ -71,11 +76,24 @@ class AMPlayback(ActionManager):
                     common.json_rpc('Player.SetViewMode', {'viewmode': {'zoom': zoom_factor}})
         elif G.ADDON.getSettingBool('blackbars_minimizer_restore'):
             common.json_rpc('Player.SetViewMode', {'viewmode': 'normal'})
-        if self.resume_position:
-            # Due to a bug on Kodi the resume on STRM files not works correctly,
-            # so we force the skip to the resume point
-            LOG.info('AMPlayback has forced resume point to {}', self.resume_position)
-            xbmc.Player().seekTime(int(self.resume_position))
+
+    def _set_audio_offset(self, player_state):
+        if not G.ADDON.getSettingBool('audio_offset_enabled') or G.KODI_VERSION < 21:
+            return
+        current_offset = common.json_rpc('Player.GetAudioDelay')['offset']
+        target_offset = G.ADDON.getSettingNumber('audio_offset')
+        if current_offset != target_offset:
+            ret = common.json_rpc('Player.SetAudioDelay', {'playerid': player_state['playerid'],
+                                                           'offset': target_offset})
+            LOG.debug('Audio offset has been set to {}s (player value {}s)', target_offset, ret['offset'])
+
+    def _set_strm_resume_workaround(self):
+        # Due to a bug on Kodi (until to v19) the resume on STRM files not works correctly,
+        # so we force the skip to the resume point
+        if not self.resume_position:
+            return
+        LOG.info('AMPlayback has forced resume point to {}', self.resume_position)
+        xbmc.Player().seekTime(int(self.resume_position))
 
     def on_tick(self, player_state):
         # Stops playback when paused for more than one hour.
