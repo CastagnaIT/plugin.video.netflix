@@ -165,8 +165,8 @@ def _profile_switch():
 
 
 def _strm_resume_workaroud(is_played_from_strm, videoid):
-    """Workaround for resuming STRM files from library, for Kodi versions below 19.5"""
-    if G.KODI_VERSION > '19.4':
+    """Workaround for resuming STRM files from library, for Kodi v19"""
+    if G.KODI_VERSION >= '20':
         return None
     if not is_played_from_strm or not G.ADDON.getSettingBool('ResumeManager_enabled'):
         return None
