@@ -168,7 +168,13 @@ def parse_info(videoid, item, raw_data, common_data):
     infos.update(_parse_referenced_infos(item, raw_data))
     infos.update(_parse_tags(item))
 
-    return infos, get_quality_infos(item, common_data.get('video_codec_hint', get_video_codec_hint()))
+    if videoid.mediatype == common.VideoId.EPISODE:
+        # 01/12/2022: The 'delivery' info in the episode data are wrong (e.g. wrong resolution)
+        # as workaround we get the 'delivery' info from tvshow data
+        delivery_info = raw_data['videos'][videoid.tvshowid]['delivery'].get('value', '')
+    else:
+        delivery_info = item.get('delivery', {}).get('value')
+    return infos, get_quality_infos(delivery_info, common_data.get('video_codec_hint', get_video_codec_hint()))
 
 
 def _parse_atomic_infos(item):
@@ -207,10 +213,9 @@ def _parse_tags(item):
                     if isinstance(tagdef.get('name', {}), str)]}
 
 
-def get_quality_infos(item, video_codec_hint):
+def get_quality_infos(delivery, video_codec_hint):
     """Return audio and video quality infolabels"""
     quality_infos = {}
-    delivery = item.get('delivery', {}).get('value')
     if delivery:
         if delivery.get('hasUltraHD', False):  # 4k only with HEVC codec
             quality_infos['video'] = {'codec': 'hevc', 'width': 3840, 'height': 2160}

@@ -131,7 +131,7 @@ class DirectoryPathRequests:
         paths = ([['seasons', videoid.seasonid, 'summary']] +
                  [['seasons', videoid.seasonid, 'componentSummary']] +
                  build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
-                 build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [['title']]))
+                 build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [[['title', 'delivery']]]))
         call_args = {
             'paths': paths,
             'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']],
