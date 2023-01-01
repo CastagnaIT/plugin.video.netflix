@@ -101,22 +101,30 @@ def make_http_call(endpoint, func_name, data=None):
     The contents of data will be expanded to kwargs and passed into the target function.
     """
     from urllib.request import build_opener, install_opener, ProxyHandler, urlopen
-    from urllib.error import URLError
+    from urllib.parse import urljoin
+    from urllib.error import URLError, HTTPError
     # Note: Using 'localhost' as address slowdown the call (Windows OS is affected) not sure if it is an urllib issue
     url = f'http://127.0.0.1:{G.LOCAL_DB.get_value("nf_server_service_port")}{endpoint}/{func_name}'
     LOG.debug('Handling HTTP IPC call to {}', url)
     install_opener(build_opener(ProxyHandler({})))  # don't use proxy for localhost
     try:
-        with urlopen(url=url,
-                     data=pickle.dumps(data, protocol=pickle.HIGHEST_PROTOCOL),
-                     timeout=IPC_TIMEOUT_SECS) as f:
-            received_data = f.read()
-            if received_data:
-                _data = pickle.loads(received_data)
-                if isinstance(_data, Exception):
-                    raise _data
-                return _data
-        return None
+        while True:
+            try:
+                with urlopen(url=url,
+                            data=pickle.dumps(data, protocol=pickle.HIGHEST_PROTOCOL),
+                            timeout=IPC_TIMEOUT_SECS) as f:
+                    received_data = f.read()
+                    if received_data:
+                        _data = pickle.loads(received_data)
+                        if isinstance(_data, Exception):
+                            raise _data
+                        return _data
+                return None
+            except HTTPError as exc:
+                if exc.status == 302:
+                    url = urljoin(url, e.headers['Location'])
+                    continue
+                raise exc
     # except HTTPError as exc:
     #     raise exc
     except URLError as exc:
