@@ -1204,3 +1204,15 @@ msgstr "自动生成新ESN（540p限制变通方法）"
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
 msgstr "警告：不要使用官方应用程序的原始设备ESN"
+
+msgctxt "#30738"
+msgid "Enable audio offset"
+msgstr ""
+
+msgctxt "#30739"
+msgid "Audio offset"
+msgstr ""
+
+msgctxt "#30740"
+msgid "Sets the audio offset by overriding the Kodi setting"
+msgstr ""

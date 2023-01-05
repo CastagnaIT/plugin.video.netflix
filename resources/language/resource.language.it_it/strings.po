@@ -1204,3 +1204,15 @@ msgstr "Genera automaticamente nuovi ESN (workaround per limite 540p)"
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
 msgstr "ATTENZIONE: Non usare l'ESN originale dell'app del dispositivo."
+
+msgctxt "#30738"
+msgid "Enable audio offset"
+msgstr ""
+
+msgctxt "#30739"
+msgid "Audio offset"
+msgstr ""
+
+msgctxt "#30740"
+msgid "Sets the audio offset by overriding the Kodi setting"
+msgstr ""
