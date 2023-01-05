@@ -213,6 +213,7 @@ class ActionController(xbmc.Monitor):
             LOG.warn('_get_player_state: {}', exc)
             return {}
 
+        player_state['playerid'] = self.active_player_id if player_id is None else player_id
         # convert time dict to elapsed seconds
         player_state['elapsed_seconds'] = (player_state['time']['hours'] * 3600 +
                                            player_state['time']['minutes'] * 60 +

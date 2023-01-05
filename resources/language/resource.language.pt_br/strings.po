@@ -1204,3 +1204,15 @@ msgstr "Gerar automaticamente novos ESNs (solução alternativa para limite de 5
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
 msgstr "AVISO: Não use o dispositivo original ESN do aplicativo oficial"
+
+msgctxt "#30738"
+msgid "Enable audio offset"
+msgstr ""
+
+msgctxt "#30739"
+msgid "Audio offset"
+msgstr ""
+
+msgctxt "#30740"
+msgid "Sets the audio offset by overriding the Kodi setting"
+msgstr ""
