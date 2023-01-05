@@ -262,7 +262,7 @@ class NFSessionOperations(SessionPathRequests):
         except (AttributeError, TypeError):
             if videoid.mediatype == common.VideoId.EPISODE:
                 paths = (build_paths(['videos', int(videoid.value)], EPISODES_PARTIAL_PATHS) +
-                         build_paths(['videos', int(videoid.tvshowid)], ART_PARTIAL_PATHS + [['title']]))
+                         build_paths(['videos', int(videoid.tvshowid)], ART_PARTIAL_PATHS + [[['title', 'delivery']]]))
             else:
                 paths = build_paths(['videos', int(videoid.value)], VIDEO_LIST_PARTIAL_PATHS)
             raw_data = self.path_request(paths)
