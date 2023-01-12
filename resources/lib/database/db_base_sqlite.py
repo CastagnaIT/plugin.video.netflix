@@ -215,12 +215,15 @@ class SQLiteDatabase(db_base.BaseDatabase):
         table_name = table[0]
         table_columns = table[1]
         # Update or insert approach, if there is no updated row then insert new one (no id changes)
-        update_query = f'UPDATE {table_name} SET {table_columns[1]} = ? WHERE {table_columns[0]} = ?'
+        if common.CmpVersion(sql.sqlite_version) < '3.24.0':
+            query = f'INSERT OR REPLACE INTO {table_name} ({table_columns[0]}, {table_columns[1]}) VALUES (?, ?)'
+        else:
+            # sqlite UPSERT clause exists only on sqlite >= 3.24.0
+            query = (f'INSERT INTO {table_name} ({table_columns[0]}, {table_columns[1]}) VALUES (?, ?) '
+                     f'ON CONFLICT({table_columns[0]}) DO UPDATE SET {table_columns[1]} = ? '
+                     f'WHERE {table_columns[0]} = ?')
         value = common.convert_to_string(value)
-        cur = self._execute_query(update_query, (value, key))
-        if cur.rowcount == 0:
-            insert_query = f'INSERT INTO {table_name} ({table_columns[0]}, {table_columns[1]}) VALUES (?, ?)'
-            self._execute_non_query(insert_query, (key, value))
+        self._execute_non_query(query, (key, value, value, key))
 
     @handle_connection
     def set_values(self, dict_values, table=db_utils.TABLE_APP_CONF):
