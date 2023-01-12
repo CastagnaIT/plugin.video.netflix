@@ -105,6 +105,17 @@ class MSLHandler:
                 # Then clear the credentials and also user tokens.
                 common.purge_credentials()
                 self.msl_requests.crypto.clear_user_id_tokens()
+            if 'User must login again' in str(exc):
+                # Know case when MSL error can happen:
+                # - User has done "Sign out of all devices" from account settings
+                # - User has login with an auth key generated before executing "Sign out of all devices"
+                # When "Sign out of all devices" is done, and you create a auth key just after that
+                # for some reason the MSL has not yet changed his status and think you still use the old login
+                # this is fixed automatically by website by waiting 10 minutes before generating a new auth key.
+                err_msg = ('\nIf you have done "Sign out of all devices" from Netflix account settings so '
+                           'Logout from add-on settings and wait about 10 minutes before login again '
+                           '(if used, a new Auth Key is required).')
+                raise MSLError(str(exc) + err_msg) from exc
             raise
         return self._tranform_to_dash(manifest)
 

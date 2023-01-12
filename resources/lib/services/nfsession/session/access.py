@@ -20,6 +20,7 @@ import resources.lib.kodi.ui as ui
 from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
                                              MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError,
                                              MissingCredentialsError, MbrStatusAnonymousError, WebsiteParsingError)
+from resources.lib.database import db_utils
 from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
 from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
@@ -111,7 +112,15 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             website.extract_session_data(self.get('browse'), validate=True, update_profiles=True)
         except MbrStatusAnonymousError:
             # Access not valid
+            LOG.warn('Login with AuthKey failed due to MbrStatusAnonymousError, '
+                     'your account could be not confirmed / renewed / suspended.')
             return False
+        except NotLoggedInError as exc:
+            # Raised by get('browse') with httpx.RemoteProtocolError 'Server disconnected' exception
+            # Cookies may be not more valid
+            raise LoginError('The website has refused the connection, you need to generate a new Auth Key. '
+                             'If you have just done "Sign out of all devices" from Netflix account settings '
+                             'wait about 10 minutes before generating a new AuthKey.') from exc
         # Get the account e-mail
         page_response = self.get('your_account').decode('utf-8')
         email_match = re.search(r'account-email[^<]+>([^<]+@[^</]+)</', page_response)
@@ -178,35 +187,41 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
     def logout(self):
         """Logout of the current account and reset the session"""
         LOG.debug('Logging out of current account')
+        with common.show_busy_dialog():
+            # Perform the website logout
+            self.get('logout')
 
-        # Perform the website logout
-        self.get('logout')
+            with G.SETTINGS_MONITOR.ignore_events(2):
+                # Disable and reset auto-update / auto-sync features
+                G.ADDON.setSettingInt('lib_auto_upd_mode', 1)
+                G.ADDON.setSettingBool('lib_sync_mylist', False)
+            G.SHARED_DB.delete_key('sync_mylist_profile_guid')
 
-        with G.SETTINGS_MONITOR.ignore_events(2):
-            # Disable and reset auto-update / auto-sync features
-            G.ADDON.setSettingInt('lib_auto_upd_mode', 1)
-            G.ADDON.setSettingBool('lib_sync_mylist', False)
-        G.SHARED_DB.delete_key('sync_mylist_profile_guid')
+            # Disable and reset the profile guid of profile auto-selection
+            G.LOCAL_DB.set_value('autoselect_profile_guid', '')
 
-        # Disable and reset the profile guid of profile auto-selection
-        G.LOCAL_DB.set_value('autoselect_profile_guid', '')
+            # Disable and reset the selected profile guid for library playback
+            G.LOCAL_DB.set_value('library_playback_profile_guid', '')
 
-        # Disable and reset the selected profile guid for library playback
-        G.LOCAL_DB.set_value('library_playback_profile_guid', '')
+            G.LOCAL_DB.set_value('website_esn', '', db_utils.TABLE_SESSION)
+            G.LOCAL_DB.set_value('esn', '' , db_utils.TABLE_SESSION)
+            G.LOCAL_DB.set_value('esn_timestamp', '')
 
-        # Delete cookie and credentials
-        self.session.cookies.clear()
-        cookies.delete()
-        common.purge_credentials()
+            G.LOCAL_DB.set_value('auth_url', '', db_utils.TABLE_SESSION)
 
-        # Reinitialize the MSL handler (delete msl data file, then reset everything)
-        self.msl_handler.reinitialize_msl_handler(delete_msl_file=True)
+            # Delete cookie and credentials
+            self.session.cookies.clear()
+            cookies.delete()
+            common.purge_credentials()
 
-        G.CACHE.clear(clear_database=True)
+            # Reinitialize the MSL handler (delete msl data file, then reset everything)
+            self.msl_handler.reinitialize_msl_handler(delete_msl_file=True)
 
-        LOG.info('Logout successful')
-        ui.show_notification(common.get_local_string(30113))
-        self._init_session()
+            G.CACHE.clear(clear_database=True)
+
+            LOG.info('Logout successful')
+            ui.show_notification(common.get_local_string(30113))
+            self._init_session()
         common.container_update('path', True)  # Go to a fake page to clear screen
         # Open root page
         common.container_update(G.BASE_URL, True)

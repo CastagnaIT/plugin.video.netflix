@@ -79,6 +79,10 @@ class MSLBaseCrypto:
 
     def _save_msl_data(self):
         """Save crypto keys and MasterToken to disk"""
+        if self.mastertoken is None:
+            # With a fresh install when login with Auth key and the "browse" http request fails with
+            # "Server disconnected" error it executes clear_user_id_tokens that try to save uninitialized msl data
+            return
         self._msl_data['tokens'] = {'mastertoken': self.mastertoken}
         self._msl_data.update(self._export_keys())
         self._msl_data['bound_esn'] = self.bound_esn
