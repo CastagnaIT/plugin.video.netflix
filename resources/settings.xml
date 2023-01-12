@@ -17,9 +17,9 @@
             <group id="2" label="30014">
                 <setting id="logout" type="action" label="30017">
                     <level>0</level>
-                    <data>RunPlugin(plugin://$ID/action/logout/)</data>
+                    <data>RunPlugin(plugin://$ID/action/logout/?ignore_login=True)</data>
                     <control type="button" format="action">
-                        <close>false</close>
+                        <close>true</close>
                     </control>
                 </setting>
                 <setting id="profile_options_info" type="action" label="30012">
