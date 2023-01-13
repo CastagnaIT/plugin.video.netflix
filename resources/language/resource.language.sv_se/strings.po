@@ -84,7 +84,7 @@ msgstr "Andra alternativ"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Om du loggar ut kommer all kontodata att tas bort, men de exporterade videofilerna i Kodi-biblioteket kommer att bevaras.[CR]Vill du fortsätta?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -208,7 +208,7 @@ msgstr "Bibliotek"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Aktivera Kodi-bibliotekshantering"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
@@ -220,13 +220,13 @@ msgstr "{} Ställ in för biblioteksuppspelning"
 # Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} Ställ in vid uppstart"
 
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} Kom ihåg PIN-koden"
 
 # Unused 30058
 msgctxt "#30059"
@@ -255,7 +255,7 @@ msgstr "Utför automatisk uppdatering"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Uppdatering av videobibliotek"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -407,7 +407,7 @@ msgstr "Netflix returnerade följande fel:"
 
 msgctxt "#30103"
 msgid "Error details have been written to the Kodi log file. If the error message does not provide guidance on how to resolve the issue or you continue to receive this error, please report it on GitHub by following the Readme instructions."
-msgstr "Felinformationen har skrivits till Kodi-loggfilen. Om felmeddelandet inte ger vägledning om hur du löser problemet, eller om du fortsätter att få det här felet, bör du rapportera det på GitHub genom att följa Readme-instruktionerna där."
+msgstr "Felinformationen har skrivits till Kodi-loggfilen. Om felmeddelandet inte ger vägledning om hur du löser problemet eller om du fortsätter att få det här felet, bör du rapportera det på GitHub genom att följa Readme-instruktionerna där."
 
 msgctxt "#30104"
 msgid "The add-on encountered the following error:"
@@ -522,7 +522,7 @@ msgstr "Cachen rensad"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Väntar på att tjänsten ska startas..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -733,7 +733,7 @@ msgstr "[CR]Dessa filer används av leverantörens informationsskrapa för att i
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Inkludera NFO-detaljer i TV-program"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -825,7 +825,7 @@ msgstr "Färg på titlarna som ingår i \"Min lista\""
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Färgen på titlarna markerade som \"Påminn mig\""
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -867,7 +867,7 @@ msgstr "Ställ in en profil för synkronisering"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "När Kodi startas"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1140,79 +1140,79 @@ msgstr "Observera att aktivering av den här inställningen tvingar bort strömm
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Maximal höjd på svarta kanter (experimentell)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "Beskurna videor kommer att sträckas upp genom att ställa in \"Visningsläge\" till \"Zoom\" i Kodi för att minimera de svarta kanterna vid den inställda maximala höjden. Till exempel betyder 10% att de svarta kanterna kan täcka maximalt 10% av skärmen. Ställ den på 50% för att inaktivera den."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Tvinga återställning av \"Visningsläge\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi sparar inställningen \"Visningsläge\" \"Zoom\" permanent Aktivera den här inställningen för att återställa läget \"Normal\" vid uppspelning av en tidigare tittad video."
 
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Aktivera AV1-profiler - ENDAST FÖR UTVECKLINGSTEST"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "Lägg till Netflix-mappar till Kodi-bibliotekskällor"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "Mapparna \"Netflix-filmer\" och \"Netflix-serier\" har lagts till i Kodi-källor. Starta om Kodi för att se dem i Kodi-menyerna [TV-serier] och [Filmer]. Redigera sedan mapparna för att ställa in lämplig innehållstyp och informationsleverantörsskrapa."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Manuella] uppdateringar måste göras manuellt genom att använda innehållsmenyn \"Exportera nya avsnitt\" på varje tv-program, [Schemalagt] kan du upprätta automatiska uppdateringar vid schemalagda tider, [När Kodi startar] automatiska uppdateringar sker vid Kodi-start och kommer endast att göras en gång per dag."
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Synkroniserar biblioteket med Min lista, om min lista har modifierats externt t.ex i mobilapp eller webbplats kommer uppdateringen att skjutas upp till den schemalagda tiden."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Om aktiverat, kommer information att läggas till avsnitten eller filmerna som är användbara när Kodi-informationsleverantörsskrapa inte tillhandahåller data. Detta kommer också att lägga till varaktigheten för videorna."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Aktivera endast om \"Lokal information\" informationsleverantörsskrapa används eller om vissa titlar inte visas i Kodi-biblioteket trots att de har lagts till."
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "Om tillägget Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Genererar automatiskt nya ESN:er (lösning för 540p-begränsning)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "VARNING: Använd inte originalenhetens ESN för den officiella appen."
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Aktivera ljudkompensation"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Ljudkompensation"
 
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Ställer in ljudkompensation genom att åsidosätta Kodi-inställningen"
