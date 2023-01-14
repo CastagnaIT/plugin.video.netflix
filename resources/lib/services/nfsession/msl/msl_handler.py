@@ -16,7 +16,7 @@ import xbmcaddon
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
-from resources.lib.common.exceptions import MSLError
+from resources.lib.common.exceptions import MSLError, ErrorMessage
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn, set_esn, regen_esn
@@ -105,7 +105,7 @@ class MSLHandler:
                 # Then clear the credentials and also user tokens.
                 common.purge_credentials()
                 self.msl_requests.crypto.clear_user_id_tokens()
-            if 'User must login again' in str(exc):
+            elif 'User must login again' in str(exc):
                 # Know case when MSL error can happen:
                 # - User has done "Sign out of all devices" from account settings
                 # - User has login with an auth key generated before executing "Sign out of all devices"
@@ -116,6 +116,11 @@ class MSLHandler:
                            'Logout from add-on settings and wait about 10 minutes before login again '
                            '(if used, a new Auth Key is required).')
                 raise MSLError(str(exc) + err_msg) from exc
+            elif 'User authentication data does not match entity identity' in str(exc) and common.get_system_platform() == 'android':
+                err_msg = ('Due to a MSL error you cannot playback videos with this device. '
+                           'This is a know problem due to a website change.\n'
+                           'This problem could be solved in the future, but at the moment there is no solution.')
+                raise ErrorMessage(err_msg) from exc
             raise
         return self._tranform_to_dash(manifest)
 
