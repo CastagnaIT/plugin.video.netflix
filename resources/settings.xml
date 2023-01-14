@@ -895,11 +895,8 @@
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency type="visible">
-                            <or>
-                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition> <!-- v21 pre-releases -->
-                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
-                            </or>
+                        <dependency type="visible"> <!-- Available from Kodi v20 final -->
+                            <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,20)</condition>
                         </dependency>
                     </dependencies>
                 </setting>
@@ -915,11 +912,8 @@
                       <format>{:.3f}s</format>
                     </control>
                     <dependencies>
-                        <dependency type="visible">
-                            <or>
-                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition> <!-- v21 pre-releases -->
-                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
-                            </or>
+                        <dependency type="visible"> <!-- Available from Kodi v20 final -->
+                            <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,20)</condition>
                         </dependency>
                         <dependency type="visible" setting="audio_offset_enabled">true</dependency>
                     </dependencies>

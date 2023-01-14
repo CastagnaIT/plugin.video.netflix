@@ -78,7 +78,7 @@ class AMPlayback(ActionManager):
             common.json_rpc('Player.SetViewMode', {'viewmode': 'normal'})
 
     def _set_audio_offset(self, player_state):
-        if not G.ADDON.getSettingBool('audio_offset_enabled') or G.KODI_VERSION < 21:
+        if not G.ADDON.getSettingBool('audio_offset_enabled'):
             return
         current_offset = common.json_rpc('Player.GetAudioDelay')['offset']
         target_offset = G.ADDON.getSettingNumber('audio_offset')
