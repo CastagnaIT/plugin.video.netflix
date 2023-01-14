@@ -1207,12 +1207,12 @@ msgstr "WARNUNG: Nutzen Sie nicht die originale Geräte-ESN der offiziellen App.
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Audio-Offset aktivieren"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Audio-Offset"
 
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Setzt den Audio-Offset und überschreibt die Kodi-Einstellung"
