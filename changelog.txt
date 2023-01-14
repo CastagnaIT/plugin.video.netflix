@@ -1,3 +1,13 @@
+v1.20.4 (2023-01-14)
+- NOTICE FOR ANDROID DEVICES: Due to new changes to the website, many Android devices will not be able to play videos
+ with this addon, at the moment there are no solutions, we hope this is a temporary problem.
+- On android, replaced MSL idtoken auth with netflixid auth (for "Email or password is incorrect" error problem)
+- Add new audio offset setting
+- Fix Kodi crash on Android when play a video
+- Fix STRM resume workaround for Kodi v19.5
+- Fix wrong mediaflag info on episodes
+- Update translations it, de, pt_br, sv_se
+
 v1.20.3 (2022-12-17)
 - IMPORTANT NOTICE: New changes to website is causing video quality to drop to 540p after about 20h,
 this add-on update implements a workaround to fix this problem by changing ESNs every 20h.
