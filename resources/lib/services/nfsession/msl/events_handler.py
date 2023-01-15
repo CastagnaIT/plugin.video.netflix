@@ -86,15 +86,16 @@ class EventsHandler(threading.Thread):
             # Malformed/wrong content in requests are ignored without returning any error in the response or exception
             LOG.debug('EVENT [{}] - Request response: {}', event_type, response)
             if event_type == EVENT_STOP:
-                if event_data['allow_request_update_loco']:
-                    if 'list_context_name' in self.loco_data:
-                        self.nfsession.update_loco_context(
-                            self.loco_data['root_id'],
-                            self.loco_data['list_context_name'],
-                            self.loco_data['list_id'],
-                            self.loco_data['list_index'])
-                    else:
-                        LOG.debug('EventsHandler: LoCo list not updated no list context data provided')
+                # 15/01/2023 update_loco_context looks like not more used on website when playback stop
+                # if event_data['allow_request_update_loco']:
+                #     if 'list_context_name' in self.loco_data:
+                #         self.nfsession.update_loco_context(
+                #             self.loco_data['root_id'],
+                #             self.loco_data['list_context_name'],
+                #             self.loco_data['list_id'],
+                #             self.loco_data['list_index'])
+                #     else:
+                #         LOG.debug('EventsHandler: LoCo list not updated no list context data provided')
                 self.loco_data = None
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('EVENT [{}] - The request has failed: {}', event_type, exc)
