@@ -18,8 +18,7 @@ import xbmc
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.services.nfsession.msl import msl_utils
-from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, EVENT_START, EVENT_STOP, EVENT_ENGAGE,
-                                                            create_req_params)
+from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, EVENT_ENGAGE, create_req_params)
 from resources.lib.utils.esn import get_esn
 from resources.lib.utils.logging import LOG
 
@@ -128,7 +127,7 @@ class EventsHandler(threading.Thread):
         self.cache_data_events = {}
         self.banned_events_ids = []
 
-    def _build_event_params(self, event_type, event_data, player_state, manifest, loco_data):
+    def _build_event_params(self, event_type, event_data, player_state, manifest, loco_data):  # pylint: disable=unused-argument
         """Build data params for an event request"""
         videoid_value = event_data['videoid'].value
         # Get previous elaborated data of the same video id
