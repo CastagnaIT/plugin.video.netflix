@@ -67,9 +67,9 @@ class EventsHandler(threading.Thread):
 
     def _process_event_request(self, event_type, event_data, player_state):
         """Build and make the event post request"""
-        if event_type == EVENT_START:
-            # We get at every new video playback a fresh LoCo data
-            self.loco_data = self.nfsession.get_loco_data()
+        # if event_type == EVENT_START:
+        #     # We get at every new video playback a fresh LoCo data
+        #     self.loco_data = self.nfsession.get_loco_data()
         url = event_data['manifest']['links']['events']['href']
         from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
         request_data = MSLRequestBuilder.build_request_data(url,
@@ -85,18 +85,18 @@ class EventsHandler(threading.Thread):
             response = self.chunked_request(endpoint_url, request_data, get_esn())
             # Malformed/wrong content in requests are ignored without returning any error in the response or exception
             LOG.debug('EVENT [{}] - Request response: {}', event_type, response)
-            if event_type == EVENT_STOP:
-                # 15/01/2023 update_loco_context looks like not more used on website when playback stop
-                # if event_data['allow_request_update_loco']:
-                #     if 'list_context_name' in self.loco_data:
-                #         self.nfsession.update_loco_context(
-                #             self.loco_data['root_id'],
-                #             self.loco_data['list_context_name'],
-                #             self.loco_data['list_id'],
-                #             self.loco_data['list_index'])
-                #     else:
-                #         LOG.debug('EventsHandler: LoCo list not updated no list context data provided')
-                self.loco_data = None
+            # if event_type == EVENT_STOP:
+            #     # 15/01/2023 update_loco_context looks like not more used on website when playback stop
+            #     if event_data['allow_request_update_loco']:
+            #         if 'list_context_name' in self.loco_data:
+            #             self.nfsession.update_loco_context(
+            #                 self.loco_data['root_id'],
+            #                 self.loco_data['list_context_name'],
+            #                 self.loco_data['list_id'],
+            #                 self.loco_data['list_index'])
+            #         else:
+            #             LOG.debug('EventsHandler: LoCo list not updated no list context data provided')
+            #     self.loco_data = None
         except Exception as exc:  # pylint: disable=broad-except
             LOG.error('EVENT [{}] - The request has failed: {}', event_type, exc)
             # Ban future event requests from this event xid
@@ -182,7 +182,7 @@ class EventsHandler(threading.Thread):
                 'uiplaycontext': {
                     # 'list_id': list_id,  # not mandatory
                     # lolomo_id: use loco root id value
-                    'lolomo_id': loco_data['root_id'],
+                    'lolomo_id': 'unknown', # loco_data['root_id'],
                     'location': play_ctx_location,
                     'rank': 0,  # Perhaps this is a reference of cdn rank used in the manifest? (we use always 0)
                     'request_id': event_data['request_id'],
