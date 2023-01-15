@@ -189,7 +189,8 @@ class EventsHandler(threading.Thread):
                     'row': 0,  # Purpose not known
                     'track_id': event_data['track_id'],
                     'video_id': videoid_value
-                }
+                },
+                'uiVersion': G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION)
             })
         }
 
