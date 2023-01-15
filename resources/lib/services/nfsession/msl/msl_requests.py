@@ -163,11 +163,7 @@ class MSLRequests(MSLRequestBuilder):
             # On android, we have a different ESN from the login then use NETFLIXID auth may cause MSL errors,
             # (usually on L3 devices) because the identity do not match, so we need to use User id token auth
             # to switch MSL profile with current ESN when needed
-            #auth_scheme = MSL_AUTH_USER_ID_TOKEN
-            auth_scheme = MSL_AUTH_NETFLIXID
-            # 14/01/2023 Replaced auth with MSL_AUTH_NETFLIXID we hope in a temporary way, for unknown reasons
-            # using MSL_AUTH_EMAIL_PASSWORD auth now return "Email or password is incorrect" error
-            # then this does not allow us to use token id's
+            auth_scheme = MSL_AUTH_USER_ID_TOKEN
         else:
             auth_scheme = MSL_AUTH_NETFLIXID
 

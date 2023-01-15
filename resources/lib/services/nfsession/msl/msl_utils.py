@@ -17,7 +17,7 @@ import xbmcgui
 
 import resources.lib.kodi.ui as ui
 from resources.lib import common
-from resources.lib.common.exceptions import MSLError, ErrorMessage
+from resources.lib.common.exceptions import MSLError
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn
@@ -58,10 +58,6 @@ def display_error_info(func):
     def error_catching_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except ErrorMessage as exc:
-            from resources.lib.kodi.ui import show_ok_dialog
-            show_ok_dialog(common.get_local_string(30105), str(exc))
-            raise
         except Exception as exc:
             message = f'{exc.__class__.__name__}: {exc}'
             ui.show_error_info(common.get_local_string(30028), message,
