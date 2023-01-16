@@ -1,3 +1,10 @@
+v1.20.5 (2023-01-16)
+- NOTICE FOR ANDROID DEVICES: The website has fixed the recent bug for "MSL: Email or password is incorrect" error,
+ so video playback is now restored for all Android devices.
+- Disabled update loco context, is not more used to update watched status
+- Minor changes
+- Update translations zh_cn, zh_tw
+
 v1.20.4 (2023-01-14)
 - NOTICE FOR ANDROID DEVICES: Due to new changes to the website, many Android devices will not be able to play videos
  with this addon, at the moment there are no solutions, we hope this is a temporary problem.
