@@ -60,7 +60,7 @@ class Directory:
             # the update sanitize also relative settings to profiles (see _delete_non_existing_profiles in website.py)
             common.make_call('fetch_initial_page')
         # When the add-on is used in a browser window, we do not have to execute the auto profile selection
-        if not G.IS_ADDON_EXTERNAL_CALL:
+        if not G.IS_ADDON_EXTERNAL_CALL or self.params.get("autoselect_profile") == "True":
             autoselect_profile_guid = G.LOCAL_DB.get_value('autoselect_profile_guid', '')
             if autoselect_profile_guid and not common.WndHomeProps[common.WndHomeProps.IS_CONTAINER_REFRESHED]:
                 if not current_directory:
