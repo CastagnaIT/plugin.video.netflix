@@ -1199,20 +1199,20 @@ msgstr "O dodatku Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Automatyczne generowanie nowych numerów ESN (obejście dla limitu 540p)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "OSTRZEŻENIE: Nie używaj oryginalnego ESN urządzenia z oficjalnej aplikacji."
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Włącz przesunięcie dźwięku"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Przesunięcie dźwięku"
 
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Ustawia przesunięcie dźwięku, zastępując ustawienie Kodi"
