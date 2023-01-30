@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2022-09-08 15:01+0200\n"
+"PO-Revision-Date: 2023-01-30 12:44+0100\n"
 "Last-Translator: tajnymag\n"
 "Language-Team: Czech (Czech Republic)\n"
 "Language: cs_CZ\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 msgctxt "Addon Summary"
 msgid "Netflix"
@@ -85,7 +85,7 @@ msgstr "Další možnosti"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Pokud se odhlásíte, vše vaše data budou smazána. Vaše exportované video soubory v knihovně Kodi bude ale zachovány.[CR]Přejete si pokračovat?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -173,7 +173,7 @@ msgstr "Zobrazit ID pro filmy"
 
 msgctxt "#30041"
 msgid "View ID for shows"
-msgstr "Zobrazit ID pro seriály"
+msgstr "Zobrazit ID pro pořady"
 
 msgctxt "#30042"
 msgid "View ID for seasons"
@@ -209,25 +209,25 @@ msgstr "Knihovna"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Povolit správu knihovny"
 
-#. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30051
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30052"
 msgid "{} Set for library playback"
 msgstr "{} Nastavit pro přehrávání z knihovny"
 
-#. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30053, 30054
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} Nastavit při spuštění"
 
-#. The {} will be replaced with the graphic circle to mark when the functionality is active
 # Unused 30056
+#. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} Zapamatovat PIN"
 
 # Unused 30058
 msgctxt "#30059"
@@ -256,7 +256,7 @@ msgstr "Provést automatickou aktualizaci"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Aktualizace video knihovny"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -376,7 +376,7 @@ msgstr "Prohlédněte si doporučení a koukněte na něco nového, co by se vá
 
 msgctxt "#30095"
 msgid "All TV shows"
-msgstr "Všechny seriály"
+msgstr "Všechny pořady"
 
 msgctxt "#30096"
 msgid "All Movies"
@@ -523,7 +523,7 @@ msgstr "Cache vymazána"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Čekání na spuštění služby..."
 
 msgctxt "#30137"
 msgid "Enable VP9 profiles (disable if it causes artifacts)"
@@ -661,7 +661,7 @@ msgstr "Originály Netflixu"
 
 msgctxt "#30174"
 msgid "TV show genres"
-msgstr "Žánry seriálů"
+msgstr "Žánry pořadů"
 
 msgctxt "#30175"
 msgid "Movie genres"
@@ -681,7 +681,7 @@ msgstr "Otevřít další nastavení doplňku"
 
 msgctxt "#30179"
 msgid "Show trailers and more"
-msgstr "Zobrazit thrailery a další"
+msgstr "Zobrazit upoutávky a další"
 
 msgctxt "#30180"
 msgid "There has been a problem with login, it is possible that your account has not been confirmed or reactivated."
@@ -713,7 +713,7 @@ msgstr "Pro filmy"
 
 msgctxt "#30187"
 msgid "For TV show"
-msgstr "Pro seriály"
+msgstr "Pro pořady"
 
 msgctxt "#30188"
 msgid "Ask"
@@ -725,16 +725,16 @@ msgstr "film"
 
 msgctxt "#30190"
 msgid "TV show"
-msgstr "Seriál"
+msgstr "Pořad"
 
 # Unused 30191
 msgctxt "#30192"
 msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
-msgstr "[CR]Tyto soubory používají poskytovatelé scraperů pro integraci informací o filmech a seríálech, užitečné s bonusovými díly nebo režisérským střihem"
+msgstr "[CR]Tyto soubory používají poskytovatelé scraperů pro integraci informací o filmech a pořadech, užitečné s bonusovými epizodami nebo režisérským střihem"
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Zahrnout data z NFO souborů pořadu"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -742,7 +742,7 @@ msgstr "Omezit rozlišení videa na"
 
 msgctxt "#30195"
 msgid "Export new episodes"
-msgstr "Exportovat nové díly"
+msgstr "Exportovat nové epizody"
 
 msgctxt "#30196"
 msgid "Exclude from auto update"
@@ -754,7 +754,7 @@ msgstr "Zahrnout do automatické aktualizace"
 
 msgctxt "#30198"
 msgid "Exporting new episodes"
-msgstr "Export nových dílů"
+msgstr "Export nových epizody"
 
 msgctxt "#30199"
 msgid "Shared library (Kodi MySQL server is required)"
@@ -822,11 +822,11 @@ msgstr "Vynutit aktualizaci"
 
 msgctxt "#30215"
 msgid "Color of the titles included in \"My list\""
-msgstr "Zvýraznit tituly obsažené v mém seznamu barvou"
+msgstr "Barva titulů v \"Můj seznam\""
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Barva titulů označených jako \"Připomenout\""
 
 # Unused 30217 to 30218
 msgctxt "#30219"
@@ -868,7 +868,7 @@ msgstr "Nastavte profil pro synchronizaci"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "Při spuštění Kodi"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -921,7 +921,7 @@ msgstr "Top 10"
 
 msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
-msgstr "Vyberte první nezhlédnutou epizodu seriálu"
+msgstr "Vyberte první nezhlédnutou epizodu pořadu"
 
 # Unused 30244
 msgctxt "#30245"
@@ -1005,7 +1005,7 @@ msgstr "Chcete smazat celý obsah?"
 
 msgctxt "#30407"
 msgid "No matches found"
-msgstr "Nebyly nalezeny žádné díly"
+msgstr "Nebyly nalezeny žádné epizody"
 
 # Unused 30408, 30409
 msgctxt "#30410"
@@ -1108,7 +1108,7 @@ msgstr "Nové a oblíbené"
 
 msgctxt "#30701"
 msgid "Marks started tv shows as watched"
-msgstr "Označí rozkoukané seriály jako zhlédnuté"
+msgstr "Označí rozkoukané pořady jako zhlédnuté"
 
 #. Description of setting ID #30701
 msgctxt "#30702"
@@ -1141,79 +1141,79 @@ msgstr "Berte na vědomí, že povolením této možnosti dojde k vynucenému od
 
 msgctxt "#30721"
 msgid "Maximum height of black bars (Experimental)"
-msgstr ""
+msgstr "Maximální velikost černých pruhů (Experimentální)"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr ""
+msgstr "Oříznutá videa budou roztažena nastavením \"Režim zobrazení\" na \"Přiblížení\", čímž se omezí černé pruhy na nastavenou hodnotu. Například hodnota 10 % znamená, že černé pruhy mohou zabírat maximálně 10 % obrazovky. Pro vypnutí ponechte na hodnotě 50 %."
 
 msgctxt "#30723"
 msgid "Force reset the \"View mode\" setting"
-msgstr ""
+msgstr "Vynutit reset nastavení \"Režim zobrazení\""
 
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr ""
+msgstr "Kodi ukládá nastavení \"Přiblížení\" v \"Režim zobrazení\" permanentně. Povolením této možnosti bude nastaven režim \"Normální\" u předem zhlédnutých videí."
 
 # Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr ""
+msgstr "Povolit profily AV1 - JEN PRO VÝVOJÁŘE"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "Přidat složky Netflix do zdrojů knihovny Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "Složky \"Netflix-Movies\" a \"Netflix-Shows\" byly úspěšně přidány do zdrojů knihovny. Pro jejich zobrazení v menu, restartujte Kodi. Poté u nich nastavte vhodný druh obsahu a scraper."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Ručně] aktualizace musí být prováděny ručně spuštěním \"Exportovat nové epizody\" v kontextové nabídce každého pořadu, [Naplánované] můžete nastavit pravidelné aktualizace ve specifický čas, [Při spuštění Kodi] automatická aktualizace bude spuštěna se startem Kodi a bude provedena jen jednou denně"
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Synchronizuje knihovnu s Můj seznam, pokud byl můj seznam externě modifikován, např. skrze mobilní aplikaci nebo webové rozhraní. Aktualizace bude naplánována na následující aktualizační okno."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Pokud je povoleno, přidá informace o epizodách a filmech v případě, kdy Kodi není schopno stáhnout vlatní data. Tato možnost navíc přidá délku videí."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Povolte pouze, pokud používáte scraper \"Místní soubory informací\" nebo jeho alternativu, případně pokud některé tituly se v knihovně nezobrazují správně."
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Podpora"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "O doplňku Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Automaticky generuje nová ESN (workaround při maximálním rozlišení 540p)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "POZOR: Nepoužívejte originální ESN oficiální aplikace."
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Povolit posun zvuku"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Posun zvuku"
 
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Nastaví vlastní posunu zvuku nehledě na nastavení v Kodi"
