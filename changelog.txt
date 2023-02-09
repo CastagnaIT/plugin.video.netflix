@@ -1,3 +1,7 @@
+v1.20.6 (2023-02-09)
+- Fix SQLite error on startup using some linux systems
+- Update translations po, cs_cz
+
 v1.20.5 (2023-01-16)
 - NOTICE FOR ANDROID DEVICES: The website has fixed the recent bug for "MSL: Email or password is incorrect" error,
  so video playback is now restored for all Android devices.
