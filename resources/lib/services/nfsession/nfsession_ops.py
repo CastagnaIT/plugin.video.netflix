@@ -18,7 +18,7 @@ import resources.lib.utils.website as website
 from resources.lib.common import cache_utils
 from resources.lib.common.exceptions import (NotLoggedInError, MissingCredentialsError, WebsiteParsingError,
                                              MbrStatusAnonymousError, MetadataNotAvailable, LoginValidateError,
-                                             HttpError401, InvalidProfilesError, ErrorMessage)
+                                             HttpError401, InvalidProfilesError, ErrorMsgNoReport)
 from resources.lib.globals import G
 from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.path_requests import SessionPathRequests
@@ -103,7 +103,7 @@ class NFSessionOperations(SessionPathRequests):
         if xbmc.Player().isPlayingVideo():
             # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
             # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
-            raise ErrorMessage('It is not possible select a profile while a video is playing.')
+            raise ErrorMsgNoReport('It is not possible select a profile while a video is playing.')
         timestamp = time.time()
         LOG.info('Activating profile {}', guid)
         # 20/05/2020 - The method 1 not more working for switching PIN locked profiles

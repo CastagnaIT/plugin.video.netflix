@@ -15,7 +15,7 @@ from functools import wraps
 import xbmc
 
 from resources.lib import common
-from resources.lib.common.exceptions import InvalidVideoId
+from resources.lib.common.exceptions import InvalidVideoId, ErrorMsg
 from resources.lib.database.db_utils import VidLibProp
 from resources.lib.globals import G
 from resources.lib.kodi import nfo, ui
@@ -109,7 +109,7 @@ def request_kodi_library_update(**kwargs):
     """Request to scan and/or clean the Kodi library database"""
     # Particular way to start Kodi library scan/clean (details on request_kodi_library_update in library_updater.py)
     if not kwargs:
-        raise Exception('request_kodi_library_update: you must specify kwargs "scan=True" and/or "clean=True"')
+        raise ErrorMsg('request_kodi_library_update: you must specify kwargs "scan=True" and/or "clean=True"')
     common.send_signal(common.Signals.REQUEST_KODI_LIBRARY_UPDATE, data=kwargs, non_blocking=True)
 
 

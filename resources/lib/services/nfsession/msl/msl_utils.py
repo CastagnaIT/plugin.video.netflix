@@ -17,7 +17,7 @@ import xbmcgui
 
 import resources.lib.kodi.ui as ui
 from resources.lib import common
-from resources.lib.common.exceptions import MSLError, ErrorMessage
+from resources.lib.common.exceptions import MSLError, ErrorMsgNoReport, ErrorMsg
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn
@@ -58,7 +58,7 @@ def display_error_info(func):
     def error_catching_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except ErrorMessage as exc:
+        except ErrorMsgNoReport as exc:
             from resources.lib.kodi.ui import show_ok_dialog
             show_ok_dialog(common.get_local_string(30105), str(exc))
             raise
@@ -127,7 +127,7 @@ def _find_audio_data(player_state, manifest):
             stream = max(audio_track['streams'], key=lambda x: x['bitrate'])
             return stream['downloadable_id'], audio_track['new_track_id']
     # Not found?
-    raise Exception(
+    raise ErrorMsg(
         f'build_media_tag: unable to find audio data with language: {language}, channels: {channels}'
     )
 
@@ -144,7 +144,7 @@ def _find_video_data(player_state, manifest):
             if codec in stream['content_profile'] and width == stream['res_w'] and height == stream['res_h']:
                 return stream['downloadable_id'], video_track['new_track_id']
     # Not found?
-    raise Exception(
+    raise ErrorMsg(
         f'build_media_tag: unable to find video data with codec: {codec}, width: {width}, height: {height}'
     )
 
@@ -159,7 +159,7 @@ def _find_subtitle_data(manifest):
         if sub_track['isNoneTrack']:
             return sub_track['new_track_id']
     # Not found?
-    raise Exception('build_media_tag: unable to find subtitle data')
+    raise ErrorMsg('build_media_tag: unable to find subtitle data')
 
 
 def generate_logblobs_params():

@@ -11,7 +11,8 @@ import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
-from resources.lib.common.exceptions import LoginError, MissingCredentialsError, CacheMiss, HttpError401, APIError
+from resources.lib.common.exceptions import (LoginError, MissingCredentialsError, CacheMiss, HttpError401, APIError,
+                                             ErrorMsg)
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
 
@@ -101,7 +102,7 @@ def rate_thumb(videoid, rating, track_id_jaw):
 def update_remindme(operation, videoid, trackid):
     """Call API to add / remove "Remind Me" to not available videos"""
     if trackid == 'None':
-        raise Exception('Unable update remind me, trackid not found.')
+        raise ErrorMsg('Unable update remind me, trackid not found.')
     response = common.make_call(
         'post_safe',
         {'endpoint': 'playlistop',
@@ -129,7 +130,7 @@ def update_remindme(operation, videoid, trackid):
 def update_my_list(videoid, operation, params):
     """Call API to add / remove videos to my list"""
     if params['trackid'] == 'None':
-        raise Exception('Unable update my list, trackid not found.')
+        raise ErrorMsg('Unable update my list, trackid not found.')
     LOG.debug('My List: {} {}', operation, videoid)
     response = common.make_call(
         'post_safe',

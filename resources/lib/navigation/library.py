@@ -10,7 +10,7 @@
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library_utils as lib_utils
-from resources.lib.common.exceptions import ErrorMessage
+from resources.lib.common.exceptions import ErrorMsgNoReport
 from resources.lib.globals import G
 from resources.lib.kodi.library import get_library_cls
 from resources.lib.utils.logging import LOG
@@ -145,7 +145,7 @@ class LibraryActionExecutor:
             try:
                 xml_doc = minidom.parse(sources_xml_path)
             except Exception as exc:  # pylint: disable=broad-except
-                raise ErrorMessage('Cannot open "sources.xml" the file could be corrupted. '
+                raise ErrorMsgNoReport('Cannot open "sources.xml" the file could be corrupted. '
                                    'Please check manually on your Kodi userdata folder or reinstall Kodi.') from exc
         else:
             xml_doc = minidom.Document()

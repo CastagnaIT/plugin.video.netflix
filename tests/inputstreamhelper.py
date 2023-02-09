@@ -18,7 +18,7 @@ class Helper:
         elif protocol == 'rtmp':
             self.inputstream_addon = 'inputstream.rtmp'
         else:
-            raise Exception('UnsupportedProtocol')
+            raise Exception('UnsupportedProtocol') # pylint: disable=broad-exception-raised
 
     def check_inputstream(self):
         """A stub implementation of the inputstreamhelper Helper check_inputstream classmethod"""

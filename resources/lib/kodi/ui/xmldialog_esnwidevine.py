@@ -15,6 +15,7 @@ import xbmcvfs
 
 from resources.lib import common
 from resources.lib.common import IPC_ENDPOINT_MSL
+from resources.lib.common.exceptions import ErrorMsg
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.kodi import ui
@@ -171,7 +172,7 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
                 common.make_call('refresh_session_data', {'update_profiles': False})
                 self.esn_new = get_website_esn()
                 if not self.esn_new:
-                    raise Exception('It was not possible to obtain the ESN, try restarting the add-on')
+                    raise ErrorMsg('It was not possible to obtain the ESN, try restarting the add-on')
         self._update_esn_label()
 
     def _apply_changes(self):
@@ -278,11 +279,11 @@ def _get_cdm_file_path():
     else:
         lib_filename = None
     if not lib_filename:
-        raise Exception('Widevine library filename not mapped for this operative system')
+        raise ErrorMsg('Widevine library filename not mapped for this operative system')
     # Get the CDM path from inputstream.adaptive (such as: ../.kodi/cdm)
     from xbmcaddon import Addon
     addon = Addon('inputstream.adaptive')
     cdm_path = xbmcvfs.translatePath(addon.getSetting('DECRYPTERPATH'))
     if not common.folder_exists(cdm_path):
-        raise Exception(f'The CDM path {cdm_path} not exists')
+        raise ErrorMsg(f'The CDM path {cdm_path} not exists')
     return common.join_folders_paths(cdm_path, lib_filename)

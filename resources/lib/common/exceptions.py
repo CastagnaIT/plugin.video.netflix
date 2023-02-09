@@ -136,7 +136,10 @@ class DBRecordNotExistError(Exception):
 
 # All other exceptions
 
-class ErrorMessage(Exception):
+class ErrorMsg(Exception):
+    """Raise a generic error message"""
+
+class ErrorMsgNoReport(Exception):
     """Raise an error message by displaying a GUI dialog box WITHOUT instructions for reporting a bug"""
 
 

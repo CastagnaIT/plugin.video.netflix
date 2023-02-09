@@ -12,7 +12,7 @@ import base64
 import json
 from datetime import datetime
 
-from resources.lib.common.exceptions import MissingCredentialsError
+from resources.lib.common.exceptions import MissingCredentialsError, ErrorMsgNoReport
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .fileops import load_file
@@ -219,4 +219,4 @@ def _prepare_authentication_key_data(data):
                 continue
             result_data['cookies'].append(convert_chrome_cookie(cookie))
         return result_data
-    raise Exception('Authentication key file not supported')
+    raise ErrorMsgNoReport('Authentication key file not supported')

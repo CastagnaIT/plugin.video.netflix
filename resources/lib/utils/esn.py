@@ -10,6 +10,7 @@
 import time
 import re
 
+from resources.lib.common.exceptions import ErrorMsg
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from .logging import LOG
@@ -37,7 +38,7 @@ def set_esn(esn=None):
         # Generate the ESN if we are on Android or get it from the website
         esn = generate_android_esn() or get_website_esn()
         if not esn:
-            raise Exception('It was not possible to obtain an ESN')
+            raise ErrorMsg('It was not possible to obtain an ESN')
         G.LOCAL_DB.set_value('esn_timestamp', int(time.time()))
     G.LOCAL_DB.set_value('esn', esn, TABLE_SESSION)
     return esn
@@ -112,7 +113,7 @@ def generate_esn(init_part=None):
     if not init_part:
         esn_w_split = get_website_esn().split('-', 2)
         if len(esn_w_split) != 3:
-            raise Exception('Cannot generate ESN due to unexpected website ESN')
+            raise ErrorMsg('Cannot generate ESN due to unexpected website ESN')
         init_part = '-'.join(esn_w_split[:2]) + '-'
     esn = init_part
     possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -202,7 +203,7 @@ def _get_drm_info(wv_force_sec_lev):
     system_id = G.LOCAL_DB.get_value('drm_system_id', table=TABLE_SESSION)
 
     if not system_id:
-        raise Exception('Cannot get DRM system id')
+        raise ErrorMsg('Cannot get DRM system id')
 
     # Some device with false Widevine certification can be specified as Widevine L1
     # but we do not know how NF original app force the fallback to L3, so we add a manual setting

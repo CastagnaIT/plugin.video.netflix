@@ -9,7 +9,7 @@
 """
 from functools import wraps
 
-from .exceptions import InvalidVideoId
+from .exceptions import InvalidVideoId, ErrorMsg
 
 
 class VideoId:
@@ -297,7 +297,7 @@ def inject_video_id(path_offset, pathitems_arg='pathitems',
                 _path_to_videoid(kwargs, pathitems_arg, path_offset,
                                  inject_remaining_pathitems, inject_full_pathitems)
             except KeyError as exc:
-                raise Exception(f'Pathitems must be passed as kwarg {pathitems_arg}') from exc
+                raise ErrorMsg(f'Pathitems must be passed as kwarg {pathitems_arg}') from exc
             return func(*args, **kwargs)
         return wrapper
     return injecting_decorator
