@@ -36,12 +36,15 @@ INFO_CONVERT_KEY = {
     'PlayCount': 'setPlaycount'
 }
 
+# xbmcgui.ListItem do not support any kind of object serialisation, then transferring directories of ListItem's
+# from two python instances (add-on service instance to an add-on client instance) is usually impossible,
+# then better simplify the code despite a slight overhead in directory loading.
 
 # pylint: disable=redefined-builtin,invalid-name,no-member
 class ListItemW(xbmcgui.ListItem):
     """
-    Wrapper for xbmcgui.ListItem
-    to make it serializable with Pickle and provide helper functions ('offscreen' will be True by default)
+    Wrapper for xbmcgui.ListItem to add support for Pickle serialisation and add some helper functions
+    ('offscreen' will be True by default)
     """
 
     def __init__(self, label='', label2='', path=''):
@@ -66,63 +69,106 @@ class ListItemW(xbmcgui.ListItem):
                 super().addStreamInfo(stream_type, quality_info)
         else:
             video_info = super().getVideoInfoTag()
-            # "Cast" and "Tag" keys need to be converted
-            cast_names = state['infolabels'].pop('Cast', [])
-            video_info.setCast([xbmc.Actor(name) for name in cast_names])
-            tag_names = state['infolabels'].pop('Tag', [])
-            video_info.setTagLine(' / '.join(tag_names))
-            # From Kodi v20 ListItem.setInfo is deprecated, we need to use the methods of InfoTagVideo object
-            for key, value in state['infolabels'].items():
-                getattr(video_info, INFO_CONVERT_KEY[key])(value)
+            set_video_info_tag(state['infolabels'], video_info)
             if state['stream_info']:
                 video_info.addVideoStream(xbmc.VideoStreamDetail(**state['stream_info']['video']))
                 video_info.addAudioStream(xbmc.AudioStreamDetail(**state['stream_info']['audio']))
+            # From Kodi 20 "ResumeTime" and "TotalTime" must be set with setResumePoint of InfoTagVideo object
+            if 'ResumeTime' in state['properties']:
+                resume_time = float(state['properties'].pop('ResumeTime', 0))
+                total_time = float(state['properties'].pop('TotalTime', 0))
+                video_info.setResumePoint(resume_time, total_time)
         super().setProperties(state['properties'])
         super().setArt(state['art'])
         super().addContextMenuItems(state.get('context_menus', []))
         super().select(state.get('is_selected', False))
 
-    # In the 'xbmcgui.ListItem' is missing a lot of get/set methods then pickle cannot be implemented on C++ side,
-    #   so we override these methods to store locally the values that will be re-assigned when the object
-    #   will be unpickled with __setstate__, if is needed reuse these methods remove the comments from the code,
-    #   the data assignment to the original ListItem object is initially avoided to improve performance
+    # To improve performances we override the xbmcgui.ListItem methods to store values locally (to self.__dict__)
+    # without call the base method, then when the object will be unpickled with __setstate__,
+    # the local values will be assigned to the base original ListItem methods.
 
     def setInfo(self, type: str, infoLabels: Dict[str, str]):
         # NOTE: 'type' argument is ignored because we use only 'video' type, but kept for future changes
-        # super().setInfo(type, infoLabels)
-        self.__dict__['infolabels'] = infoLabels
+        if G.IS_SERVICE:
+            self.__dict__['infolabels'] = infoLabels
+        else:
+            super().setInfo(type, infoLabels)
+
+    def getProperty(self, key: str):
+        if G.IS_SERVICE:
+            return self.__dict__['properties'].get(key)
+        return super().getProperty(key)
 
     def setProperty(self, key: str, value: str):
-        super().setProperty(key, value)
-        self.__dict__['properties'][key] = value
+        if G.IS_SERVICE:
+            self.__dict__['properties'][key] = value
+        else:
+            super().setProperty(key, value)
 
     def setProperties(self, dictionary: Dict[str, str]):
-        super().setProperties(dictionary)
-        self.__dict__['properties'].update(dictionary)
+        if G.IS_SERVICE:
+            self.__dict__['properties'].update(dictionary)
+        else:
+            super().setProperties(dictionary)
+
+    def getArt(self, key: str):
+        if G.IS_SERVICE:
+            return self.__dict__['art'].get(key)
+        return super().getArt(key)
 
     def setArt(self, dictionary: Dict[str, str]):
-        # super().setArt(dictionary)
-        self.__dict__['art'].update(dictionary)
+        if G.IS_SERVICE:
+            self.__dict__['art'].update(dictionary)
+        else:
+            super().setArt(dictionary)
 
     def addStreamInfo(self, cType: str, dictionary: Dict[str, str]):
-        # super().addStreamInfo(cType, dictionary)
-        self.__dict__['stream_info'][cType] = dictionary
+        if G.IS_SERVICE:
+            self.__dict__['stream_info'][cType] = dictionary
+        else:
+            super().addStreamInfo(cType, dictionary)
 
     def addContextMenuItems(self, items: List[Tuple[str, str]], replaceItems=False):
-        # NOTE: 'replaceItems' argument is ignored because not works
-        # super().addContextMenuItems(items)
-        self.__dict__['context_menus'] = items
+        if G.IS_SERVICE:
+            self.__dict__['context_menus'] = items
+        else:
+            super().addContextMenuItems(items, replaceItems)
+
+    def isSelected(self):
+        if G.IS_SERVICE:
+            return self.__dict__.get('is_selected', False)
+        return super().isSelected()
 
     def select(self, selected: bool):
-        # super().select(selected)
-        self.__dict__['is_selected'] = selected
+        if G.IS_SERVICE:
+            self.__dict__['is_selected'] = selected
+        else:
+            super().select(selected)
 
-    # Custom helper methods
+    # Custom helper methods, for service instance only
 
     def addStreamInfoFromDict(self, dictionary):
-        """Add or update all stream info from a dictionary"""
+        """
+        Add or update all stream info from a dictionary
+        [CAN BE USED ON SERVICE INSTANCE ONLY]
+        """
         self.__dict__['stream_info'].update(dictionary)
 
     def updateInfo(self, dictionary):
-        """Add or update data over the existing data previously added with 'setInfo'"""
+        """
+        Add or update data over the existing data previously added with 'setInfo'
+        [CAN BE USED ON SERVICE INSTANCE ONLY]
+        """
         self.__dict__['infolabels'].update(dictionary)
+
+
+def set_video_info_tag(info: Dict[str, str], video_info_tag: xbmc.InfoTagVideo):
+    """Convert old info data (for ListItem.setInfo) and use it to set the new methods of InfoTagVideo object"""
+    # From Kodi v20 ListItem.setInfo is deprecated, we need to use the methods of InfoTagVideo object
+    # "Cast" and "Tag" keys need to be converted
+    cast_names = info.pop('Cast', [])
+    video_info_tag.setCast([xbmc.Actor(name) for name in cast_names])
+    tag_names = info.pop('Tag', [])
+    video_info_tag.setTagLine(' / '.join(tag_names))
+    for key, value in info.items():
+        getattr(video_info_tag, INFO_CONVERT_KEY[key])(value)

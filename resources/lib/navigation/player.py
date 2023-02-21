@@ -13,6 +13,7 @@ import xbmcplugin
 import resources.lib.common as common
 import resources.lib.kodi.infolabels as infolabels
 import resources.lib.kodi.ui as ui
+from resources.lib.common.kodi_wrappers import set_video_info_tag
 from resources.lib.globals import G
 from resources.lib.common.exceptions import InputStreamHelperError, ErrorMsgNoReport
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
@@ -75,7 +76,10 @@ def _play(videoid, is_played_from_strm=False):
     # When a video is played from Kodi library or Up Next add-on is needed set infoLabels and art info to list_item
     if is_played_from_strm or is_upnext_enabled or G.IS_ADDON_EXTERNAL_CALL:
         info, arts = common.make_call('get_videoid_info', videoid)
-        list_item.setInfo('video', info)
+        if G.IS_OLD_KODI_MODULES:
+            list_item.setInfo('video', info)
+        else:
+            set_video_info_tag(info, list_item.getVideoInfoTag())
         list_item.setArt(arts)
 
     # Start and initialize the action controller (see action_controller.py)

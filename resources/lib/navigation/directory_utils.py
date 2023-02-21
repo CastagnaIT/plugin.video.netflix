@@ -134,7 +134,11 @@ def auto_scroll(dir_items):
             to_resume_items = 0
             for _, list_item, _ in dir_items:
                 watched_items += list_item.getVideoInfoTag().getPlayCount() != 0
-                to_resume_items += float(list_item.getProperty('ResumeTime')) != 0
+                if G.IS_OLD_KODI_MODULES:
+                    resume_time = list_item.getProperty('ResumeTime')
+                else:
+                    resume_time = list_item.getVideoInfoTag().getResumeTime()
+                to_resume_items += float(resume_time) != 0
             if total_items == watched_items or (watched_items + to_resume_items) == 0:
                 return
             steps = _find_index_last_watched(total_items, dir_items)
@@ -174,7 +178,11 @@ def _find_index_last_watched(total_items, dir_items):
         if list_item.getVideoInfoTag().getPlayCount() != 0:
             # Last watched item
             return index + 1
-        if float(list_item.getProperty('ResumeTime')) != 0:
+        if G.IS_OLD_KODI_MODULES:
+            resume_time = list_item.getProperty('ResumeTime')
+        else:
+            resume_time = list_item.getVideoInfoTag().getResumeTime()
+        if float(resume_time) != 0:
             # Last partial watched item
             return index
     return 0
