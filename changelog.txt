@@ -1,3 +1,7 @@
+v1.20.7 (2023-02-21)
+- Workaround/fix for wrong plot language due to website bug
+- Cleanup/fix ListItem deprecated methods/properties (Kodi 20)
+
 v1.20.6 (2023-02-09)
 - Fix SQLite error on startup using some linux systems
 - Update translations po, cs_cz
