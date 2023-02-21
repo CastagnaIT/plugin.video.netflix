@@ -97,7 +97,7 @@ SUPPLEMENTAL_TYPE_TRAILERS = 'trailers'
 INFO_MAPPINGS = [
     ('Title', ['title', 'value']),  # Title is needed only for UpNext metadata on play method
     ('Year', ['releaseYear', 'value']),
-    ('Plot', ['regularSynopsis', 'value']),  # Complete plot
+    ('Plot', ['synopsis', 'value']), # 'regularSynopsis' returns english language, website bug  # ['regularSynopsis', 'value']),  # Complete plot
     ('PlotOutline', ['synopsis', 'value']),  # Small plot
     ('Season', ['seasonCount', 'value']),  # Path used with videolist data for 'tvshow' ListItems (get total seasons)
     ('Season', ['summary', 'value', 'shortName']),  # Path used with season list data for 'season' ListItems (get current season)
