@@ -7,6 +7,8 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import xbmcvfs
+
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
 import resources.lib.kodi.library_utils as lib_utils
@@ -162,7 +164,8 @@ class LibraryActionExecutor:
                                                                              lib_utils.FOLDER_NAME_MOVIES))
         lib_path_shows = common.check_folder_path(common.join_folders_paths(lib_utils.get_library_path(),
                                                                             lib_utils.FOLDER_NAME_SHOWS))
-
+        lib_path_movies = xbmcvfs.makeLegalFilename(xbmcvfs.translatePath(lib_path_movies))
+        lib_path_shows = xbmcvfs.makeLegalFilename(xbmcvfs.translatePath(lib_path_shows))
         # Check if the paths already exists in source tags of video content type
         is_movies_source_exist = False
         is_shows_source_exist = False

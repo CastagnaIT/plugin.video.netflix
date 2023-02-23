@@ -9,7 +9,6 @@
 """
 from datetime import datetime, timedelta
 
-import AddonSignals
 import xbmc
 
 from resources.lib.globals import G
@@ -38,9 +37,8 @@ class LibraryUpdateService(xbmc.Monitor):
         self.scan_awaiting = False
         self.clean_in_progress = False
         self.clean_awaiting = False
-        AddonSignals.registerSlot(G.ADDON.getAddonInfo('id'),
-                                  common.Signals.REQUEST_KODI_LIBRARY_UPDATE,
-                                  self.request_kodi_library_update)
+        common.register_slot(self.request_kodi_library_update, common.Signals.REQUEST_KODI_LIBRARY_UPDATE,
+                             is_signal=True)
 
     def on_service_tick(self):
         """Check if update is due and trigger it"""
