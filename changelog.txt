@@ -1,3 +1,7 @@
+v1.20.8 (2023-02-24)
+- Fix Kodi library update when you add/remove tv shows and movies
+- Fix wrong path added to Kodi sources from library setting
+
 v1.20.7 (2023-02-21)
 - Workaround/fix for wrong plot language due to website bug
 - Cleanup/fix ListItem deprecated methods/properties (Kodi 20)
