@@ -77,12 +77,16 @@ class SessionHTTPRequests(SessionBase):
                 break
             except httpx.RemoteProtocolError as exc:
                 if 'Server disconnected' in str(exc):
-                    # Known reasons:
-                    # - The server has revoked cookies validity
-                    # - The user has executed "Sign out of all devices" from account settings
-                    # Clear the user ID tokens are tied to the credentials
-                    self.msl_handler.clear_user_id_tokens()
-                    raise NotLoggedInError from exc
+                    LOG.error('HTTP request error: {}', exc)
+                    if retry == 3:  # We retry 2 times to make sure that is not failed for another reason
+                        # Known reasons:
+                        # - The server has revoked cookies validity
+                        # - The user has executed "Sign out of all devices" from account settings
+                        # Clear the user ID tokens are tied to the credentials
+                        self.msl_handler.clear_user_id_tokens()
+                        raise NotLoggedInError from exc
+                    retry += 1
+                    LOG.warn('Another attempt will be performed ({})', retry)
                 raise
             except httpx.ConnectError as exc:
                 LOG.error('HTTP request error: {}', exc)
