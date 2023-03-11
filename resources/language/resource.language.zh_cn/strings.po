@@ -36,7 +36,7 @@ msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
 msgstr "输入PIN码来观看受限内容"
 
-# Unused 30003
+#. Unused 30003
 msgctxt "#30004"
 msgid "Password"
 msgstr "密码"
@@ -65,7 +65,7 @@ msgctxt "#30010"
 msgid "Lists of all kinds"
 msgstr "各类列表"
 
-# Unused 30011
+#. Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
 msgstr "个人资料选项和家长控制"
@@ -134,7 +134,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "播放错误"
 
-# Unused 30029
+#. Unused 30029
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "从资料库中删除"
@@ -143,17 +143,20 @@ msgctxt "#30031"
 msgid "General"
 msgstr "常规"
 
-# Unused 30032
-msgctxt "#30033"
-msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "启用杜比数字+（高品质音频和高级方案全景声）"
+msgctxt "#30032"
+msgid "Codecs"
+msgstr ""
 
-# Unused 30034
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
+msgstr ""
+
+#. Unused 30034
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive 设置..."
 
-# Unused 30036
+#. Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
 msgstr "皮肤视图类型"
@@ -210,32 +213,32 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr "启用Kodi资料库管理"
 
+#. Unused 30051
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30051
 msgctxt "#30052"
 msgid "{} Set for library playback"
 msgstr "{} 设为资料库播放"
 
+#. Unused 30053, 30054
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
 msgstr "{} 设为自动登录"
 
+#. Unused 30056
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
 msgstr "{} 记住PIN码"
 
-# Unused 30058
+#. Unused 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "注意，您将更新许多标题{}。[CR]这可能会导致服务问题或帐户暂时封禁。[CR]您想继续吗?"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "启用HEVC档次（Android 超高清/高动态范围/杜比视界）"
+msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
+msgstr ""
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -318,8 +321,8 @@ msgid "Pause when skipping"
 msgstr "跳过时暂停"
 
 msgctxt "#30081"
-msgid "Force HDCP 2.2 video streams"
-msgstr "强制HDCP 2.2视频流"
+msgid "Force HDCP version on video streams"
+msgstr ""
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -386,12 +389,12 @@ msgid "Main Menu"
 msgstr "主菜单"
 
 msgctxt "#30098"
-msgid "Enable HDR profiles"
-msgstr "启用高动态范围档次"
+msgid "Enable HDR10"
+msgstr ""
 
 msgctxt "#30099"
-msgid "Enable DolbyVision profiles"
-msgstr "启用杜比视界档次"
+msgid "Enable Dolby Vision"
+msgstr ""
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -433,7 +436,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "登录成功"
 
-# Unused 30110
+#. Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "没有内容"
@@ -446,7 +449,7 @@ msgctxt "#30113"
 msgid "Logout successful"
 msgstr "注销成功"
 
-# Unused 30114, 30115
+#. Unused 30114, 30115
 msgctxt "#30116"
 msgid "Advanced Add-on Configuration"
 msgstr "高级附加组件配置"
@@ -455,7 +458,7 @@ msgctxt "#30117"
 msgid "Cache"
 msgstr "缓存"
 
-# Unused 30118, 30119
+#. Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "无法自动从Kodi资料库中删除季，请手动操作"
@@ -525,8 +528,8 @@ msgid "Waiting for service start-up..."
 msgstr "等待服务启动..."
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "启用VP9档次（如果导致伪影则禁用）"
+msgid "Enable VP9 codec"
+msgstr ""
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -540,7 +543,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "导入现有资料库"
 
-# Unused 30141 to 30143
+#. Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "禁用WebVTT字幕支持"
@@ -589,14 +592,14 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "您有Netflix高级方案账户吗？"
 
-# Unused 30156
+#. Unused 30156
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "配置已完成"
 
 msgctxt "#30158"
-msgid "Run add-on configuration wizard"
-msgstr "运行附加组件配置向导"
+msgid "Restore the add-on default configuration"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -726,7 +729,7 @@ msgctxt "#30190"
 msgid "TV show"
 msgstr "电视节目"
 
-# Unused 30191
+#. Unused 30191
 msgctxt "#30192"
 msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]这些文件由提供商信息收集器用来集成电影和电视节目信息，可用于额外章节或导演剪辑。"
@@ -827,7 +830,7 @@ msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
 msgstr "标为'提醒我'的标题颜色"
 
-# Unused 30217 to 30218
+#. Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "禁用同步完成通知"
@@ -844,7 +847,7 @@ msgctxt "#30222"
 msgid "Kid account"
 msgstr "儿童帐户"
 
-# Unused 30223
+#. Unused 30223
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "自动更新模式"
@@ -885,7 +888,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "仅显示评分为[B]{}[/B]的标题。"
 
-# Unused 30234
+#. Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "将视频的观看状态与Netflix同步"
@@ -922,7 +925,7 @@ msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
 msgstr "选择首个未观看的电视节目剧集"
 
-# Unused 30244
+#. Unused 30244
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
 msgstr "删除导出到资料库的内容"
@@ -935,7 +938,7 @@ msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
 msgstr "每页结果（如遇超时错误，请减少）"
 
-# Unused 30248 to 30299
+#. Unused 30248 to 30299
 msgctxt "#30300"
 msgid "Do you want to remove watched status of \"{}\"?"
 msgstr "您是否要删除\"{}\"的已观看状态？"
@@ -944,7 +947,7 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "包括Kodi资料库（仅发送数据）"
 
-# Unused 30302 to 30339
+#. Unused 30302 to 30339
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "选择登录方式[CR]（如果使用电子邮件/密码登录总是返回“不正确的密码”，请使用身份验证密钥，查看GitHub自述文件中的说明）"
@@ -969,7 +972,7 @@ msgctxt "#30345"
 msgid "Enter PIN"
 msgstr "输入PIN码"
 
-# Unused 30346 to 30398
+#. Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "历史记录排序方式"
@@ -1006,7 +1009,7 @@ msgctxt "#30407"
 msgid "No matches found"
 msgstr "未找到匹配项"
 
-# Unused 30408, 30409
+#. Unused 30408, 30409
 msgctxt "#30410"
 msgid "By term"
 msgstr "按关键词"
@@ -1023,7 +1026,7 @@ msgctxt "#30413"
 msgid "By genre/subgenre ID"
 msgstr "按类型/子类型ID"
 
-# Unused 30414 to 30499
+#. Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
 msgstr "根据地区代码首选音频/字幕语言（如果可用）"
@@ -1032,7 +1035,7 @@ msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
 msgstr "默认首选立体声音轨"
 
-# Unused 30502 to 30599
+#. Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
 msgstr "ESN / Widevine 设置"
@@ -1086,7 +1089,7 @@ msgctxt "#30612"
 msgid "MSL manifest version"
 msgstr "MSL清单版本"
 
-# Unused 30613 to 30619
+#. Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from:[CR]{}"
 msgstr "此标题：[CR]{}"
@@ -1100,7 +1103,7 @@ msgctxt "#30622"
 msgid "{} Remind me"
 msgstr "{} 提醒我"
 
-# Unused 30623 to 30699
+#. Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "最新热门影片"
@@ -1156,10 +1159,10 @@ msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr "Kodi 永久保存 \"视图模式\" \"满屏\" 设置，启用此设置可在播放之前观看的视频时恢复 \"正常\" 视图模式。"
 
-# Unused 30725, 30726
+#. Unused 30725, 30726
 msgctxt "#30727"
-msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr "启用AV1档次 - 仅用于开发测试"
+msgid "Enable AV1 codec"
+msgstr ""
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1213,6 +1216,28 @@ msgctxt "#30739"
 msgid "Audio offset"
 msgstr "音频偏移"
 
+#. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
 msgstr "覆盖Kodi音频偏移设置"
+
+msgctxt "#30741"
+msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
+msgstr ""
+
+msgctxt "#30742"
+msgid "Do you want to enable HDR10 support?"
+msgstr ""
+
+msgctxt "#30743"
+msgid "Do you want to enable HDR Dolby Vision support?"
+msgstr ""
+
+#. Description of setting ID 30081
+msgctxt "#30744"
+msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
+msgstr ""
+
+msgctxt "#30745"
+msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
+msgstr ""
