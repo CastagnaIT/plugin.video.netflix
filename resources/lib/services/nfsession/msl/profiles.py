@@ -20,8 +20,8 @@ CBCS_PRK = 'dash-cbcs-prk'
 HDR = 'hevc-hdr-main10-'
 DV5 = 'hevc-dv5-main10-'
 VP9_PROFILE0 = 'vp9-profile0-'
-# VP9 Profile 2 (HDR) test only, the website does not list it but some videos still have this profile available
-# VP9_PROFILE2 = 'vp9-profile2-'
+# VP9 Profile 2 (10/12 bit color depth) the website does not list it but some videos still have this profile available
+VP9_PROFILE2 = 'vp9-profile2-'
 AV1 = 'av1-main-'
 
 # Video codec levels
@@ -69,9 +69,9 @@ PROFILES = {
     'vp9profile0':
         _profile_strings(base=VP9_PROFILE0,
                          tails=[(LEVELS_2[1:2] + LEVELS_3 + LEVELS_4[:1], CENC)]),
-    # 'vp9profile2':
-    #     _profile_strings(base=VP9_PROFILE2,
-    #                      tails=[(LEVELS_3 + LEVELS_4[:1] + LEVELS_5, CENC_PRK)])
+    'vp9profile2':
+        _profile_strings(base=VP9_PROFILE2,
+                         tails=[(LEVELS_3 + LEVELS_4[:1] + LEVELS_5, CENC_PRK)]),
     'av1':
         _profile_strings(base=AV1,
                          tails=[(ALL_LEVELS, CBCS_PRK)])
@@ -84,15 +84,11 @@ def enabled_profiles():
             PROFILES['h264'] + PROFILES['h264_prk_qc'] +
             _subtitle_profiles() +
             _additional_profiles('vp9profile0', 'enable_vp9_profiles') +
-            # _additional_profiles('vp9profile2', 'enable_vp9_profiles') +
+            _additional_profiles('vp9profile2', ['enable_vp9_profiles', 'enable_vp9.2_profiles']) +
             _additional_profiles('dolbysound', 'enable_dolby_sound') +
             _additional_profiles('hevc', 'enable_hevc_profiles') +
-            _additional_profiles('hdr',
-                                 ['enable_hevc_profiles',
-                                  'enable_hdr_profiles']) +
-            _additional_profiles('dolbyvision',
-                                 ['enable_hevc_profiles',
-                                  'enable_dolbyvision_profiles']) +
+            _additional_profiles('hdr', ['enable_hevc_profiles', 'enable_hdr_profiles']) +
+            _additional_profiles('dolbyvision', ['enable_hevc_profiles', 'enable_dolbyvision_profiles']) +
             _additional_profiles('av1', 'enable_av1_profiles'))
 
 

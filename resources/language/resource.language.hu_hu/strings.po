@@ -36,7 +36,7 @@ msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
 msgstr "Kód megadás a felnőtt tartalomhoz"
 
-# Unused 30003
+#. Unused 30003
 msgctxt "#30004"
 msgid "Password"
 msgstr "Jelszó"
@@ -65,7 +65,7 @@ msgctxt "#30010"
 msgid "Lists of all kinds"
 msgstr "Vegyes lista"
 
-# Unused 30011
+#. Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
 msgstr "Profil opciók és szülői kontroll"
@@ -134,7 +134,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Lejátszási hiba"
 
-# Unused 30029
+#. Unused 30029
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Törlés a médiatárból"
@@ -143,17 +143,20 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Általános"
 
-# Unused 30032
-msgctxt "#30033"
-msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "Dolby Digital Plus (DDPlus HQ és Atmos Prémium) engedélyezése"
+msgctxt "#30032"
+msgid "Codecs"
+msgstr ""
 
-# Unused 30034
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
+msgstr ""
+
+#. Unused 30034
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "InputStream Adaptive beállítások..."
 
-# Unused 30036
+#. Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
 msgstr "Felszín nézettípusok"
@@ -210,32 +213,32 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr "Kodi médiatár kezelés engedélyezve"
 
+#. Unused 30051
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30051
 msgctxt "#30052"
 msgid "{} Set for library playback"
 msgstr "{} Beállítva a médiatár lejátszásához"
 
+#. Unused 30053, 30054
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
 msgstr "{} Beállítva intításkor"
 
+#. Unused 30056
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
 msgstr "{} Ne feledje a PIN-kódot"
 
-# Unused 30058
+#. Unused 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "Légy óvatos, amikor sok címet frissítesz egyszerre {}.[CR]Ez okozhat szolgáltatási problémákat vagy ideiglenes fiók tiltást is.[CR]Kívánod folytatni?"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "HEVC profil engedélyezése (4k Android/HDR/DolbyVision)"
+msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
+msgstr ""
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -318,8 +321,8 @@ msgid "Pause when skipping"
 msgstr "Pillanat állj átugrásnál"
 
 msgctxt "#30081"
-msgid "Force HDCP 2.2 video streams"
-msgstr "HDCP 2.2 videóstream kényszerítése"
+msgid "Force HDCP version on video streams"
+msgstr ""
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -386,12 +389,12 @@ msgid "Main Menu"
 msgstr "Főmenü"
 
 msgctxt "#30098"
-msgid "Enable HDR profiles"
-msgstr "HDR profil engedélyezése"
+msgid "Enable HDR10"
+msgstr ""
 
 msgctxt "#30099"
-msgid "Enable DolbyVision profiles"
-msgstr "DolbyVision profil engedélyezése"
+msgid "Enable Dolby Vision"
+msgstr ""
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -433,7 +436,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Bejelentkezés sikeres"
 
-# Unused 30110
+#. Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Nincs tartalom ehhez"
@@ -446,7 +449,7 @@ msgctxt "#30113"
 msgid "Logout successful"
 msgstr "Bejelentkezés sikeres"
 
-# Unused 30114, 30115
+#. Unused 30114, 30115
 msgctxt "#30116"
 msgid "Advanced Add-on Configuration"
 msgstr "Haladó beállítások"
@@ -455,7 +458,7 @@ msgctxt "#30117"
 msgid "Cache"
 msgstr "Tár"
 
-# Unused 30118, 30119
+#. Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Kodi médiatárból nem törölhető automatikusan a szezon, töröld kézzel."
@@ -525,8 +528,8 @@ msgid "Waiting for service start-up..."
 msgstr "Várakozás a kiszolgáló indítására..."
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "VP9-profil engedélyezése (tiltsd le, ha lejátszási problémát okoz)"
+msgid "Enable VP9 codec"
+msgstr ""
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -540,7 +543,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Meglévő médiatár importálása"
 
-# Unused 30141 to 30143
+#. Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "WebVTT felirat támogatás tiltása"
@@ -589,14 +592,14 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Van Netflix prémium hozzáférésed?"
 
-# Unused 30156
+#. Unused 30156
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Beállítás kész"
 
 msgctxt "#30158"
-msgid "Run add-on configuration wizard"
-msgstr "Kiegészítő beállítás varázsló indítása"
+msgid "Restore the add-on default configuration"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -726,7 +729,7 @@ msgctxt "#30190"
 msgid "TV show"
 msgstr "sorozat"
 
-# Unused 30191
+#. Unused 30191
 msgctxt "#30192"
 msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]Ezeket a fájlokat a szolgáltatói információs scrapperek használják a filmek és a sorozatok információinak integrálására, hasznosak a bónusz epizódok vagy a rendezői vágások során."
@@ -827,7 +830,7 @@ msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
 msgstr "Az emlékeztetőre felvett címek színe"
 
-# Unused 30217 to 30218
+#. Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "A Szinkronizálás kész, infó elrejtése"
@@ -844,7 +847,7 @@ msgctxt "#30222"
 msgid "Kid account"
 msgstr "Gyermek fiók"
 
-# Unused 30223
+#. Unused 30223
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "Automata frissítési mód"
@@ -885,7 +888,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Csak az értékelt címeket mutatja [B]{}[/B]"
 
-# Unused 30234
+#. Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Nézett státusz szinkronizálása a Netflix-el"
@@ -922,7 +925,7 @@ msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
 msgstr "Első nem látott sorozatrész kiválasztása"
 
-# Unused 30244
+#. Unused 30244
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
 msgstr "A médiatárba exportált fájlok törlése"
@@ -935,7 +938,7 @@ msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
 msgstr "Eredmények oldalanként (időtúllépés esetén csökkenti azt)"
 
-# Unused 30248 to 30299
+#. Unused 30248 to 30299
 msgctxt "#30300"
 msgid "Do you want to remove watched status of \"{}\"?"
 msgstr "Törlöd a nézett állapotot \"{}\"?"
@@ -944,7 +947,7 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Tartalmazza a Kodi médiatárat (csak adatok küldése)"
 
-# Unused 30302 to 30339
+#. Unused 30302 to 30339
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "Válassza ki a bejelentkezési módot[CR](ha a bejelentkezés E-Mail/Jelszóval mindig hibával visszatér \"hibás jelszó\", akkor használja a Hitelesítési kulcsot, a GitHub ReadMe-ben található leírás szerint)"
@@ -969,7 +972,7 @@ msgctxt "#30345"
 msgid "Enter PIN"
 msgstr "PIN megadása"
 
-# Unused 30346 to 30398
+#. Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "Rendezés időrend szerint"
@@ -1006,7 +1009,7 @@ msgctxt "#30407"
 msgid "No matches found"
 msgstr "Nincs találat"
 
-# Unused 30408, 30409
+#. Unused 30408, 30409
 msgctxt "#30410"
 msgid "By term"
 msgstr "Kifejezés szerint"
@@ -1023,7 +1026,7 @@ msgctxt "#30413"
 msgid "By genre/subgenre ID"
 msgstr "Műfaj/alműfaj azonosító szerint"
 
-# Unused 30414 to 30499
+#. Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
 msgstr "Előnyben részesíti a hang/felirat nyelvét országkóddal (ha van)"
@@ -1032,7 +1035,7 @@ msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
 msgstr "Alapértelmezés szerint előnyben részesíti a sztereó hangsávokat"
 
-# Unused 30502 to 30599
+#. Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
 msgstr "ESN / Widevine beállítások"
@@ -1086,7 +1089,7 @@ msgctxt "#30612"
 msgid "MSL manifest version"
 msgstr "MSL manifest verziója"
 
-# Unused 30613 to 30619
+#. Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from:[CR]{}"
 msgstr "Ez a cím elérhető lesz ettől az időponttól:[CR]{}"
@@ -1100,7 +1103,7 @@ msgctxt "#30622"
 msgid "{} Remind me"
 msgstr "{} Emlékeztető"
 
-# Unused 30623 to 30699
+#. Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "Új és népszerű"
@@ -1156,10 +1159,10 @@ msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr "A Kodi a \"Nézetmód\" \"Zoom\" beállítást menti, lehetővé téve ezt a beállítást a \"Normál\" nézet módjának visszaállításához, egy korábban megtekintett videó lejátszásakor."
 
-# Unused 30725, 30726
+#. Unused 30725, 30726
 msgctxt "#30727"
-msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
-msgstr "Engedélyezze az AV1 profilokat - Csak fejlesztési teszt"
+msgid "Enable AV1 codec"
+msgstr ""
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1213,6 +1216,28 @@ msgctxt "#30739"
 msgid "Audio offset"
 msgstr ""
 
+#. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
+msgstr ""
+
+msgctxt "#30741"
+msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
+msgstr ""
+
+msgctxt "#30742"
+msgid "Do you want to enable HDR10 support?"
+msgstr ""
+
+msgctxt "#30743"
+msgid "Do you want to enable HDR Dolby Vision support?"
+msgstr ""
+
+#. Description of setting ID 30081
+msgctxt "#30744"
+msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
+msgstr ""
+
+msgctxt "#30745"
+msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
 msgstr ""

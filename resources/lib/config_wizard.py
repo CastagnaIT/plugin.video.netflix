@@ -12,37 +12,40 @@ from xbmc import getCondVisibility
 from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
-from resources.lib.common import get_system_platform, is_device_4k_capable, get_local_string, json_rpc
+from resources.lib.common import (get_system_platform, is_device_4k_capable, get_local_string, json_rpc,
+                                  get_supported_hdr_types, get_android_system_props)
 from resources.lib.common.exceptions import InputStreamHelperError
 from resources.lib.globals import G
-from resources.lib.kodi.ui import show_ok_dialog
+from resources.lib.kodi.ui import show_ok_dialog, ask_for_confirmation
 from resources.lib.utils.logging import LOG
 
 
-def run_addon_configuration(show_end_msg=False):
+def run_addon_configuration(restore=False):
     """
     Add-on configuration wizard,
     automatically configures profiles and add-ons dependencies, based on user-supplied data and device characteristics
+    and restore to default some expert settings when requested
     """
-    system = get_system_platform()
-    LOG.debug('Running add-on configuration wizard ({})', system)
-    is_4k_capable = is_device_4k_capable()
+    LOG.debug('Running add-on configuration wizard')
+    _set_codec_profiles()
+    _set_kodi_settings()
+    _set_isa_addon_settings(get_system_platform() == 'android')
 
-    _set_profiles(system, is_4k_capable)
-    _set_kodi_settings(system)
-    _set_isa_addon_settings(is_4k_capable, system == 'android')
-
-    # This settings for now used only with android devices and it should remain disabled (keep it for test),
-    # in the future it may be useful for other platforms or it may be removed
-    G.ADDON.setSettingBool('enable_force_hdcp', False)
+    # Restore default settings that may have been misconfigured by the user
+    if restore:
+        G.ADDON.setSettingString('isa_streamselection_override', 'disabled')
+        G.ADDON.setSettingString('stream_max_resolution', '--')
+        G.ADDON.setSettingString('stream_force_hdcp', '--')
+        G.ADDON.setSettingString('msl_manifest_version', 'default')
+        G.ADDON.setSettingString('cdn_server', 'Server 1')
 
     # Enable UpNext if it is installed and enabled
     G.ADDON.setSettingBool('UpNextNotifier_enabled', getCondVisibility('System.AddonIsEnabled(service.upnext)'))
-    if show_end_msg:
+    if restore:
         show_ok_dialog(get_local_string(30154), get_local_string(30157))
 
 
-def _set_isa_addon_settings(is_4k_capable, hdcp_override):
+def _set_isa_addon_settings(hdcp_override):
     """Method for self-configuring of InputStream Adaptive add-on"""
     try:
         is_helper = inputstreamhelper.Helper('mpd')
@@ -64,36 +67,43 @@ def _set_isa_addon_settings(is_4k_capable, hdcp_override):
             isa_addon.setSettingInt('STREAMSELECTION', 0)
         # 'Ignore display' should only be set when Kodi display resolution is not 4K
         isa_addon.setSettingBool('IGNOREDISPLAY',
-                                 is_4k_capable and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
+                                 is_device_4k_capable() and (getScreenWidth() != 3840 or getScreenHeight() != 2160))
 
 
-def _set_profiles(system, is_4k_capable):
-    """Method for self-configuring of netflix manifest profiles"""
+def _set_codec_profiles():
+    """Method for self-configuring of netflix manifest codec profiles"""
     enable_vp9_profiles = True
     enable_hevc_profiles = False
-    if system == 'android':
-        # By default we do not enable VP9 because on some devices do not fully support it
+    if get_system_platform() == 'android':
+        # We cannot determine the codecs supported by the device in advance so...
+        # ...we do not enable VP9 because many older mobile devices do not support it
         enable_vp9_profiles = False
-        # By default we do not enable HEVC because not all device support it, then enable it only on 4K capable devices
-        enable_hevc_profiles = is_4k_capable
+        # ...we enable HEVC by default on tv boxes and 4K capable devices
+        is_android_tv = 'TV' in get_android_system_props().get('ro.build.characteristics', '').upper()
+        enable_hevc_profiles = is_android_tv or is_device_4k_capable()
+        # Get supported HDR types by the display (configuration works from Kodi v20)
+        supported_hdr_types = get_supported_hdr_types()
+        if supported_hdr_types and enable_hevc_profiles: # for now only HEVC have HDR/DV
+            is_hdr10_enabled = False
+            is_dv_enabled = False
+            # Ask to enable HDR10
+            if 'hdr10' in supported_hdr_types:
+                is_hdr10_enabled = ask_for_confirmation('Netflix', get_local_string(30742))
+            # Ask to enable Dolby Vision
+            if is_hdr10_enabled and 'dolbyvision' in supported_hdr_types:
+                is_dv_enabled = ask_for_confirmation('Netflix', get_local_string(30743))
+            G.ADDON.setSettingBool('enable_hdr_profiles', is_hdr10_enabled)
+            G.ADDON.setSettingBool('enable_dolbyvision_profiles', is_dv_enabled)
     G.ADDON.setSettingBool('enable_vp9_profiles', enable_vp9_profiles)
+    G.ADDON.setSettingBool('enable_vp9.2_profiles', False)
     G.ADDON.setSettingBool('enable_hevc_profiles', enable_hevc_profiles)
-
-    # Todo: currently lacks a method on Kodi to know if HDR is supported and currently enabled
-    #       as soon as the method is available it will be possible to automate all HDR code selection
-    #       and remove the HDR settings (already present in Kodi settings)
-    # if is_4k_capable and ***kodi_hdr_enabled***:
-    #     _ask_dolby_vision()
+    G.ADDON.setSettingBool('enable_av1_profiles', False)
+    G.ADDON.setSettingBool('disable_webvtt_subtitle', False)
 
 
-def _ask_dolby_vision():
-    # Todo: ask to user if want to enable dolby vision
-    pass
-
-
-def _set_kodi_settings(system):
+def _set_kodi_settings():
     """Method for self-configuring Kodi settings"""
-    if system == 'android':
+    if get_system_platform() == 'android':
         # Media Codec hardware acceleration is mandatory, otherwise only the audio stream is played
         try:
             json_rpc('Settings.SetSettingValue', {'setting': 'videoplayer.usemediacodecsurface', 'value': True})

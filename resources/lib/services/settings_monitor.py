@@ -13,7 +13,7 @@ import xbmc
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
-from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH, CACHE_MANIFESTS
+from resources.lib.common.cache_utils import CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH
 from resources.lib.database.db_utils import TABLE_SETTINGS_MONITOR
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
@@ -109,7 +109,6 @@ class SettingsMonitor(xbmc.Monitor):
             G.LOCAL_DB.set_value('page_results', page_results, TABLE_SETTINGS_MONITOR)
             clean_buckets += [CACHE_COMMON, CACHE_MYLIST, CACHE_SEARCH]
 
-        _check_manifest_settings_status(clean_buckets)
         _check_watched_status_sync()
 
         # Clean cache buckets if needed (to get new results and so on...)
@@ -122,23 +121,6 @@ class SettingsMonitor(xbmc.Monitor):
             LOG.debug('SettingsMonitor: addon will be rebooted')
             # Open root page
             common.container_update(common.build_url(['root'], mode=G.MODE_DIRECTORY))
-
-
-def _check_manifest_settings_status(clean_buckets):
-    """Check settings that require to clean Manifest cache bucket"""
-    # When one of these settings changes they will affect the Manifest request,
-    # therefore cached manifests must be deleted (see load_manifest on msl_handler.py)
-    menu_keys_bool = ['enable_dolby_sound', 'enable_vp9_profiles', 'enable_hevc_profiles',
-                      'enable_hdr_profiles', 'enable_dolbyvision_profiles', 'enable_force_hdcp',
-                      'disable_webvtt_subtitle', 'enable_av1_profiles']
-    collected_data = ''
-    for menu_key in menu_keys_bool:
-        collected_data += str(int(G.ADDON.getSettingBool(menu_key)))
-    collected_data += G.ADDON.getSettingString('msl_manifest_version')
-    collected_data_old = G.LOCAL_DB.get_value('manifest_settings_status', '', TABLE_SETTINGS_MONITOR)
-    if collected_data != collected_data_old:
-        G.LOCAL_DB.set_value('manifest_settings_status', collected_data, TABLE_SETTINGS_MONITOR)
-        clean_buckets.append(CACHE_MANIFESTS)
 
 
 def _check_watched_status_sync():

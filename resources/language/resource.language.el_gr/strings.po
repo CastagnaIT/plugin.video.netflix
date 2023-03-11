@@ -36,7 +36,7 @@ msgctxt "#30002"
 msgid "Enter PIN to watch restricted content"
 msgstr "Εισάγετε το ΠΙΝ για την παρακολούθηση περιορισμένου περιεχομένου"
 
-# Unused 30003
+#. Unused 30003
 msgctxt "#30004"
 msgid "Password"
 msgstr "Κωδικός"
@@ -65,7 +65,7 @@ msgctxt "#30010"
 msgid "Lists of all kinds"
 msgstr "Λίστες όλων των ειδών"
 
-# Unused 30011
+#. Unused 30011
 msgctxt "#30012"
 msgid "Profiles options and parental control"
 msgstr "Επιλογές προφίλ και γονικού ελέγχου"
@@ -134,7 +134,7 @@ msgctxt "#30028"
 msgid "Playback error"
 msgstr "Αποτυχία αναπαραγωγής"
 
-# Unused 30029
+#. Unused 30029
 msgctxt "#30030"
 msgid "Remove from library"
 msgstr "Αφαίρεση από την βιβλιοθήκη"
@@ -143,17 +143,20 @@ msgctxt "#30031"
 msgid "General"
 msgstr "Γενικά"
 
-# Unused 30032
-msgctxt "#30033"
-msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
-msgstr "Ενεργοποίηση του Dolby Digital Plus (DDPlus HQ και Atmos στο Πλήρες)"
+msgctxt "#30032"
+msgid "Codecs"
+msgstr ""
 
-# Unused 30034
+msgctxt "#30033"
+msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
+msgstr ""
+
+#. Unused 30034
 msgctxt "#30035"
 msgid "InputStream Adaptive settings..."
 msgstr "Ρυθμίσεις προσθέτου InputStream"
 
-# Unused 30036
+#. Unused 30036
 msgctxt "#30037"
 msgid "Skin viewtypes"
 msgstr "Τύποι εμφάνισης του κελύφους"
@@ -210,32 +213,32 @@ msgctxt "#30050"
 msgid "Enable Kodi library management"
 msgstr ""
 
+#. Unused 30051
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30051
 msgctxt "#30052"
 msgid "{} Set for library playback"
 msgstr "{} Εφαρμογή για αναπαραγογή από βιβλιοθήκη"
 
+#. Unused 30053, 30054
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30053, 30054
 msgctxt "#30055"
 msgid "{} Set at start-up"
 msgstr ""
 
+#. Unused 30056
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
-# Unused 30056
 msgctxt "#30057"
 msgid "{} Remember PIN"
 msgstr ""
 
-# Unused 30058
+#. Unused 30058
 msgctxt "#30059"
 msgid "Be careful, you are about to update many titles {}.[CR]This may cause service problems or temporary ban of the account.[CR]Do you want to continue?"
 msgstr "Να είστε προσεκτικοί, πρόκειτε να ενημερώσετε αρκετούς τιτλους {}.[CR]Αυτό μπορεί να προκαλέσει προβλήματα υπηρεσίας ή προσωρινή φραγή του λογαριασμού.[CR]Θέλετε να συνεχίσετε;"
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
-msgstr "Ενεργοποίηση προφίλ HEVC (4Κ για Android/HDR/DolbyVision)"
+msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
+msgstr ""
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -318,8 +321,8 @@ msgid "Pause when skipping"
 msgstr "Παύση κατά την αποφυγή"
 
 msgctxt "#30081"
-msgid "Force HDCP 2.2 video streams"
-msgstr "Επιβολή HDCP 2.2 για τις ροές βίντεο"
+msgid "Force HDCP version on video streams"
+msgstr ""
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -386,12 +389,12 @@ msgid "Main Menu"
 msgstr "Κυρίως μενού"
 
 msgctxt "#30098"
-msgid "Enable HDR profiles"
-msgstr "Ενεργοποίηση προφίλ HDR"
+msgid "Enable HDR10"
+msgstr ""
 
 msgctxt "#30099"
-msgid "Enable DolbyVision profiles"
-msgstr "Ενεργοποίηση προφίλ Dolbyvision"
+msgid "Enable Dolby Vision"
+msgstr ""
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -433,7 +436,7 @@ msgctxt "#30109"
 msgid "Login successful"
 msgstr "Είσοδος επιτυχής"
 
-# Unused 30110
+#. Unused 30110
 msgctxt "#30111"
 msgid "There is no contents"
 msgstr "Δεν υπάρχουν περιεχόμενα"
@@ -446,7 +449,7 @@ msgctxt "#30113"
 msgid "Logout successful"
 msgstr "Αποσύνδεση επιτυχής"
 
-# Unused 30114, 30115
+#. Unused 30114, 30115
 msgctxt "#30116"
 msgid "Advanced Add-on Configuration"
 msgstr "Ρυθμίσεις του προσθέτου για προχωρημένους"
@@ -455,7 +458,7 @@ msgctxt "#30117"
 msgid "Cache"
 msgstr "Προσωρινή μνήμη"
 
-# Unused 30118, 30119
+#. Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
 msgstr "Αδυναμία αυτόματης αφαίρεσης της σεζόν από την βιβλιοθήκη του Kodi, παρακαλώ κάντε το χειροκίνητα"
@@ -525,8 +528,8 @@ msgid "Waiting for service start-up..."
 msgstr ""
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (disable if it causes artifacts)"
-msgstr "Ενεργοποίηση των VP9 προφίλ (απενεργοποιήστε σε περίπτωση προκαλείται οπτικός θόρυβος)"
+msgid "Enable VP9 codec"
+msgstr ""
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -540,7 +543,7 @@ msgctxt "#30140"
 msgid "Import existing library"
 msgstr "Εισαγωγή υπάρχουσας βιβλιοθήκης"
 
-# Unused 30141 to 30143
+#. Unused 30141 to 30143
 msgctxt "#30144"
 msgid "Disable WebVTT subtitle support"
 msgstr "Απενεργοποίηση υποστήριξης υποτίτλων WebVTT"
@@ -589,14 +592,14 @@ msgctxt "#30155"
 msgid "Do you have a Netflix Premium account?"
 msgstr "Έχετε πλήρη λογαριασμό του Νέτφλιξ;"
 
-# Unused 30156
+#. Unused 30156
 msgctxt "#30157"
 msgid "The configuration has been completed"
 msgstr "Η ρύθμιση έχει ολοκληρωθεί"
 
 msgctxt "#30158"
-msgid "Run add-on configuration wizard"
-msgstr "Εκτέλεση μάγου ρύθμισης του προσθέτου"
+msgid "Restore the add-on default configuration"
+msgstr ""
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -726,7 +729,7 @@ msgctxt "#30190"
 msgid "TV show"
 msgstr "Τηλεοπτική σειρά"
 
-# Unused 30191
+#. Unused 30191
 msgctxt "#30192"
 msgid "[CR]These files are used by the provider information scrapers to integrate movies and TV shows info, useful with bonus episodes or director's cut"
 msgstr "[CR]Αυτά τα αρχεία χρησιμοποιούνται από τους φιλτραριστές παρόχων πληροφοριών για την ενσωμάτωση πληροφοριών σε ταινίες και τηλεοπτικές σειρές, χρήσιμο για έξτρα επεισόδια ή τις περικοπές του σκηνοθέτη"
@@ -827,7 +830,7 @@ msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
-# Unused 30217 to 30218
+#. Unused 30217 to 30218
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"
 msgstr "Απενεργοποίηση ειδοποίησης για ολοκλήρωση συγχρονισμού"
@@ -844,7 +847,7 @@ msgctxt "#30222"
 msgid "Kid account"
 msgstr "Λογαριασμός παιδικός"
 
-# Unused 30223
+#. Unused 30223
 msgctxt "#30224"
 msgid "Auto update mode"
 msgstr "Λειτουργία αυτόματης ενημέρωσης"
@@ -885,7 +888,7 @@ msgctxt "#30233"
 msgid "Only show titles rated [B]{}[/B]."
 msgstr "Δείξε μόνο τίτλους βαθμολογημένοι [B]{}[/B]."
 
-# Unused 30234
+#. Unused 30234
 msgctxt "#30235"
 msgid "Synchronize the watched status of the videos with Netflix"
 msgstr "Συγχρονισμός της κατάστασης προβολής των βίντεο με το Νέτφλιξ"
@@ -922,7 +925,7 @@ msgctxt "#30243"
 msgid "Select first unwatched TV show episode"
 msgstr "Επιλογή του πρώτου μη-παρακολουθημένου επεισοδίου σειράς"
 
-# Unused 30244
+#. Unused 30244
 msgctxt "#30245"
 msgid "Deleting files exported to the library"
 msgstr "Διαγραφή αρχείων εξηγμένων στην βιβλιοθήκη"
@@ -935,7 +938,7 @@ msgctxt "#30247"
 msgid "Results per page (in case of timeout error decrease it)"
 msgstr "Αποτελέσματα ανά σελίδα (σε περίπτωση σφάλματος από λήξη χρόνου μειώστε τα)"
 
-# Unused 30248 to 30299
+#. Unused 30248 to 30299
 msgctxt "#30300"
 msgid "Do you want to remove watched status of \"{}\"?"
 msgstr "Θέλετε να αφαιρέσετε την κατάσταση παρακολούθησης για το \"{}\";"
@@ -944,7 +947,7 @@ msgctxt "#30301"
 msgid "Include Kodi library (only sending data)"
 msgstr "Συμπεριέλαβε στην βιβλιοθήκη του Kodi (μόνο αποστολή δεδομένων)"
 
-# Unused 30302 to 30339
+#. Unused 30302 to 30339
 msgctxt "#30340"
 msgid "Choose the login method[CR](if the login with E-Mail/Password always returns \"incorrect password\", then use Authentication key, instructions in the GitHub ReadMe)"
 msgstr "Επιλέξτε την μέθοδο εισόδου[CR](εάν η είσοδος με E-mail/Κωδικό επιστρέφει πάντα \"λανθασμένος κωδικός\", πάντα να χρησιμοποιείτε το Κλειδί ταυτοποίησης, οδηγίες στο GitHub Readme)"
@@ -969,7 +972,7 @@ msgctxt "#30345"
 msgid "Enter PIN"
 msgstr "Εισαγωγή PIN"
 
-# Unused 30346 to 30398
+#. Unused 30346 to 30398
 msgctxt "#30399"
 msgid "Sort history by"
 msgstr "Ταξινόμιση ιστορικού από"
@@ -1006,7 +1009,7 @@ msgctxt "#30407"
 msgid "No matches found"
 msgstr "Δεν βρέθηκαν αποτελέσματα"
 
-# Unused 30408, 30409
+#. Unused 30408, 30409
 msgctxt "#30410"
 msgid "By term"
 msgstr "Μέσω όρου"
@@ -1023,7 +1026,7 @@ msgctxt "#30413"
 msgid "By genre/subgenre ID"
 msgstr "Μέσω είδους/ID υπόειδους"
 
-# Unused 30414 to 30499
+#. Unused 30414 to 30499
 msgctxt "#30500"
 msgid "Prefer the audio/subtitle language with country code (if available)"
 msgstr "Προτίμηση της γλώσσας ήχων/υποτίτλων με κωδικό χώρας (εάν είναι διαθέσιμοι)"
@@ -1032,7 +1035,7 @@ msgctxt "#30501"
 msgid "Prefer stereo audio tracks by default"
 msgstr "Προτίμηση των στέρεο ηχητικών κλιπ εξ'ορισμού"
 
-# Unused 30502 to 30599
+#. Unused 30502 to 30599
 msgctxt "#30600"
 msgid "ESN / Widevine settings"
 msgstr "ESN / Ρυθμίσεις Widevine"
@@ -1086,7 +1089,7 @@ msgctxt "#30612"
 msgid "MSL manifest version"
 msgstr "Έκδοση MSL δήλωσης"
 
-# Unused 30613 to 30619
+#. Unused 30613 to 30619
 msgctxt "#30620"
 msgid "This title will be available from:[CR]{}"
 msgstr "Αυτός ο τίτλος θα είναι διαθέσιμος από:[CR]{}"
@@ -1100,7 +1103,7 @@ msgctxt "#30622"
 msgid "{} Remind me"
 msgstr "{} Θύμισε μου"
 
-# Unused 30623 to 30699
+#. Unused 30623 to 30699
 msgctxt "#30700"
 msgid "New and popular"
 msgstr "Νέα και δημοφιλή"
@@ -1156,9 +1159,9 @@ msgctxt "#30724"
 msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
 msgstr ""
 
-# Unused 30725, 30726
+#. Unused 30725, 30726
 msgctxt "#30727"
-msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
+msgid "Enable AV1 codec"
 msgstr ""
 
 msgctxt "#30728"
@@ -1213,6 +1216,28 @@ msgctxt "#30739"
 msgid "Audio offset"
 msgstr ""
 
+#. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
+msgstr ""
+
+msgctxt "#30741"
+msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
+msgstr ""
+
+msgctxt "#30742"
+msgid "Do you want to enable HDR10 support?"
+msgstr ""
+
+msgctxt "#30743"
+msgid "Do you want to enable HDR Dolby Vision support?"
+msgstr ""
+
+#. Description of setting ID 30081
+msgctxt "#30744"
+msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
+msgstr ""
+
+msgctxt "#30745"
+msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
 msgstr ""

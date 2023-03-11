@@ -1019,8 +1019,90 @@
                     </control>
                 </setting>
             </group>
+            <!--GROUP: Codecs-->
+            <group id="2" label="30032">
+                <setting id="enable_dolby_sound" type="boolean" label="30033" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_vp9_profiles" type="boolean" label="30137" help="30745">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_vp9.2_profiles" type="boolean" label="30741" help="30745" parent="enable_vp9_profiles">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies> <!-- Feature available on Kodi v21 or above -->
+                        <dependency type="visible">
+                            <!-- Temporary commented, a Kodi bug prevent to use settings with multiple conditions correctly
+                            <and>
+                                <or>
+                                    <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition>
+                                    <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
+                                </or>
+                                <condition setting="enable_vp9_profiles">true</condition>
+                            </and>-->
+                            <or><!-- to remove when Kodi bug on settings is fixed -->
+                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition>  <!-- v21 pre-releases -->
+                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
+                            </or>
+                        </dependency>
+                        <dependency type="enable"><!-- to remove when Kodi bug on settings is fixed -->
+                            <condition setting="enable_vp9_profiles">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_hevc_profiles" type="boolean" label="30060" help="30745">
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition on="property" name="InfoBool">system.platform.android</condition>
+                        </dependency>
+                    </dependencies>
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_hdr_profiles" type="boolean" label="30098" help="" parent="enable_hevc_profiles">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition setting="enable_hevc_profiles">true</condition>
+                            <condition on="property" name="ishdrdisplay" />
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_dolbyvision_profiles" type="boolean" label="30099" help="" parent="enable_hevc_profiles">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition setting="enable_hevc_profiles">true</condition>
+                            <condition on="property" name="ishdrdisplay" /> <!-- when Kodi v19 will be not supported anymore this can be improved by using System.SupportedHDRTypes -->
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_av1_profiles" type="boolean" label="30727" help="30745">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies> <!-- Feature available on Kodi v21 or above -->
+                        <dependency type="visible">
+                            <or>
+                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition> <!-- v21 pre-releases -->
+                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
+                            </or>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
             <!--GROUP: Playback-->
-            <group id="2" label="30078">
+            <group id="3" label="30078">
                 <setting id="isa_streamselection_override" type="string" label="30703" help="30704">
                   <level>0</level>
                   <default>disabled</default>
@@ -1058,69 +1140,27 @@
                     </constraints>
                     <control type="spinner" format="string"/>
                 </setting>
-                <!--If you should be added/removed profile settings is needed to reflect the changes also on settings_monitor.py "content profiles"-->
-                <setting id="enable_dolby_sound" type="boolean" label="30033" help="">
+                <setting id="stream_force_hdcp" type="string" label="30081" help="30744">
                     <level>0</level>
-                    <default>true</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="enable_vp9_profiles" type="boolean" label="30137" help="">
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="enable_hevc_profiles" type="boolean" label="30060" help="">
-                    <dependencies>
-                        <dependency type="visible">
-                            <condition on="property" name="InfoBool">system.platform.android</condition>
-                        </dependency>
-                    </dependencies>
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="enable_hdr_profiles" type="boolean" label="30098" help="" parent="enable_hevc_profiles">
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                    <dependencies>
-                        <dependency type="visible" setting="enable_hevc_profiles">true</dependency>
-                    </dependencies>
-                </setting>
-                <setting id="enable_dolbyvision_profiles" type="boolean" label="30099" help="" parent="enable_hevc_profiles">
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                    <dependencies>
-                        <dependency type="visible" setting="enable_hevc_profiles">true</dependency>
-                    </dependencies>
-                </setting>
-                <setting id="enable_av1_profiles" type="boolean" label="30727">
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                    <dependencies> <!-- Feature available on Kodi v20 or above -->
-                        <dependency type="visible">
-                            <or>
-                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,19.9)</condition> <!-- v20 pre-releases -->
-                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,20)</condition>
-                            </or>
-                        </dependency>
-                    </dependencies>
+                    <default>--</default>
+                    <constraints>
+                        <options>
+                            <option label="--">--</option>
+                            <option label="HDCP 1.4">1.4</option>
+                            <option label="HDCP 2.2">2.2</option>
+                        </options>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="spinner" format="string"/>
                 </setting>
                 <setting id="disable_webvtt_subtitle" type="boolean" label="30144" help="">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="enable_force_hdcp" type="boolean" label="30081" help="">
-                    <level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                </setting>
             </group>
             <!--GROUP: Advanced Addon Configuration-->
-            <group id="3" label="30116">
+            <group id="4" label="30116">
                 <setting id="show_esn_widevine_options" type="action" label="30600">
                     <level>0</level>
                     <data>RunPlugin(plugin://$ID/action/show_esn_widevine_options/)</data>
@@ -1198,7 +1238,7 @@
                 </setting>
             </group>
             <!--GROUP: Cache-->
-            <group id="4" label="30117">
+            <group id="5" label="30117">
                 <setting id="cache_ttl" type="integer" label="30084" help="">
                     <level>0</level>
                     <default>180</default>

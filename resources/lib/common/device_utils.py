@@ -83,8 +83,7 @@ def is_device_4k_capable():
         is_drm_l1_security_level = (G.LOCAL_DB.get_value('drm_security_level', '', table=TABLE_SESSION) == 'L1'
                                     and not is_l3_forced)
         # Check if HDCP level is 2.2 or up
-        hdcp_level = get_hdcp_level()
-        hdcp_4k_capable = hdcp_level and hdcp_level >= 2.2
+        hdcp_4k_capable = get_hdcp_level() >= 2.2
         return bool(is_drm_l1_security_level and hdcp_4k_capable)
     return False
 
@@ -100,11 +99,11 @@ def is_device_l1_enabled():
 
 
 def get_hdcp_level():
-    """Get the HDCP level when exist else None"""
+    """Get the HDCP level"""
     from re import findall
     from resources.lib.database.db_utils import TABLE_SESSION
     drm_hdcp_level = findall('\\d+\\.\\d+', G.LOCAL_DB.get_value('drm_hdcp_level', '', table=TABLE_SESSION))
-    return float(drm_hdcp_level[0]) if drm_hdcp_level else None
+    return float(drm_hdcp_level[0]) if drm_hdcp_level else 1.4
 
 
 def get_user_agent(enable_android_mediaflag_fix=False):
@@ -177,3 +176,37 @@ def _check_internet():
             # Error when is not reachable
             pass
     return False
+
+def get_supported_hdr_types():
+    """
+    Get supported HDR types by the display
+    :return: supported type as list ['hdr10', 'hlg', 'hdr10+', 'dolbyvision']
+    """
+    if G.KODI_VERSION < 20: # The infolabel 'System.SupportedHDRTypes' is supported from Kodi v20
+        return []
+    # The infolabel System.SupportedHDRTypes returns the HDR types supported by the hardware as a string:
+    # "HDR10, HLG, HDR10+, Dolby Vision"
+    return xbmc.getInfoLabel('System.SupportedHDRTypes').replace(' ', '').lower().split(',')
+
+def get_android_system_props():
+    """Get Android system properties by parsing the raw output of getprop into a dictionary"""
+    try:
+        import subprocess
+        info_dict = {}
+        info = subprocess.check_output(['/system/bin/getprop']).decode('utf-8', errors='ignore').replace('\r\n', '\n')
+        for line in info.split(']\n'):
+            if not line:
+                continue
+            try:
+                name, value = line.split(': ', 1)
+            except ValueError:
+                LOG.debug('Failed to parse getprop line: {}', line)
+                continue
+            name = name.strip()[1:-1]  # Remove brackets [] and spaces
+            if value and value[0] == '[':
+                value = value[1:]
+            info_dict[name] = value
+        return info_dict
+    except OSError:
+        LOG.error('Cannot get "getprop" data due to system error.')
+        return {}
