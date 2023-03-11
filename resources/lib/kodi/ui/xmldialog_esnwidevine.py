@@ -98,9 +98,6 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
             # Update value for auto generate ESN
             is_checked = self.getControl(40100).isSelected()
             G.LOCAL_DB.set_value('esn_auto_generate', is_checked)
-            # Delete manifests cache, to prevent possible problems in relation to previous ESN used
-            from resources.lib.common.cache_utils import CACHE_MANIFESTS
-            G.CACHE.clear([CACHE_MANIFESTS])
             self.close()
         # [X or Cancel] button - close and cancel changes
         if controlId in [40099, 40022]:
@@ -195,9 +192,6 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
             # The changes to MSL (key handshake) will be done when will be played a video
             set_esn(self.esn)
             G.LOCAL_DB.set_value('widevine_force_seclev', self.wv_force_sec_lev, TABLE_SESSION)
-            # Delete manifests cache, to prevent possible problems in relation to previous ESN used
-            from resources.lib.common.cache_utils import CACHE_MANIFESTS
-            G.CACHE.clear([CACHE_MANIFESTS])
 
 
 def _save_system_info():

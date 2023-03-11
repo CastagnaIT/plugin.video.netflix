@@ -146,10 +146,12 @@ msgctxt "#30031"
 msgid "General"
 msgstr ""
 
-# Unused 30032
+msgctxt "#30032"
+msgid "Codecs"
+msgstr ""
 
 msgctxt "#30033"
-msgid "Enable Dolby Digital Plus (DDPlus HQ and Atmos on Premium)"
+msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
 msgstr ""
 
 # Unused 30034
@@ -244,7 +246,7 @@ msgid "Be careful, you are about to update many titles {}.[CR]This may cause ser
 msgstr ""
 
 msgctxt "#30060"
-msgid "Enable HEVC profiles (4k for Android/HDR/DolbyVision)"
+msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
 msgstr ""
 
 msgctxt "#30061"
@@ -328,7 +330,7 @@ msgid "Pause when skipping"
 msgstr ""
 
 msgctxt "#30081"
-msgid "Force HDCP 2.2 video streams"
+msgid "Force HDCP version on video streams"
 msgstr ""
 
 msgctxt "#30082"
@@ -396,11 +398,11 @@ msgid "Main Menu"
 msgstr ""
 
 msgctxt "#30098"
-msgid "Enable HDR profiles"
+msgid "Enable HDR10"
 msgstr ""
 
 msgctxt "#30099"
-msgid "Enable DolbyVision profiles"
+msgid "Enable Dolby Vision"
 msgstr ""
 
 msgctxt "#30100"
@@ -538,7 +540,7 @@ msgid "Waiting for service start-up..."
 msgstr ""
 
 msgctxt "#30137"
-msgid "Enable VP9 profiles (disable if it causes artifacts)"
+msgid "Enable VP9 codec"
 msgstr ""
 
 msgctxt "#30138"
@@ -610,7 +612,7 @@ msgid "The configuration has been completed"
 msgstr ""
 
 msgctxt "#30158"
-msgid "Run add-on configuration wizard"
+msgid "Restore the add-on default configuration"
 msgstr ""
 
 msgctxt "#30159"
@@ -1187,7 +1189,7 @@ msgstr ""
 # Unused 30725, 30726
 
 msgctxt "#30727"
-msgid "Enable AV1 profiles - FOR DEVELOPMENT TEST ONLY"
+msgid "Enable AV1 codec"
 msgstr ""
 
 msgctxt "#30728"
@@ -1242,6 +1244,28 @@ msgctxt "#30739"
 msgid "Audio offset"
 msgstr ""
 
+#. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
+msgstr ""
+
+msgctxt "#30741"
+msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
+msgstr ""
+
+msgctxt "#30742"
+msgid "Do you want to enable HDR10 support?"
+msgstr ""
+
+msgctxt "#30743"
+msgid "Do you want to enable HDR Dolby Vision support?"
+msgstr ""
+
+#. Description of setting ID 30081
+msgctxt "#30744"
+msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
+msgstr ""
+
+msgctxt "#30745"
+msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
 msgstr ""

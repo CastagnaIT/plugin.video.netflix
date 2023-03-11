@@ -91,9 +91,9 @@ def regen_esn(esn):
 
 def generate_android_esn(wv_force_sec_lev=None):
     """Generate an ESN if on android or return the one from user_data"""
-    from resources.lib.common.device_utils import get_system_platform
+    from resources.lib.common.device_utils import get_system_platform, get_android_system_props
     if get_system_platform() == 'android':
-        props = _get_android_system_props()
+        props = get_android_system_props()
         is_android_tv = 'TV' in props.get('ro.build.characteristics', '').upper()
         if is_android_tv:
             return _generate_esn_android_tv(props, wv_force_sec_lev)
@@ -219,29 +219,6 @@ def _get_drm_info(wv_force_sec_lev):
         system_id = '4445'
     return drm_security_level, system_id
 
-
-def _get_android_system_props():
-    """Get Android system properties by parsing the raw output of getprop into a dictionary"""
-    try:
-        import subprocess
-        info_dict = {}
-        info = subprocess.check_output(['/system/bin/getprop']).decode('utf-8', errors='ignore').replace('\r\n', '\n')
-        for line in info.split(']\n'):
-            if not line:
-                continue
-            try:
-                name, value = line.split(': ', 1)
-            except ValueError:
-                LOG.debug('Failed to parse getprop line: {}', line)
-                continue
-            name = name.strip()[1:-1]  # Remove brackets [] and spaces
-            if value and value[0] == '[':
-                value = value[1:]
-            info_dict[name] = value
-        return info_dict
-    except OSError:
-        LOG.error('Cannot get "getprop" data due to system error.')
-        return {}
 
 def _create_id64chars():
     # The Android full length ESN include to the end a hashed ID of 64 chars,

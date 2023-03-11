@@ -125,15 +125,24 @@ class MSLHandler:
             LOG.error('DRM session data not valid (Session ID: {}, Challenge: {})', challenge, sid)
 
         from pprint import pformat
-        isa_addon = xbmcaddon.Addon('inputstream.adaptive')
-        hdcp_override = isa_addon.getSettingBool('HDCPOVERRIDE')
-        hdcp_4k_capable = common.is_device_4k_capable() or G.ADDON.getSettingBool('enable_force_hdcp')
 
-        hdcp_version = []
-        if not hdcp_4k_capable and hdcp_override:
-            hdcp_version = ['1.4']
-        if hdcp_4k_capable and hdcp_override:
-            hdcp_version = ['2.2']
+        isa_hdcp_override = False
+        if G.KODI_VERSION < 20:
+            isa_addon = xbmcaddon.Addon('inputstream.adaptive')
+            isa_hdcp_override = isa_addon.getSettingBool('HDCPOVERRIDE')
+
+        hdcp_level = None
+        force_hdcp_level = G.ADDON.getSettingString('stream_force_hdcp')
+        if force_hdcp_level != '--':
+            hdcp_level = force_hdcp_level
+        elif common.get_hdcp_level() >= 2.2:
+            hdcp_level = '2.2'
+        if not hdcp_level and isa_hdcp_override:
+            hdcp_level = '1.4'
+
+        # The manifest param 'supportedHdcpVersions' is set by hdcp_version
+        # which can accept the following values: empty list, '1.4' and '2.2'
+        hdcp_version = [hdcp_level] if hdcp_level else []
 
         manifest_ver = G.ADDON.getSettingString('msl_manifest_version')
         profiles = enabled_profiles()
@@ -152,14 +161,11 @@ class MSLHandler:
         # we still make the license requests.
         if manifest_ver == 'v1':
             endpoint_url, request_data = self._build_manifest_v1(viewable_id=viewable_id, hdcp_version=hdcp_version,
-                                                                 hdcp_override=hdcp_override, profiles=profiles,
-                                                                 challenge=challenge)
+                                                                 profiles=profiles, challenge=challenge)
         else:  # Default - most recent version
-            endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id,
-                                                                 hdcp_version=hdcp_version,
-                                                                 hdcp_override=hdcp_override,
-                                                                 profiles=profiles,
-                                                                 challenge=challenge, sid=sid, xid=xid)
+            endpoint_url, request_data = self._build_manifest_v2(viewable_id=viewable_id, hdcp_version=hdcp_version,
+                                                                 profiles=profiles, challenge=challenge,
+                                                                 sid=sid, xid=xid)
         manifest = self.msl_requests.chunked_request(endpoint_url, request_data, esn)
 
         # The xid must be used also for each future MSL requests, until playback stops
@@ -217,7 +223,7 @@ class MSLHandler:
                 'type': 'DigitalVideoOutputDescriptor',
                 'outputType': 'unknown',
                 'supportedHdcpVersions': kwargs['hdcp_version'],
-                'isHdcpEngaged': kwargs['hdcp_override']
+                'isHdcpEngaged': bool(kwargs['hdcp_version'])
             }],
             'preferAssistiveAudio': False
         }
@@ -254,7 +260,7 @@ class MSLHandler:
                 'type': 'DigitalVideoOutputDescriptor',
                 'outputType': 'unknown',
                 'supportedHdcpVersions': kwargs['hdcp_version'],
-                'isHdcpEngaged': kwargs['hdcp_override']
+                'isHdcpEngaged': bool(kwargs['hdcp_version'])
             }],
             'titleSpecificData': {
                 str(kwargs['viewable_id']): {
