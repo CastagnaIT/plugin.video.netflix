@@ -90,7 +90,10 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
 def _add_supplemental_plot_info(infos, item, common_data):
     """Add supplemental info to plot description"""
     suppl_info = []
-    suppl_msg = item.get('dpSupplementalMessage', {}).get('value')
+    suppl_msg = None
+    suppl_dp = item.get('dpSupplementalMessage', {})
+    if suppl_dp.get('$type') != 'error':
+        suppl_msg = suppl_dp.get('value')
     if suppl_msg:
         # Short information about future release of tv show episode/season or movie
         suppl_info.append(suppl_msg)
