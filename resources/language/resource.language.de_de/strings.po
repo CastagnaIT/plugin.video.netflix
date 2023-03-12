@@ -1236,8 +1236,8 @@ msgstr "Möchten Sie Unterstützung für HDR Dolby Vision aktivieren?
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr "Das Addon stellt bereits die geeignete HDCP-Version ein. Bei Bedarf  können Sie die Abfrage von Videostreams in einer bestimmten HDVP-Version erzwingen."
+msgstr "Das Addon stellt bereits die geeignete HDCP-Version ein. Bei Bedarf können Sie die Abfrage von Videostreams in einer bestimmten HDCP-Version erzwingen."
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr "Falls Ihr Gerät diesen Codec nicht unterstützt können ein schwarzer Bildschirm, fehlende oder beschädigte Bilder auftreten. Deaktivieren Sie dann diesen Codec."
+msgstr "Falls Ihr Gerät diesen Codec nicht unterstützt, können ein schwarzer Bildschirm, fehlende oder beschädigte Bilder auftreten. Deaktivieren Sie dann diesen Codec."
