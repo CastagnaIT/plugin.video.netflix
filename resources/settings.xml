@@ -882,7 +882,7 @@
                 </setting>
                 <setting id="blackbars_minimizer_restore" type="boolean" label="30723" help="30724" parent="blackbars_minimizer">
                     <level>0</level>
-                    <default>true</default>
+                    <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
                         <dependency type="enable">
