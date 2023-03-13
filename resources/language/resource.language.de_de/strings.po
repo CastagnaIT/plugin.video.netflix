@@ -1231,7 +1231,7 @@ msgstr "Möchten Sie Unterstützung für HDR10 aktivieren?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr "Möchten Sie Unterstützung für HDR Dolby Vision aktivieren?
+msgstr "Möchten Sie Unterstützung für HDR Dolby Vision aktivieren?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
