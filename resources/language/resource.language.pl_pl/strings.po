@@ -145,11 +145,11 @@ msgstr "Ogólne"
 
 msgctxt "#30032"
 msgid "Codecs"
-msgstr ""
+msgstr "Kodeki"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
-msgstr ""
+msgstr "Włącz kodek Dolby Digital Plus (Atmos na koncie Premium)"
 
 #. Unused 30034
 msgctxt "#30035"
@@ -238,7 +238,7 @@ msgstr "Uważaj, masz zamiar zaktualizować wiele tytułów {}.[CR]Może to spow
 
 msgctxt "#30060"
 msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
-msgstr ""
+msgstr "Włącz kodek HEVC (4k/HDR/DolbyVision dla Androida)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -322,7 +322,7 @@ msgstr "Pauza podczas pomijania"
 
 msgctxt "#30081"
 msgid "Force HDCP version on video streams"
-msgstr ""
+msgstr "Wymuś wersję HDCP dla strumieni wideo"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -390,11 +390,11 @@ msgstr "Główne menu"
 
 msgctxt "#30098"
 msgid "Enable HDR10"
-msgstr ""
+msgstr "Włącz HDR10"
 
 msgctxt "#30099"
 msgid "Enable Dolby Vision"
-msgstr ""
+msgstr "Włącz Dolby Vision"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -599,7 +599,7 @@ msgstr "Konfiguracja została zakończona"
 
 msgctxt "#30158"
 msgid "Restore the add-on default configuration"
-msgstr ""
+msgstr "Przywróć domyślną konfigurację dodatku"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -1162,7 +1162,7 @@ msgstr "Kodi zapisuje na stałe ustawienie \"Tryb widoku\" \"Powiększenie\", w�
 #. Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 codec"
-msgstr ""
+msgstr "Włącz kodek AV1"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1223,21 +1223,21 @@ msgstr "Ustawia przesunięcie dźwięku, zastępując ustawienie Kodi"
 
 msgctxt "#30741"
 msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
-msgstr ""
+msgstr "Włącz VP9 Profil 2 (10/12-bitowa głębia kolorów)"
 
 msgctxt "#30742"
 msgid "Do you want to enable HDR10 support?"
-msgstr ""
+msgstr "Czy chcesz włączyć obsługę HDR10?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr ""
+msgstr "Czy chcesz włączyć obsługę HDR Dolby Vision?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr ""
+msgstr "Dodatek już ustawia odpowiednią wersję HDCP, ale w razie potrzeby możesz wymusić żądanie strumieni wideo dla innej wersji HDCP."
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr ""
+msgstr "Jeśli Twoje urządzenie nie obsługuje tego kodeka, może wystąpić czarny ekran, brak obrazu lub obrazy uszkodzone. Jeśli tak, wyłącz kodek."
