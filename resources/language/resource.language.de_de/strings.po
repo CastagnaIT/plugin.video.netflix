@@ -350,15 +350,15 @@ msgstr "Enthält {} und weitere..."
 
 msgctxt "#30088"
 msgid "Browse related content"
-msgstr "Verwandte Inhalte durchstöbern"
+msgstr "Durchsuche verwandte Inhalte"
 
 msgctxt "#30089"
 msgid "Browse subgenres"
-msgstr "Subgenres durchstöbern"
+msgstr "Durchsuche Subgenres"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr "Durchstöbere verwandte Videolisten und entdecke weitere Inhalte."
+msgstr "Durchsuche verwandte Videolisten und entdecke weitere Inhalte."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
@@ -370,11 +370,11 @@ msgstr "Suche gezielt nach Inhalten und finde was du sehen willst."
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr "Durchstöbere die Inhalte nach Genre und entdecke bequem verwandte Inhalte "
+msgstr "Durchsuche Inhalte nach Genre und entdecke bequem verwandte Inhalte."
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr "Sieh dir Empfehlungen an und entdecke neue Inhalte die dir gefallen könnten."
+msgstr "Durchsuche Empfehlungen und entdecke neue Inhalte die dir gefallen könnten."
 
 msgctxt "#30095"
 msgid "All TV shows"
