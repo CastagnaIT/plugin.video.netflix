@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2022-11-13 7:40+0000\n"
+"PO-Revision-Date: 2023-03-19 7:40+0000\n"
 "Last-Translator: frodo19\n"
 "Language-Team: Hungarian\n"
 "Language: hu\n"
@@ -145,11 +145,11 @@ msgstr "Általános"
 
 msgctxt "#30032"
 msgid "Codecs"
-msgstr ""
+msgstr "Kodekek"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
-msgstr ""
+msgstr "Dolby Digital Plus kodek engedélyezése (Atmos Prémium fiókban)"
 
 #. Unused 30034
 msgctxt "#30035"
@@ -238,7 +238,7 @@ msgstr "Légy óvatos, amikor sok címet frissítesz egyszerre {}.[CR]Ez okozhat
 
 msgctxt "#30060"
 msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
-msgstr ""
+msgstr "HEVC kodek engedélyezése (4k/HDR/DolbyVision Androidnál)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -322,7 +322,7 @@ msgstr "Pillanat állj átugrásnál"
 
 msgctxt "#30081"
 msgid "Force HDCP version on video streams"
-msgstr ""
+msgstr "HDCP-verzió kényszerítése a videófolyamokon"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -390,11 +390,11 @@ msgstr "Főmenü"
 
 msgctxt "#30098"
 msgid "Enable HDR10"
-msgstr ""
+msgstr "HDR10 engedélyezése"
 
 msgctxt "#30099"
 msgid "Enable Dolby Vision"
-msgstr ""
+msgstr "Dolby Vision endélyezése"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -456,12 +456,12 @@ msgstr "Haladó beállítások"
 
 msgctxt "#30117"
 msgid "Cache"
-msgstr "Tár"
+msgstr "Gyorsítótár"
 
 #. Unused 30118, 30119
 msgctxt "#30120"
 msgid "Cannot automatically remove a season from Kodi library, please do it manually"
-msgstr "Kodi médiatárból nem törölhető automatikusan a szezon, töröld kézzel."
+msgstr "A Kodi médiatárból nem törölhető automatikusan az évad, töröld kézzel."
 
 msgctxt "#30121"
 msgid "Perform full sync now"
@@ -481,11 +481,11 @@ msgstr "Valóban törlöd ezt az elemet?"
 
 msgctxt "#30125"
 msgid "Delete library contents"
-msgstr "Könyvtár tartalom tisztítása"
+msgstr "Médiatár tartalom tisztítása"
 
 msgctxt "#30126"
 msgid "Do you really want to purge your library?[CR]All exported items will be deleted."
-msgstr "Valóban tisztítani szertnéd a könyvtárat?[CR]Az összes exportált elem törlődik."
+msgstr "Valóban tisztítani szertnéd a médiatárat?[CR]Az összes exportált elem törlődik."
 
 msgctxt "#30127"
 msgid "Awarded rating of {}"
@@ -529,7 +529,7 @@ msgstr "Várakozás a kiszolgáló indítására..."
 
 msgctxt "#30137"
 msgid "Enable VP9 codec"
-msgstr ""
+msgstr "VP9 kodek engedélyezése"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -599,7 +599,7 @@ msgstr "Beállítás kész"
 
 msgctxt "#30158"
 msgid "Restore the add-on default configuration"
-msgstr ""
+msgstr "Állítsa vissza a kiegészítő alapértelmezett konfigurációját"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -870,7 +870,7 @@ msgstr "Profil választás a szinkronizáláshoz"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "Kodi indításakor"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1162,7 +1162,7 @@ msgstr "A Kodi a \"Nézetmód\" \"Zoom\" beállítást menti, lehetővé téve e
 #. Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 codec"
-msgstr ""
+msgstr "AV1 kodek engedélyezése"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1202,42 +1202,42 @@ msgstr "A Netflix kiegészítőről"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Automatikusan új ESN-eket generál (kerülő megoldás az 540p-s korláthoz)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "FIGYELMEZTETÉS: Ne használja a hivatalos alkalmazás eredeti ESN-jét."
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Hangeltolás engedélyezése"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Hangeltolás"
 
 #. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Beállítja a hangeltolást a Kodi-beállítás felülbírálásával"
 
 msgctxt "#30741"
 msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
-msgstr ""
+msgstr "VP9 Profile 2 engedélyezése (10/12 bites színmélység)"
 
 msgctxt "#30742"
 msgid "Do you want to enable HDR10 support?"
-msgstr ""
+msgstr "Szeretné engedélyezni a HDR10 támogatást?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr ""
+msgstr "Szeretné engedélyezni a HDR Dolby Vision támogatást?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr ""
+msgstr "A kiegészítő beállítja a megfelelő HDCP-verziót, de ha szükséges, kényszerítheti a videofolyamok kérését egy másik HDCP-verzióhoz."
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr ""
+msgstr "Ha az eszköz nem támogatja ezt a kodeket, előfordulhat, hogy fekete képernyőt lát, nincs kép vagy sérült a kép. Ha igen, kapcsolja ki ezt a kodeket."
