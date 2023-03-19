@@ -529,7 +529,7 @@ msgstr "Czekaj na uruchomienie usługi..."
 
 msgctxt "#30137"
 msgid "Enable VP9 codec"
-msgstr ""
+msgstr "Włącz kodek VP9"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -607,11 +607,11 @@ msgstr "ID widoku dla głównego menu"
 
 msgctxt "#30160"
 msgid "View ID for search"
-msgstr "D widoku dla wyszukiwania"
+msgstr "ID widoku dla wyszukiwania"
 
 msgctxt "#30161"
 msgid "View ID for exported"
-msgstr "D widoku dla eksportowanych"
+msgstr "ID widoku dla eksportowanych"
 
 msgctxt "#30162"
 msgid "Last used"
@@ -1240,4 +1240,4 @@ msgstr "Dodatek już ustawia odpowiednią wersję HDCP, ale w razie potrzeby mo�
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr "Jeśli Twoje urządzenie nie obsługuje tego kodeka, może wystąpić czarny ekran, brak obrazu lub obrazy uszkodzone. Jeśli tak, wyłącz kodek."
+msgstr "Jeśli Twoje urządzenie nie obsługuje tego kodeka, może wystąpić czarny ekran, brak obrazu lub artefakty. Jeśli tak, wyłącz kodek."
