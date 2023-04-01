@@ -1131,7 +1131,7 @@ msgstr "Jakość dostosowana"
 
 msgctxt "#30706"
 msgid "Fixed video quality"
-msgstr "Poprawiona jakość wideo"
+msgstr "Stała jakość wideo"
 
 msgctxt "#30707"
 msgid "Ask video quality"
