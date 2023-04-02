@@ -145,11 +145,11 @@ msgstr "Allgemein"
 
 msgctxt "#30032"
 msgid "Codecs"
-msgstr ""
+msgstr "Codecs"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
-msgstr ""
+msgstr "Dolby-Digital-Plus-Codec aktivieren (Atmos mit Premiumkonto)"
 
 #. Unused 30034
 msgctxt "#30035"
@@ -238,7 +238,7 @@ msgstr "Seien Sie vorsichtig, sie aktualisieren viele Titel {}.[CR]Dies kann ern
 
 msgctxt "#30060"
 msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
-msgstr ""
+msgstr "HEVC-Codec aktivieren (4k/HDR/DolbyVision in Android)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -322,7 +322,7 @@ msgstr "Beim Überspringen pausieren"
 
 msgctxt "#30081"
 msgid "Force HDCP version on video streams"
-msgstr ""
+msgstr "HDCP-Version in Videostreams erzwingen"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -350,15 +350,15 @@ msgstr "Enthält {} und weitere..."
 
 msgctxt "#30088"
 msgid "Browse related content"
-msgstr "Verwandte Inhalte durchstöbern"
+msgstr "Durchsuche verwandte Inhalte"
 
 msgctxt "#30089"
 msgid "Browse subgenres"
-msgstr "Subgenres durchstöbern"
+msgstr "Durchsuche Subgenres"
 
 msgctxt "#30090"
 msgid "Browse through related video lists and discover more content."
-msgstr "Durchstöbere verwandte Videolisten und entdecke weitere Inhalte."
+msgstr "Durchsuche verwandte Videolisten und entdecke weitere Inhalte."
 
 msgctxt "#30091"
 msgid "Browse and manage contents that were exported to the Kodi library."
@@ -370,11 +370,11 @@ msgstr "Suche gezielt nach Inhalten und finde was du sehen willst."
 
 msgctxt "#30093"
 msgid "Browse content by genre and easily discover related content."
-msgstr "Durchstöbere die Inhalte nach Genre und entdecke bequem verwandte Inhalte "
+msgstr "Durchsuche Inhalte nach Genre und entdecke bequem verwandte Inhalte."
 
 msgctxt "#30094"
 msgid "Browse recommendations and pick up on something new you might like."
-msgstr "Sieh dir Empfehlungen an und entdecke neue Inhalte die dir gefallen könnten."
+msgstr "Durchsuche Empfehlungen und entdecke neue Inhalte die dir gefallen könnten."
 
 msgctxt "#30095"
 msgid "All TV shows"
@@ -390,11 +390,11 @@ msgstr "Hauptmenü"
 
 msgctxt "#30098"
 msgid "Enable HDR10"
-msgstr ""
+msgstr "HDR10 aktivieren"
 
 msgctxt "#30099"
 msgid "Enable Dolby Vision"
-msgstr ""
+msgstr "Dolby Vision aktivieren"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -529,7 +529,7 @@ msgstr "Warte auf Start der Dienste..."
 
 msgctxt "#30137"
 msgid "Enable VP9 codec"
-msgstr ""
+msgstr "VP9-Codec aktivieren"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -599,7 +599,7 @@ msgstr "Die Einrichtung wurde abgeschlossen"
 
 msgctxt "#30158"
 msgid "Restore the add-on default configuration"
-msgstr ""
+msgstr "Standardeinstellungen des Addons wiederherstellen"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -1162,7 +1162,7 @@ msgstr "Kodi speichert die Einstellung \"Ansichtsmodus\" \"Zoom\" permanent. Dur
 #. Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 codec"
-msgstr ""
+msgstr "AV1-Codec aktivieren"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1223,21 +1223,21 @@ msgstr "Setzt den Audio-Offset und überschreibt die Kodi-Einstellung"
 
 msgctxt "#30741"
 msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
-msgstr ""
+msgstr "VP9 Profil 2 aktivieren (10/12 Bit Farbtiefe)"
 
 msgctxt "#30742"
 msgid "Do you want to enable HDR10 support?"
-msgstr ""
+msgstr "Möchten Sie Unterstützung für HDR10 aktivieren?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr ""
+msgstr "Möchten Sie Unterstützung für HDR Dolby Vision aktivieren?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr ""
+msgstr "Das Addon stellt bereits die geeignete HDCP-Version ein. Bei Bedarf können Sie die Abfrage von Videostreams in einer bestimmten HDCP-Version erzwingen."
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr ""
+msgstr "Falls Ihr Gerät diesen Codec nicht unterstützt, können ein schwarzer Bildschirm, fehlende oder beschädigte Bilder auftreten. Deaktivieren Sie dann diesen Codec."
