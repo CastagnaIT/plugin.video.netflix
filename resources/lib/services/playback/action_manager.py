@@ -67,6 +67,14 @@ class ActionManager:
         """
         self._call_if_enabled(self.on_tick, player_state=player_state)
 
+    def call_on_avchange_delayed(self, player_state):
+        """
+        Notify that av-change event has been notified by Kodi,
+        this callback is delayed of about 1sec to try group multiple av-change events in a single one,
+        because Kodi can send multiple av-change events in a very short period of time, so we try catch the last one
+        """
+        self._call_if_enabled(self.on_playback_avchange_delayed, player_state=player_state)
+
     def call_on_playback_seek(self, player_state):
         """
         Notify that a playback has seek
@@ -130,4 +138,7 @@ class ActionManager:
         pass
 
     def on_playback_stopped(self, player_state):
+        pass
+
+    def on_playback_avchange_delayed(self, player_state):
         pass

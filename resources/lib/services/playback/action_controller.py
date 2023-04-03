@@ -49,6 +49,8 @@ class ActionController(xbmc.Monitor):
         self.action_managers = None
         self._last_player_state = {}
         self._is_pause_called = False
+        self._is_av_started = False
+        self._av_change_last_ts = None
         common.register_slot(self.initialize_playback, common.Signals.PLAYBACK_INITIATED, is_signal=True)
 
     def initialize_playback(self, **kwargs):
@@ -64,6 +66,7 @@ class ActionController(xbmc.Monitor):
     def _initialize_am(self):
         self._last_player_state = {}
         self._is_pause_called = False
+        self._av_change_last_ts = None
         if not self._init_data:
             return
         self.action_managers = [
@@ -94,6 +97,7 @@ class ActionController(xbmc.Monitor):
                     self._on_playback_stopped()
                 self._initialize_am()
             elif method == 'Player.OnAVStart':
+                self._is_av_started = True
                 self._on_playback_started()
                 if self._playback_tick is None or not self._playback_tick.is_alive():
                     self._playback_tick = PlaybackTick(self.on_playback_tick)
@@ -131,10 +135,14 @@ class ActionController(xbmc.Monitor):
                     self.init_count -= 1
                     return
                 self._on_playback_stopped()
+            elif method == 'Player.OnAVChange':
+                if self._is_av_started:
+                    self._av_change_last_ts = time.time()
         except Exception:  # pylint: disable=broad-except
             import traceback
             LOG.error(traceback.format_exc())
             self.is_tracking_enabled = False
+            self._is_av_started = False
             if self._playback_tick and self._playback_tick.is_alive():
                 self._playback_tick.stop_join()
                 self._playback_tick = None
@@ -146,8 +154,19 @@ class ActionController(xbmc.Monitor):
         """
         if self.active_player_id is not None:
             player_state = self._get_player_state()
-            if player_state:
-                self._notify_all(ActionManager.call_on_tick, player_state)
+            if not player_state:
+                return
+            self._notify_all(ActionManager.call_on_tick, player_state)
+            if not self._av_change_last_ts:
+                return
+            # av-change event can be sent by Kodi multiple times in a very short period of time,
+            # so we try group all these events in a single one by delaying it
+            if (time.time() - self._av_change_last_ts) > 1:
+                self._av_change_last_ts = None
+                self._on_avchange_delayed(player_state)
+
+    def _on_avchange_delayed(self, player_state):
+        self._notify_all(ActionManager.call_on_avchange_delayed, player_state)
 
     def _on_playback_started(self):
         player_id = _get_player_id()
@@ -188,6 +207,7 @@ class ActionController(xbmc.Monitor):
                          self._last_player_state)
         self.action_managers = None
         self.init_count -= 1
+        self._is_av_started = False
 
     def _notify_all(self, notification, data=None):
         LOG.debug('Notifying all action managers of {} (data={})', notification.__name__, data)
