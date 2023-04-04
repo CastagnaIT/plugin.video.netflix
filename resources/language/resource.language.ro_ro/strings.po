@@ -145,11 +145,11 @@ msgstr "General"
 
 msgctxt "#30032"
 msgid "Codecs"
-msgstr ""
+msgstr "Codecuri"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
-msgstr ""
+msgstr "Activează codecul Dolby Digital Plus (numit Atmos în contul premium)"
 
 #. Unused 30034
 msgctxt "#30035"
@@ -238,7 +238,7 @@ msgstr "Atenție, urmează să actualizați multe titluri {}.[CR]Aceasta poate c
 
 msgctxt "#30060"
 msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
-msgstr ""
+msgstr "Activează codecul HEVC (4K/HDR/DolbyVision în Android)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -322,7 +322,7 @@ msgstr "Pauză la derulare"
 
 msgctxt "#30081"
 msgid "Force HDCP version on video streams"
-msgstr ""
+msgstr "Forțează o anumită versiune HDCP în fluxurile video"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -390,11 +390,11 @@ msgstr "meniu principal"
 
 msgctxt "#30098"
 msgid "Enable HDR10"
-msgstr ""
+msgstr "Activează HDR10"
 
 msgctxt "#30099"
 msgid "Enable Dolby Vision"
-msgstr ""
+msgstr "Activează Dolby Vision"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -525,11 +525,11 @@ msgstr "Memoria cache golită"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Se așteaptă pornirea serviciului..."
 
 msgctxt "#30137"
 msgid "Enable VP9 codec"
-msgstr ""
+msgstr "Activează codecul VP9"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -599,7 +599,7 @@ msgstr "Configurarea s-a terminat"
 
 msgctxt "#30158"
 msgid "Restore the add-on default configuration"
-msgstr ""
+msgstr "Restabilește configurația implicită a addon-ului"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -1143,23 +1143,23 @@ msgstr "Vă rugăm să luați aminte că activarea acestei setări va forța eli
 
 msgctxt "#30721"
 msgid "Size"
-msgstr ""
+msgstr "Dimensiune"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
-msgstr ""
+msgstr "Micșorează barele negre prin aplicarea unui efect de apropiere. [ Fix ] Setează procentajul din ecran pe care îl pot ocupa benzile negre, care va fi același pentru toate video-urile. [ Relativ ] Setează procentajul de micșorare a benzilor negre, care va depinde de dimensiunea fiecărui video. [ Reset ] Resetează efectul de apropiere aplicat anterior."
 
 #. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr ""
+msgstr "Această caracteristică folosește efectul de apropiere al Kodi care este stocat permanent în setarea video \"Mod vizualizare\", dacă dezactivați această caracteristică în viitor efectul de apropiere va fi păstrat, pentru a reseta efectul de apropiere schimbați setarea pe \"Reset\"."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 codec"
-msgstr ""
+msgstr "Activează codecul AV1"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1199,58 +1199,58 @@ msgstr "Despre addon-ul Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Generează automat noi ESN-uri ( soluție alternativă pentru limitarea la 540p)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "AVERTISMENT: Nu folosiți ESN-ul original al dispozitivului și aplicației oficiale."
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Activează decalajul audio"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Decalaj audio"
 
 #. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Setează decalajul audio prin suprascrierea setării din Kodi"
 
 msgctxt "#30741"
 msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
-msgstr ""
+msgstr "Activează profilul 2 VP9 (adâncime de culoare 10/12 bit)"
 
 msgctxt "#30742"
 msgid "Do you want to enable HDR10 support?"
-msgstr ""
+msgstr "Doriți să activați suportul pentru HDR10?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr ""
+msgstr "Doriți să activați suportul pentru HDR Dolby Vision?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr ""
+msgstr "Addon-ul configurează deja versiunea potrivită HDCP, dar la cerere puteți forța cererea de fluxuri video pentru o versiune HDCP diferită."
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr ""
+msgstr "Dacă dispozitivul dumneavoastră nu suportă acest codec, ați putea vedea ecran negru, nici un fel de imagine sau imagine coruptă. Dacă este așa dezactivați codecul. "
 
 msgctxt "#30746"
 msgid "Black bars minimise mode"
-msgstr ""
+msgstr "Mod de micșorare a benzilor negre"
 
 msgctxt "#30747"
 msgid "Fixed"
-msgstr ""
+msgstr "Fix"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr ""
+msgstr "Relativ"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
