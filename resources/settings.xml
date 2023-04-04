@@ -900,8 +900,7 @@
                         <maximum>50</maximum>
                     </constraints>
                     <dependencies>
-                        <!-- <dependency type="visible"> Temporary commented, a Kodi bug prevent to use settings with conditions correctly -->
-                        <dependency type="enable">
+                        <dependency type="visible">
                           <or>
                               <condition setting="blackbars_minimizer_mode">fixed</condition>
                               <condition setting="blackbars_minimizer_mode">relative</condition>
@@ -1057,21 +1056,13 @@
                     <control type="toggle"/>
                     <dependencies> <!-- Feature available on Kodi v21 or above -->
                         <dependency type="visible">
-                            <!-- Temporary commented, a Kodi bug prevent to use settings with multiple conditions correctly
                             <and>
                                 <or>
                                     <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition>
                                     <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
                                 </or>
                                 <condition setting="enable_vp9_profiles">true</condition>
-                            </and>-->
-                            <or><!-- to remove when Kodi bug on settings is fixed -->
-                                <condition on="property" operator="is" name="InfoBool">String.StartsWith(System.BuildVersionCode,20.9)</condition>  <!-- v21 pre-releases -->
-                                <condition on="property" operator="is" name="InfoBool">Integer.IsGreaterOrEqual(System.BuildVersionCode,21)</condition>
-                            </or>
-                        </dependency>
-                        <dependency type="enable"><!-- to remove when Kodi bug on settings is fixed -->
-                            <condition setting="enable_vp9_profiles">true</condition>
+                            </and>
                         </dependency>
                     </dependencies>
                 </setting>
