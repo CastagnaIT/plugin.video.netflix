@@ -1142,22 +1142,19 @@ msgid "Please note that enabling this setting will force the removal of streams 
 msgstr "En activant ce paramètre les flux qui ne sont pas dans la plage définie vont être supprimés ce qui peut affecter le fonctionnement d'InputStream Adaptive. Si possible, essayez d'abord de limiter la qualité depuis les paramètres d'InputStream Adaptive."
 
 msgctxt "#30721"
-msgid "Maximum height of black bars (Experimental)"
-msgstr "Hauteur maximale des barres noires (expérimental)"
+msgid "Size"
+msgstr ""
 
 #. Description of setting ID #30721
 msgctxt "#30722"
-msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
-msgstr "Les vidéos recadrées seront étirées en utilisant le \"Type de vue\" \"Zoom\" de Kodi en limitant les barres noires à la hauteur maximale configurée. Par exemple avec 10%, les barres noires ne couvrirons pas plus de 10% de l'écran. Utiliser 50% pour les désactiver."
+msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
+msgstr ""
 
-msgctxt "#30723"
-msgid "Force reset the \"View mode\" setting"
-msgstr "Forcer la remise à zéro du paramètre \"Type de vue\""
-
+#. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
-msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
-msgstr "Kodi garde en mémoire la valeur \"Zoom\" pour le \"Type de vue\", activer ce paramètre pour restaurer le \"Type de vue\" \"Normal\" lors de la lecture d'une vidéo déjà lue."
+msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
+msgstr ""
 
 #. Unused 30725, 30726
 msgctxt "#30727"
@@ -1240,4 +1237,20 @@ msgstr ""
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
+msgstr ""
+
+msgctxt "#30746"
+msgid "Black bars minimise mode"
+msgstr ""
+
+msgctxt "#30747"
+msgid "Fixed"
+msgstr ""
+
+msgctxt "#30748"
+msgid "Relative"
+msgstr ""
+
+msgctxt "#30749"
+msgid "Reset"
 msgstr ""

@@ -9,6 +9,7 @@
     See LICENSES/MIT.md for more information.
 """
 import copy
+import re
 
 import xbmc
 
@@ -59,6 +60,7 @@ class AMStreamContinuity(ActionManager):
         self.resume = {}
         self.is_kodi_forced_subtitles_only = None
         self.is_prefer_alternative_lang = None
+        self.ignore_av_change_event = False
 
     def __str__(self):
         return f'enabled={self.enabled}, videoid_parent={self.videoid_parent}'
@@ -67,8 +69,8 @@ class AMStreamContinuity(ActionManager):
         self.is_kodi_forced_subtitles_only = common.get_kodi_subtitle_language() == 'forced_only'
         self.is_prefer_alternative_lang = G.ADDON.getSettingBool('prefer_alternative_lang')
 
-    def on_playback_started(self, player_state):
-        is_enabled = G.ADDON.getSettingBool('StreamContinuityManager_enabled')
+    def on_playback_started(self, player_state):  # pylint: disable=too-many-branches
+        is_enabled = G.ADDON.getSettingBool('StreamContinuityManager_enabled')  # remember audio/subtitle preferences
         if is_enabled:
             # Get user saved preferences
             self.sc_settings = G.SHARED_DB.get_stream_continuity(G.LOCAL_DB.get_active_profile_guid(),
@@ -107,6 +109,36 @@ class AMStreamContinuity(ActionManager):
             self._set_current_stream(stype, player_state)
             # Apply the chosen stream setting to Kodi player and update the local dict
             self._restore_stream(stype)
+
+        # Black bars minimiser
+        blackbars_mode = G.ADDON.getSettingString('blackbars_minimizer_mode')
+        if blackbars_mode == 'fixed':
+            # if user has previously manually changed the zoom, get the user zoom value
+            zoom_factor = self.sc_settings.get('video_zoom')
+            if zoom_factor is None:
+                zoom_factor = _determine_fixed_zoom_factor(player_state)
+            # When we restore the zoom we generate an av-change event that must be ignored
+            self.ignore_av_change_event = True
+            # NOTE: Kodi save the viewmode permanently for the currently played video
+            common.json_rpc('Player.SetViewMode', {'viewmode': {'zoom': zoom_factor}})
+        elif blackbars_mode == 'relative':
+            # if user has previously manually changed the zoom, get the user zoom value
+            zoom_factor = self.sc_settings.get('video_zoom')
+            if zoom_factor is None:
+                zoom_factor = _determine_relative_zoom_factor(player_state)
+            # When we restore the zoom we generate an av-change event that must be ignored
+            self.ignore_av_change_event = True
+            # NOTE: Kodi save the viewmode permanently for the currently played video
+            common.json_rpc('Player.SetViewMode', {'viewmode': {'zoom': zoom_factor}})
+        elif blackbars_mode == 'reset':
+            # Reset the zoom we generate an av-change event that must be ignored
+            self.ignore_av_change_event = True
+            # if user has previously manually changed the zoom, remove the saved value
+            zoom_factor = self.sc_settings.get('video_zoom')
+            if zoom_factor is not None:
+                self._save_changed_stream('video_zoom', None)
+            common.json_rpc('Player.SetViewMode', {'viewmode': {'zoom': 1.0}})
+
         if is_enabled:
             # It is mandatory to wait at least 1 second to allow the Kodi system to update the values
             # changed by restore, otherwise when on_tick is executed it will save twice unnecessarily
@@ -150,6 +182,16 @@ class AMStreamContinuity(ActionManager):
                 LOG.debug('subtitle has changed from {} to {}', current_stream, player_stream)
             if not is_sub_enabled_equal:
                 LOG.debug('subtitleenabled has changed from {} to {}', current_stream, player_stream)
+
+    def on_playback_avchange_delayed(self, player_state):
+        if self.ignore_av_change_event:
+            self.ignore_av_change_event = False
+            return
+        current_view_mode = common.json_rpc('Player.GetViewMode')
+        current_zoom_factor = current_view_mode.get('zoom')
+        zoom_factor = self.sc_settings.get('video_zoom')
+        if zoom_factor != current_zoom_factor:
+            self._save_changed_stream('video_zoom', current_zoom_factor)
 
     def _set_current_stream(self, stype, player_state):
         self.current_streams.update({
@@ -444,3 +486,44 @@ def _find_lang_with_country_code(tracks_list, lang_code):
     if _stream:
         return _stream['language']
     return None
+
+
+def _determine_fixed_zoom_factor(player_state):
+    # Calculate the zoom factor based on the percentage of the portion of the screen which black bands can occupy,
+    # by taking in account that each video may have a different crop value.
+    blackbar_perc = G.ADDON.getSettingInt('blackbars_minimizer_value')
+    # Try to find the crop info to the track name
+    stream = player_state['videostreams'][0]
+    result = re.match(r'\(Crop (\d+\.\d+)\)', stream['name'])
+    zoom_factor = 1.0
+    if result:
+        crop_factor = float(result.group(1))
+        stream_height = stream['height']
+        video_height = stream['height'] / crop_factor
+        blackbar_px = stream_height - video_height
+        blackbar_px_max = stream_height / 100 * blackbar_perc
+        blackbar_px = min(blackbar_px, blackbar_px_max)
+        zoom_factor = (stream_height - blackbar_px) / video_height
+    else:
+        LOG.error('Failed to get the crop value from the video stream name')
+    return zoom_factor
+
+def _determine_relative_zoom_factor(player_state):
+    # Calculate the zoom factor based on the zoomed video px.
+    # NOTE: Has been chosen to calculate the factor by using video height px instead of black bands height px
+    #       to have a more short scale for the user setting
+    blackbar_perc = G.ADDON.getSettingInt('blackbars_minimizer_value')
+    # Try to find the crop info to the track name
+    stream = player_state['videostreams'][0]
+    result = re.match(r'\(Crop (\d+\.\d+)\)', stream['name'])
+    zoom_factor = 1.0
+    if result:
+        crop_factor = float(result.group(1))
+        stream_height = stream['height']
+        video_height = stream['height'] / crop_factor
+        video_zoomed_h = video_height + (video_height / 100 * blackbar_perc)
+        video_zoomed_h = min(video_zoomed_h, stream_height)
+        zoom_factor = video_zoomed_h / video_height
+    else:
+        LOG.error('Failed to get the crop value from the video stream name')
+    return zoom_factor

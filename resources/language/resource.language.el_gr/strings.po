@@ -1142,21 +1142,18 @@ msgid "Please note that enabling this setting will force the removal of streams 
 msgstr "Λάβετε υπόψη ότι η ενεργοποίηση αυτής της ρύθμισης θα αναγκάσει την αφαίρεση των ροών που δεν βρίσκονται εντός του καθορισμένου εύρους και αυτό μπορεί να επηρεάσει τη λειτουργία του InputStream Adaptive. Εάν είναι δυνατόν, δοκιμάστε πρώτα να περιορίσετε την ποιότητα από τις ρυθμίσεις InputStream Adaptive."
 
 msgctxt "#30721"
-msgid "Maximum height of black bars (Experimental)"
+msgid "Size"
 msgstr ""
 
 #. Description of setting ID #30721
 msgctxt "#30722"
-msgid "Cropped videos will be stretched up by setting Kodi \"View mode\" to \"Zoom\" to minimize the black bars at the maximum height set. For example 10% means that the black bars can cover a maximum of 10% of the screen. To disable it, set to 50%."
+msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
 msgstr ""
 
-msgctxt "#30723"
-msgid "Force reset the \"View mode\" setting"
-msgstr ""
-
+#. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
-msgid "Kodi saves the \"View mode\" \"Zoom\" setting permanently, enable this setting to restore the \"Normal\" View mode when playing a previously watched video."
+msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
 msgstr ""
 
 #. Unused 30725, 30726
@@ -1240,4 +1237,20 @@ msgstr ""
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
+msgstr ""
+
+msgctxt "#30746"
+msgid "Black bars minimise mode"
+msgstr ""
+
+msgctxt "#30747"
+msgid "Fixed"
+msgstr ""
+
+msgctxt "#30748"
+msgid "Relative"
+msgstr ""
+
+msgctxt "#30749"
+msgid "Reset"
 msgstr ""
