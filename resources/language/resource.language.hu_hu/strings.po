@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2017-07-24 16:15+0000\n"
-"PO-Revision-Date: 2023-03-19 7:40+0000\n"
+"PO-Revision-Date: 2023-04-04 16:40+0000\n"
 "Last-Translator: frodo19\n"
 "Language-Team: Hungarian\n"
 "Language: hu\n"
@@ -1143,18 +1143,18 @@ msgstr "Kérjük, vegye figyelembe, hogy ennek a beállításnak az engedélyez�
 
 msgctxt "#30721"
 msgid "Size"
-msgstr ""
+msgstr "Méret"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
-msgstr ""
+msgstr "Minimálisra csökkenti a fekete sávokat zoom effektus alkalmazásával. [ Rögzített ] Beállítja, hogy a fekete sávok mekkora képernyőterületet foglalhatnak el, minden videónál állandó lesz. [ Relatív ] Beállítja a fekete sáv minimalizálásának százalékos arányát, az egyes videóméretektől függően. [ Reset ] Állítsa vissza a korábban alkalmazott nagyítási effektust"
 
 #. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr ""
+msgstr "Ez a funkció a Kodi zoom effektust használja, amely állandóan tárolva van a \"Nézet mód\" videóbeállításban. Ha a jövőben letiltja ezt a funkciót, a zoom megmarad, így visszaállítja a nagyítást a \"Reset\" beállítási módra."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
@@ -1241,16 +1241,16 @@ msgstr "Ha az eszköz nem támogatja ezt a kodeket, előfordulhat, hogy fekete k
 
 msgctxt "#30746"
 msgid "Black bars minimise mode"
-msgstr ""
+msgstr "A fekete sávok minimalizálási módja"
 
 msgctxt "#30747"
 msgid "Fixed"
-msgstr ""
+msgstr "Rögzített"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr ""
+msgstr "Képarányfüggő"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr ""
+msgstr "Visszaállítás"
