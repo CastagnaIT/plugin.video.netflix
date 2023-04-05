@@ -1143,18 +1143,18 @@ msgstr "Bitte beachten, dass die Aktivierung dieser Einstellung die Entfernung v
 
 msgctxt "#30721"
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
-msgstr ""
+msgstr "Minimiert die schwarzen Balken durch Anwendung eines Zoomeffektes.  [ Fest ] Setzt den Prozentteil, den die schwarzen Balken belegen können, konstant für alle Videos. [ Relativ ] Setzt den Prozentteil der schwarzen Balken abhängig von der Videogröße. [ Zurücksetzen ] Setzt einen zuvor gesetzten Zoomeffekt zurück."
 
 #. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr ""
+msgstr "Diese Funktion nutzt den Zoomeffekt von Kodi, der dauerhaft in der Videoeinstellung \"Ansichtsmodus\" gespeichert wird. Wenn Sie diese Funktion in der Zukunft deaktivieren dann bleibt der Zoom erhalten. Um ihn zurückzusetzen, wählen Sie die Einstellung \"Zurücksetzen\" aus."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
@@ -1245,12 +1245,12 @@ msgstr ""
 
 msgctxt "#30747"
 msgid "Fixed"
-msgstr ""
+msgstr "Fest"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr ""
+msgstr "Relativ"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr ""
+msgstr "Zurücksetzen"
