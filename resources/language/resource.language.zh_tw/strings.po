@@ -145,11 +145,11 @@ msgstr "一般"
 
 msgctxt "#30032"
 msgid "Codecs"
-msgstr ""
+msgstr "編碼"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
-msgstr ""
+msgstr "啟動Dolby Digital Plus編碼(Premium帳號的環景音效)"
 
 #. Unused 30034
 msgctxt "#30035"
@@ -238,7 +238,7 @@ msgstr "注意，您將更新許多標題{}。[CR]這可能會導致服務問題
 
 msgctxt "#30060"
 msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
-msgstr ""
+msgstr "啟動HEVC編碼(適用於Android的4k/HDR/DolbyVision)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -322,7 +322,7 @@ msgstr "跳過時暫停"
 
 msgctxt "#30081"
 msgid "Force HDCP version on video streams"
-msgstr ""
+msgstr "強制使用HDCP版本在影片串流"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -390,11 +390,11 @@ msgstr "主選單"
 
 msgctxt "#30098"
 msgid "Enable HDR10"
-msgstr ""
+msgstr "啟用HDR10"
 
 msgctxt "#30099"
 msgid "Enable Dolby Vision"
-msgstr ""
+msgstr "啟用Dolby Vision"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -529,7 +529,7 @@ msgstr "等待服務啟動..."
 
 msgctxt "#30137"
 msgid "Enable VP9 codec"
-msgstr ""
+msgstr "啟用VP9編碼"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -599,7 +599,7 @@ msgstr "設定已完成"
 
 msgctxt "#30158"
 msgid "Restore the add-on default configuration"
-msgstr ""
+msgstr "還原擴充元件預設設定"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -1143,23 +1143,23 @@ msgstr "請注意，啟用此設定將強制刪除不在設定範圍內的串流
 
 msgctxt "#30721"
 msgid "Size"
-msgstr ""
+msgstr "尺寸"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
-msgstr ""
+msgstr "透過應用縮放效果最小化黑色邊。[ 修復 ]設置黑色邊可以佔據的螢幕空間百分比，對於所有影片都是固定的。 [ 相對 ] 設置黑色邊最小化的百分比，將取決於每個影片大小。 [ Reset ] 重置之前應用的縮放效果。"
 
 #. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr ""
+msgstr "此功能利用永久儲存在\"查看模式\"影片設定中的 Kodi 縮放效果，如果您將來禁用此功能，縮放將被保留，將縮放更改重置為\"重置\"設置模式."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 codec"
-msgstr ""
+msgstr "啟用AV1編碼"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
@@ -1220,37 +1220,37 @@ msgstr "使用聲音偏移覆蓋Kodi設定"
 
 msgctxt "#30741"
 msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
-msgstr ""
+msgstr "啟用VP9設定檔2(10/12 bit色深)"
 
 msgctxt "#30742"
 msgid "Do you want to enable HDR10 support?"
-msgstr ""
+msgstr "是否要啟用HDR10支援?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr ""
+msgstr "是否要啟用HDR Dolby Vision支援?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr ""
+msgstr "此插件已經設置了適當的HDCP版本，但如果需要，您可以強制請求不同HDCP版本的影片串流。"
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr ""
+msgstr "如果您的設備不支持此編解碼器，您可能會遇到黑屏、無圖像或圖像損壞的情況。如果遇到此情形，請禁用編解碼器。"
 
 msgctxt "#30746"
 msgid "Black bars minimise mode"
-msgstr ""
+msgstr "黑色邊最小化模式"
 
 msgctxt "#30747"
 msgid "Fixed"
-msgstr ""
+msgstr "已修復"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr ""
+msgstr "相對的"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr ""
+msgstr "重設"
