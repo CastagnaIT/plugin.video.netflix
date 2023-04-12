@@ -1,3 +1,8 @@
+v1.22.0 (2023-04-12)
+- New minimise black bars settings (Kodi 20 and above)
+- Kodi "View mode" setting is no longer reset by default
+- Update translations hu, pl, de, it, zh_tw, ro
+
 v1.21.0 (2023-03-12)
 - Fix TypeError that prevent to load menu video contents (due to website bug)
 - Fix possible Server disconnected error on playback start that cause broken watched status sync
