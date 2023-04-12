@@ -1143,18 +1143,18 @@ msgstr "Si noti che l'attivazione di questa impostazione forzerà la rimozione d
 
 msgctxt "#30721"
 msgid "Size"
-msgstr ""
+msgstr "Dimensione"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
-msgstr ""
+msgstr "Riduce le barre nere applicando l'effetto zoom. [ Fissa ] Imposta la percentuale di schermo che le barre nere possono occupare, sarà costante per tutti i video. [ Relativa ] Imposta la percentuale di riduzione, dipenderà dalla dimensione di ogni video. [ Resetta ] Resetta l'effetto zoom precedentemente applicato."
 
 #. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr ""
+msgstr "Questa funzionalità fa uso dell'effetto zoom di Kodi che viene permanentemente salvato nell'impostazione video \"Modalità di visualizzazione\", se in futuro si disabilita questa funzionalità lo zoom sarà preservato, per resettare lo zoom impostare la modalità \"Resetta\"."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
@@ -1241,16 +1241,16 @@ msgstr "Se il vostro dispositivo non supporta questo codec, è possibile riscont
 
 msgctxt "#30746"
 msgid "Black bars minimise mode"
-msgstr ""
+msgstr "Modalità di riduzione barre nere"
 
 msgctxt "#30747"
 msgid "Fixed"
-msgstr ""
+msgstr "Fissa"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr ""
+msgstr "Relativa"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr ""
+msgstr "Ripristina"
