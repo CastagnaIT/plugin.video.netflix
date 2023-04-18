@@ -1154,7 +1154,7 @@ msgstr "Minimalizuje czarne paski poprzez zastosowanie efektu powiększenia. [St
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr "Ta funkcja wykorzystuje efekt zoomu Kodi, który jest na stałe zapisany w ustawieniach wideo, jeśli wyłączysz tę funkcję w przyszłości, zoom zostanie zachowany, aby zresetować zoom zmień tryb ustawień na "Reset"."
+msgstr "Ta funkcja wykorzystuje efekt zoomu Kodi, który jest na stałe zapisany w ustawieniach wideo, jeśli wyłączysz tę funkcję w przyszłości, zoom zostanie zachowany, aby zresetować zoom zmień tryb ustawień na "Zresetuj"."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
@@ -1249,8 +1249,8 @@ msgstr "Stały"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr "Relatywny"
+msgstr "Względny"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr "Reset"
+msgstr "Zresetuj"
