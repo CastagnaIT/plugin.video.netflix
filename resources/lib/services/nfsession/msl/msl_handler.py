@@ -153,7 +153,7 @@ class MSLHandler:
                  common.censure(esn) if len(esn) > 50 else esn,
                  hdcp_version,
                  pformat(profiles, indent=2))
-        xid = int(time.time() * 10000)
+        xid = str(time.time_ns())[:18]
         # On non-Android systems, we pre-initialize the DRM with default PSSH/KID, this allows to obtain Challenge/SID
         # to achieve 1080p resolution.
         # On Android, pre-initialize DRM is possible but cannot keep the same DRM session, will result in an error
@@ -275,6 +275,7 @@ class MSLHandler:
             'requestSegmentVmaf': False,
             'supportsPartialHydration': False,
             'contentPlaygraph': ['start'],
+            'supportsAdBreakHydration': False,
             'liveMetadataFormat': 'INDEXED_SEGMENT_TEMPLATE',
             'useBetterTextUrls': True,
             'profileGroups': [{
@@ -324,7 +325,11 @@ class MSLHandler:
                 'drmSessionId': sid,
                 'clientTime': int(time.time()),
                 'challengeBase64': challenge,
-                'xid': xid
+                'xid': xid,
+                'clientVersion': G.LOCAL_DB.get_value('client_version', '', table=TABLE_SESSION),
+                'platform': G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION),
+                'osVersion': G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
+                'osName': G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION)
             }]
             endpoint_url = ENDPOINTS['license'] + create_req_params('prefetch/license')
             try:

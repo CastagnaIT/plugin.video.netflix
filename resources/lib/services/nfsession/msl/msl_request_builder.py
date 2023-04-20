@@ -41,7 +41,7 @@ class MSLRequestBuilder:
     @staticmethod
     def build_request_data(url, params=None, echo=''):
         """Create a standard request data"""
-        timestamp = int(time.time() * 10000)
+        timestamp = int(time.time() * 100000000)
         request_data = {
             'version': 2,
             'url': url,
