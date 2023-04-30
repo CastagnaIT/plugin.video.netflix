@@ -1241,7 +1241,7 @@ msgstr "Falls Ihr Gerät diesen Codec nicht unterstützt, können ein schwarzer 
 
 msgctxt "#30746"
 msgid "Black bars minimise mode"
-msgstr ""
+msgstr "Minimierungsmodus schwarze Balken"
 
 msgctxt "#30747"
 msgid "Fixed"
