@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: plugin.video.netflix\n"
 "Report-Msgid-Bugs-To: https://github.com/CastagnaIT/plugin.video.netflix\n"
 "POT-Creation-Date: 2020-10-22 11:24+0200\n"
-"PO-Revision-Date: 2021-06-05 21:57+0200\n"
+"PO-Revision-Date: 2023-05-07 11:20+0200\n"
 "Last-Translator: Ignacio Hernández Rial <naciohr@gmail.com>\n"
 "Language-Team: Galego\n"
 "Language: gl_ES\n"
@@ -86,7 +86,7 @@ msgstr "Outras opcións"
 
 msgctxt "#30016"
 msgid "If you log out, all account data will be deleted, but the exported video files in the Kodi library will be preserved.[CR]Do you want to continue?"
-msgstr ""
+msgstr "Se pechas sesión se borrará toda a información da túa conta; só se conservarán os arquivos de vídeo exportados na biblioteca do Kodi.[CR]Queres continuar?"
 
 msgctxt "#30017"
 msgid "Logout"
@@ -147,11 +147,11 @@ msgstr "Xeral"
 
 msgctxt "#30032"
 msgid "Codecs"
-msgstr ""
+msgstr "Codecs"
 
 msgctxt "#30033"
 msgid "Enable Dolby Digital Plus codec (Atmos on Premium account)"
-msgstr ""
+msgstr "Activar o codec Dolby Digital Plus (Atmos na conta Premium)"
 
 #. Unused 30034
 msgctxt "#30035"
@@ -213,7 +213,7 @@ msgstr "Biblioteca"
 
 msgctxt "#30050"
 msgid "Enable Kodi library management"
-msgstr ""
+msgstr "Activar a xestión da biblioteca do Kodi"
 
 #. Unused 30051
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
@@ -225,13 +225,13 @@ msgstr "{} Definir para reproducir dende a biblioteca"
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30055"
 msgid "{} Set at start-up"
-msgstr ""
+msgstr "{} definido para o arrinque"
 
 #. Unused 30056
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30057"
 msgid "{} Remember PIN"
-msgstr ""
+msgstr "{} Lembrar PIN"
 
 #. Unused 30058
 msgctxt "#30059"
@@ -240,7 +240,7 @@ msgstr "Coidado, está a piques de actualizar moitos títulos {}.[CR]Isto pode c
 
 msgctxt "#30060"
 msgid "Enable HEVC codec (4k/HDR/DolbyVision for Android)"
-msgstr ""
+msgstr "Activar codec HEVC (4k/HDR/DolbyVision para Android)"
 
 msgctxt "#30061"
 msgid "Update inside library"
@@ -260,7 +260,7 @@ msgstr "Realizar actualización automática"
 
 msgctxt "#30065"
 msgid "Video library update"
-msgstr ""
+msgstr "Actualización da biblioteca de vídeo"
 
 msgctxt "#30066"
 msgid "Enable debug logging"
@@ -324,7 +324,7 @@ msgstr "Pausar ao omitir"
 
 msgctxt "#30081"
 msgid "Force HDCP version on video streams"
-msgstr ""
+msgstr "Forzar a versión HDCP nos fluxos de vídeo"
 
 msgctxt "#30082"
 msgid "Remember audio / subtitle preferences"
@@ -392,11 +392,11 @@ msgstr "Menú Principal"
 
 msgctxt "#30098"
 msgid "Enable HDR10"
-msgstr ""
+msgstr "Activar HDR10"
 
 msgctxt "#30099"
 msgid "Enable Dolby Vision"
-msgstr ""
+msgstr "Activar Dolby Vision"
 
 msgctxt "#30100"
 msgid "Results for '{}'"
@@ -527,11 +527,11 @@ msgstr "Caché limpa"
 
 msgctxt "#30136"
 msgid "Waiting for service start-up..."
-msgstr ""
+msgstr "Agardando ao arrinque do servizo..."
 
 msgctxt "#30137"
 msgid "Enable VP9 codec"
-msgstr ""
+msgstr "Activar codec VP9"
 
 msgctxt "#30138"
 msgid "The background services may not yet be available if you just started Kodi/the add-on. In this case, try again in a moment."
@@ -601,7 +601,7 @@ msgstr "Completouse a configuración"
 
 msgctxt "#30158"
 msgid "Restore the add-on default configuration"
-msgstr ""
+msgstr "Restablecer a configuración por defecto do complemento"
 
 msgctxt "#30159"
 msgid "View ID for main menu"
@@ -738,7 +738,7 @@ msgstr "[CR]Estes arquivos empréganos os extractores de información para integ
 
 msgctxt "#30193"
 msgid "Include tv show NFO details"
-msgstr ""
+msgstr "Incluír os detalles NFO da serie tv"
 
 msgctxt "#30194"
 msgid "Limit video stream resolution to"
@@ -830,7 +830,7 @@ msgstr "Cor dos títulos incluídos en ‘Miña lista’"
 
 msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
-msgstr ""
+msgstr "Cor dos títulos marcados como \"Acórdame\""
 
 #. Unused 30217 to 30218
 msgctxt "#30219"
@@ -872,7 +872,7 @@ msgstr "Definir un perfil para a sincronización"
 
 msgctxt "#30229"
 msgid "When Kodi starts"
-msgstr ""
+msgstr "No arrinque do Kodi"
 
 msgctxt "#30230"
 msgid "Check for updates now"
@@ -1103,7 +1103,7 @@ msgstr "Desexas reproducir o vídeo promocional?"
 #. The {} will be replaced with the graphic circle to mark when the functionality is active
 msgctxt "#30622"
 msgid "{} Remind me"
-msgstr "{} Acórdamo"
+msgstr "{} Acórdame"
 
 #. Unused 30623 to 30699
 msgctxt "#30700"
@@ -1145,114 +1145,114 @@ msgstr "Nótese que ao activar este axuste se van descartar automaticamente os f
 
 msgctxt "#30721"
 msgid "Size"
-msgstr ""
+msgstr "Tamaño"
 
 #. Description of setting ID #30721
 msgctxt "#30722"
 msgid "Minimise the black bars by apply a zoom effect. [ Fixed ] Sets the percentage of screen space that black bars can occupy, will be constant for all videos. [ Relative ] Sets the percentage of black band minimisation, will depend on each video size. [ Reset ] Reset the zoom effect previously applied."
-msgstr ""
+msgstr "Minimizar as barras negras aplicando un effecto de zoom. [ Fixo ] Configura a porcentaxe do espazo da pantalla cás barras negras poden ocupar, sendo constante para todos os vídeos. [ Relativo ] Configura a porcentaxe de redución das bandas negras, dependerá do tamaño do vídeo. [ Restablecer ] Restablece o efecto zoom aplicado previamente."
 
 #. Unused 30723
 #. Description of setting ID #30723
 msgctxt "#30724"
 msgid "This feature make use of Kodi zoom effect that is permanently stored in the \"View mode\" video setting, if you disable this feature in the future the zoom will be preserved, to reset the zoom change to \"Reset\" setting mode."
-msgstr ""
+msgstr "Esta función fai uso do efecto zoom do Kodi gardado de forma permanente na configuración de vídeo do \"Modo vista\". Se desactivas esta función no futuro, o zoom se manterá. Para restableceres o zoom selecciona o modo \"Restablecer\"."
 
 #. Unused 30725, 30726
 msgctxt "#30727"
 msgid "Enable AV1 codec"
-msgstr ""
+msgstr "Activar codec AV1"
 
 msgctxt "#30728"
 msgid "Add Netflix folders to Kodi library sources"
-msgstr ""
+msgstr "Engadir os cartafoles do Netflix ás fontes da biblioteca do Kodi"
 
 msgctxt "#30729"
 msgid "The folders \"Netflix-Movies\" and \"Netflix-Shows\" have been added to Kodi sources, restart Kodi to view them in the Kodi [TV Shows] / [Movies] menus. Then edit the folders to set the appropriate content type and information provider scraper."
-msgstr ""
+msgstr "Engadíronse os cartafoles \"Netflix-Movies\" e \"Neflix-Shows\" ás fontes do Kodi, reinicia o Kodi para vérelos nos menús do Kodi Series TV e Filmes. Despois, edita os cartafoles para estableceres o tipo de contido e o extractor provedor de información axeitados."
 
 #. Description of setting ID 30224
 msgctxt "#30730"
 msgid "[Manual] updates must be done manually by using \"Export new episodes\" context menu on each tv show, [Scheduled] you can establish automatic updates at scheduled times, [When Kodi starts] automatic updates start at Kodi start-up and will only be done once a day."
-msgstr ""
+msgstr "[Manual] as actualizacións deben facerse manualmente empregando o menú contextual \"Exportar novos episodios\" en cada serie tv, [Programado] podes programar a hora das actualizacións, [Cando o Kodi arrinque] as actualizacións realizaranse automaticamente cand o Kodi arrinque e realizaranse unha vez ao día soamente."
 
 #. Description of setting ID 30227
 msgctxt "#30731"
 msgid "Synchronises the library with My list, if my list has been modified externally e.g. mobile app or website, the update will be postponed to the scheduled time."
-msgstr ""
+msgstr "Sincroniza a biblioteca coa Miña Lista, se A Miña Lista for modificada externamente, por exemplo cun móbil ou pola web, a actualización posporíase até a hora programada."
 
 #. Description of setting ID 30185
 msgctxt "#30732"
 msgid "If enabled, adds information to episodes or movies that are useful when Kodi information provider scraper does not provide data. This will also add the duration of the videos."
-msgstr ""
+msgstr "Se está activo, engade a información dos episodios ou dos filmes que axudan ao Kodi no caso que o extractor provedor de información non atope esta información. Tamén engadirá a duración dos vídeos."
 
 #. Description of setting ID 30193
 msgctxt "#30733"
 msgid "Only enable if \"Local Information\" information provider scraper is used, or if certain titles are not displayed in Kodi library despite having been added."
-msgstr ""
+msgstr "Engadir unicamente se se emprega o extractor provedor de información \"Información local\", ou se houber algúns títulos que non se amosan la biblioteca do Kodi aínque que se engadiran."
 
 msgctxt "#30734"
 msgid "Support"
-msgstr ""
+msgstr "Axuda"
 
 msgctxt "#30735"
 msgid "About Netflix add-on"
-msgstr ""
+msgstr "Sobre o complemento do Netflix"
 
 msgctxt "#30736"
 msgid "Automatically generates new ESNs (workaround for 540p limit)"
-msgstr ""
+msgstr "Xera automatic novos ESNs (solución para o límite de 540p)"
 
 msgctxt "#30737"
 msgid "WARNING: Do not use the original device ESN of the official app."
-msgstr ""
+msgstr "AVISO: Non empregar o ESN do dispositivo orixinal da aplicación oficial."
 
 msgctxt "#30738"
 msgid "Enable audio offset"
-msgstr ""
+msgstr "Activar a compensación de audio"
 
 msgctxt "#30739"
 msgid "Audio offset"
-msgstr ""
+msgstr "Compensación de audio"
 
 #. Description of setting ID 30739
 msgctxt "#30740"
 msgid "Sets the audio offset by overriding the Kodi setting"
-msgstr ""
+msgstr "Establece a compensación de audio modificando o axuste do Kodi"
 
 msgctxt "#30741"
 msgid "Enable VP9 Profile 2 (10/12 bit color depth)"
-msgstr ""
+msgstr "Activar VP9 Profile 2 (10/12 bit color depth)"
 
 msgctxt "#30742"
 msgid "Do you want to enable HDR10 support?"
-msgstr ""
+msgstr "Queres activar o soporte HDR10?"
 
 msgctxt "#30743"
 msgid "Do you want to enable HDR Dolby Vision support?"
-msgstr ""
+msgstr "Queres activar o soporte HDR Dolby Vision?"
 
 #. Description of setting ID 30081
 msgctxt "#30744"
 msgid "The add-on already sets the appropriate HDCP version, but if required you can force the request of video streams for a different HDCP version."
-msgstr ""
+msgstr "O complemento xa establece a versión HDCP axeitada, pero de ser preciso podes forzar que os fluxos de vído empreguen unha versión HDCP diferente."
 
 msgctxt "#30745"
 msgid "If your device does not support this codec, you may experience black screen, no image or corrupted images. If so disable the codec."
-msgstr ""
+msgstr "Se o teu dispositivo non soporta este codec, podes experimentar pantallas negras e fallas na imaxe. Nese caso, desactiva o codec."
 
 msgctxt "#30746"
 msgid "Black bars minimise mode"
-msgstr ""
+msgstr "Modo minimizar barras negras"
 
 msgctxt "#30747"
 msgid "Fixed"
-msgstr ""
+msgstr "Fixo"
 
 msgctxt "#30748"
 msgid "Relative"
-msgstr ""
+msgstr "Relativo"
 
 msgctxt "#30749"
 msgid "Reset"
-msgstr ""
+msgstr "Restablecer"
