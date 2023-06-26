@@ -1,3 +1,15 @@
+v1.22.1 (2023-06-26)
+- NOTICE FOR ANDROID: Has been readd an old workaround to fix "incorrect password" error,
+ If you are using a L1 device you have to login again, however some L1 devices may still not works.
+ If you are using a L3 device you have, you have to disable ESN 1080p workaround from Expert setting after login again.
+ After the upgrade the add-on should disable the ESN 1080p workaround automatically but better check before re-login.
+- NOTICE FOR MAC: Video playback still not works. No solution has been found yet.
+- NOTICE FOR WINDOWS: Video playback still not works. No solution has been found yet.
+- ADS PLAN: Is officially not supported, this until support for ads is implemented appropriately.
+- Re-add workaround for "invalid password" error on android L1 devices
+- Add warning message for unsupported videos with ads contents
+- Update translations po, de, gl_es
+
 v1.22.0 (2023-04-12)
 - New minimise black bars settings (Kodi 20 and above)
 - Kodi "View mode" setting is no longer reset by default
