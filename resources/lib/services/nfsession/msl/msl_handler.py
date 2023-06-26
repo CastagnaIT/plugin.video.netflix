@@ -354,6 +354,9 @@ class MSLHandler:
                            'To try to solve this problem you can force "Widevine L3" from the add-on Expert settings.\r\n'
                            'More info in the Wiki FAQ on add-on GitHub.')
                     raise MSLError(msg) from exc
+                if exc.err_number == '1044' and common.get_system_platform() != 'linux':
+                    raise ErrorMsgNoReport('MSL Error 1044: Currently video playback on Windows or MacOS does not work, '
+                                           'this is a known problem for which no solution has been found at this time.') from exc
                 raise
             # If this is a second license request from ISAdaptive then update the previous license data
             # so when we "release" the license we release the last one
