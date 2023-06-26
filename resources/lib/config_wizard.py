@@ -13,7 +13,7 @@ from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
 from resources.lib.common import (get_system_platform, is_device_4k_capable, get_local_string, json_rpc,
-                                  get_supported_hdr_types, get_android_system_props)
+                                  get_supported_hdr_types, get_android_system_props, is_device_l1_enabled)
 from resources.lib.common.exceptions import InputStreamHelperError
 from resources.lib.globals import G
 from resources.lib.kodi.ui import show_ok_dialog, ask_for_confirmation
@@ -30,6 +30,11 @@ def run_addon_configuration(restore=False):
     _set_codec_profiles()
     _set_kodi_settings()
     _set_isa_addon_settings(get_system_platform() == 'android')
+
+    # For L3 devices we disable by default the esn auto generation (1080p workaround)
+    # see workaround details in the chunked_request method of msl_requests.py
+    if get_system_platform() == 'android' and not is_device_l1_enabled():
+        G.LOCAL_DB.set_value('esn_auto_generate', False)
 
     # Restore default settings that may have been misconfigured by the user
     if restore:

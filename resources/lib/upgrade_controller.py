@@ -7,7 +7,7 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
-from resources.lib.common import is_device_4k_capable
+from resources.lib.common import is_device_4k_capable, is_device_l1_enabled
 from resources.lib.common.misc_utils import CmpVersion
 from resources.lib.database.db_update import run_local_db_updates, run_shared_db_updates
 from resources.lib.globals import G, remove_ver_suffix
@@ -134,7 +134,11 @@ def _perform_service_changes(previous_ver: CmpVersion, current_ver: CmpVersion):
             # this case has been moved in to a separate setting "lib_enabled"
             G.ADDON.setSettingBool('lib_enabled', False)
             G.ADDON.setSettingInt('lib_auto_upd_mode', 1)  # Set to "Manual" default
-
+    if previous_ver < '1.22.1':
+        # For L3 devices we disable by default the esn auto generation (1080p workaround)
+        # see workaround details in the chunked_request method of msl_requests.py
+        if not is_device_l1_enabled():
+            G.LOCAL_DB.set_value('esn_auto_generate', False)
 
 def _perform_local_db_changes(current_version: CmpVersion, upgrade_to_version: CmpVersion):
     """Perform database actions for a db version change"""
