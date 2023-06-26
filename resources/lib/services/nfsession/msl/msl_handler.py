@@ -16,7 +16,7 @@ import xbmcaddon
 
 import resources.lib.common as common
 from resources.lib.common.cache_utils import CACHE_MANIFESTS
-from resources.lib.common.exceptions import MSLError
+from resources.lib.common.exceptions import MSLError, ErrorMsgNoReport
 from resources.lib.database.db_utils import TABLE_SESSION
 from resources.lib.globals import G
 from resources.lib.utils.esn import get_esn, set_esn, regen_esn
@@ -117,6 +117,10 @@ class MSLHandler:
                            '(if used, a new Auth Key is required).')
                 raise MSLError(str(exc) + err_msg) from exc
             raise
+        if manifest.get('adverts', {}).get('adBreaks', []):
+            # Todo: manifest converter should handle ads streams with additional DASH periods
+            raise ErrorMsgNoReport('This add-on dont support playback videos with ads. '
+                                   'Please use an account plan without ads.')
         return self._tranform_to_dash(manifest)
 
     @measure_exec_time_decorator(is_immediate=True)
