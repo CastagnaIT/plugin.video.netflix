@@ -303,7 +303,7 @@ class MSLHandler:
         else:
             params['xid'] = kwargs['xid']
 
-        endpoint_url = ENDPOINTS['manifest'] + create_req_params('licensedManifest')
+        endpoint_url = ENDPOINTS['manifest'] + create_req_params('prefetch/licensedManifest')
         request_data = self.msl_requests.build_request_data('licensedManifest', params)
         return endpoint_url, request_data
 
@@ -331,7 +331,7 @@ class MSLHandler:
                 'osVersion': G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION),
                 'osName': G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION)
             }]
-            endpoint_url = ENDPOINTS['license'] + create_req_params('prefetch/license')
+            endpoint_url = ENDPOINTS['license'] + create_req_params('license')
             try:
                 response = self.msl_requests.chunked_request(endpoint_url,
                                                              self.msl_requests.build_request_data(self.last_license_url,
