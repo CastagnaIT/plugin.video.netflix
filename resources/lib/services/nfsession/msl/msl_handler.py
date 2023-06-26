@@ -105,7 +105,7 @@ class MSLHandler:
                 # Then clear the credentials and also user tokens.
                 common.purge_credentials()
                 self.msl_requests.crypto.clear_user_id_tokens()
-            if 'User must login again' in str(exc):
+            elif 'User must login again' in str(exc):
                 # Know case when MSL error can happen:
                 # - User has done "Sign out of all devices" from account settings
                 # - User has login with an auth key generated before executing "Sign out of all devices"
@@ -115,7 +115,13 @@ class MSLHandler:
                 err_msg = ('\nIf you have done "Sign out of all devices" from Netflix account settings so '
                            'Logout from add-on settings and wait about 10 minutes before login again '
                            '(if used, a new Auth Key is required).')
-                raise MSLError(str(exc) + err_msg) from exc
+                raise ErrorMsgNoReport(str(exc) + err_msg) from exc
+            elif ('User authentication data does not match entity identity' in str(exc)
+                  and common.get_system_platform() == 'android'):
+                err_msg = ('Due to a MSL error you cannot playback videos with this device. '
+                           'This is a know problem due to a website changes.\n'
+                           'This problem could be solved in the future, but at the moment there is no solution.')
+                raise ErrorMsgNoReport(err_msg) from exc
             raise
         if manifest.get('adverts', {}).get('adBreaks', []):
             # Todo: manifest converter should handle ads streams with additional DASH periods

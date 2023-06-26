@@ -163,7 +163,13 @@ class MSLRequests(MSLRequestBuilder):
             # On android, we have a different ESN from the login then use NETFLIXID auth may cause MSL errors,
             # (usually on L3 devices) because the identity do not match, so we need to use User id token auth
             # to switch MSL profile with current ESN when needed
-            auth_scheme = MSL_AUTH_USER_ID_TOKEN
+            # auth_scheme = MSL_AUTH_USER_ID_TOKEN
+
+            # 26/06/2023 replaced auth_scheme with MSL_AUTH_NETFLIXID,
+            # this is a workaround since there are new website changes in to the DRM session challenge used to request
+            # license that cause different problems, see discussion starting from comment in the following link:
+            # https://github.com/CastagnaIT/plugin.video.netflix/issues/1585#issuecomment-1585557883
+            auth_scheme = MSL_AUTH_NETFLIXID
         else:
             auth_scheme = MSL_AUTH_NETFLIXID
 
