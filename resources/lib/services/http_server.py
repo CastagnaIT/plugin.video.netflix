@@ -87,7 +87,7 @@ def handle_msl_request(server, func_name, data, params=None):
         sid = server.headers.get('sessionId', '')
         manifest_data = server.server.netflix_session.msl_handler.get_manifest(videoid, unquote(challenge), sid)
         server.send_response(200)
-        server.send_header('Content-type', 'application/xml')
+        server.send_header('Content-type', 'application/dash+xml')
         server.end_headers()
         server.wfile.write(manifest_data)
     else:
