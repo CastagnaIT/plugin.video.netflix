@@ -54,11 +54,11 @@ Devices with more limited resolutions are all those that use Linux operating sys
 
 | System                              | 1080P     | 4K      | Video Decoding             |
 | ----------------------------------- | --------- | ------- | -------------------------- |
-| Windows                             | ✔️\*1     | ❌\*2  | Software                   |
+| Windows                             | ❌\*1     | ❌\*2  | Software                   |
 | Linux (Android) \*5                 | ✔️\*1, \*3| ✔️\*4  | Software \\ Hardware \*4   |
 | Linux (Distributions)               | ✔️\*1     | ❌\*2  | Software                   |
 | Linux (OSMC-CoreElec-LibreELEC-...) | ✔️\*1     | ❌\*2  | Software                   |
-| MacOS                               | ✔️\*1     | ❌\*2  | Software                   |
+| MacOS                               | ❌\*1     | ❌\*2  | Software                   |
 | iOS / tvOS                          | ❌        | ❌     | Not supported              |
 
 <sub><br/>
