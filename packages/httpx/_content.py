@@ -8,6 +8,8 @@ from typing import (
     Dict,
     Iterable,
     Iterator,
+    Mapping,
+    Optional,
     Tuple,
     Union,
 )
@@ -15,8 +17,14 @@ from urllib.parse import urlencode
 
 from ._exceptions import StreamClosed, StreamConsumed
 from ._multipart import MultipartStream
-from ._transports.base import AsyncByteStream, SyncByteStream
-from ._types import RequestContent, RequestData, RequestFiles, ResponseContent
+from ._types import (
+    AsyncByteStream,
+    RequestContent,
+    RequestData,
+    RequestFiles,
+    ResponseContent,
+    SyncByteStream,
+)
 from ._utils import peek_filelike_length, primitive_value_to_str
 
 
@@ -32,6 +40,8 @@ class ByteStream(AsyncByteStream, SyncByteStream):
 
 
 class IteratorByteStream(SyncByteStream):
+    CHUNK_SIZE = 65_536
+
     def __init__(self, stream: Iterable[bytes]):
         self._stream = stream
         self._is_stream_consumed = False
@@ -42,11 +52,21 @@ class IteratorByteStream(SyncByteStream):
             raise StreamConsumed()
 
         self._is_stream_consumed = True
-        for part in self._stream:
-            yield part
+        if hasattr(self._stream, "read"):
+            # File-like interfaces should use 'read' directly.
+            chunk = self._stream.read(self.CHUNK_SIZE)
+            while chunk:
+                yield chunk
+                chunk = self._stream.read(self.CHUNK_SIZE)
+        else:
+            # Otherwise iterate.
+            for part in self._stream:
+                yield part
 
 
 class AsyncIteratorByteStream(AsyncByteStream):
+    CHUNK_SIZE = 65_536
+
     def __init__(self, stream: AsyncIterable[bytes]):
         self._stream = stream
         self._is_stream_consumed = False
@@ -57,8 +77,16 @@ class AsyncIteratorByteStream(AsyncByteStream):
             raise StreamConsumed()
 
         self._is_stream_consumed = True
-        async for part in self._stream:
-            yield part
+        if hasattr(self._stream, "aread"):
+            # File-like interfaces should use 'aread' directly.
+            chunk = await self._stream.aread(self.CHUNK_SIZE)
+            while chunk:
+                yield chunk
+                chunk = await self._stream.aread(self.CHUNK_SIZE)
+        else:
+            # Otherwise iterate.
+            async for part in self._stream:
+                yield part
 
 
 class UnattachedStream(AsyncByteStream, SyncByteStream):
@@ -73,20 +101,23 @@ class UnattachedStream(AsyncByteStream, SyncByteStream):
 
     async def __aiter__(self) -> AsyncIterator[bytes]:
         raise StreamClosed()
-        yield b""  # pragma: nocover
+        yield b""  # pragma: no cover
 
 
 def encode_content(
     content: Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
 ) -> Tuple[Dict[str, str], Union[SyncByteStream, AsyncByteStream]]:
-
     if isinstance(content, (bytes, str)):
         body = content.encode("utf-8") if isinstance(content, str) else content
         content_length = len(body)
         headers = {"Content-Length": str(content_length)} if body else {}
         return headers, ByteStream(body)
 
-    elif isinstance(content, Iterable):
+    elif isinstance(content, Iterable) and not isinstance(content, dict):
+        # `not isinstance(content, dict)` is a bit oddly specific, but it
+        # catches a case that's easy for users to make in error, and would
+        # otherwise pass through here, like any other bytes-iterable,
+        # because `dict` happens to be iterable. See issue #2491.
         content_length_or_none = peek_filelike_length(content)
 
         if content_length_or_none is None:
@@ -103,7 +134,7 @@ def encode_content(
 
 
 def encode_urlencoded_data(
-    data: dict,
+    data: RequestData,
 ) -> Tuple[Dict[str, str], ByteStream]:
     plain_data = []
     for key, value in data.items():
@@ -119,7 +150,7 @@ def encode_urlencoded_data(
 
 
 def encode_multipart_data(
-    data: dict, files: RequestFiles, boundary: bytes = None
+    data: RequestData, files: RequestFiles, boundary: Optional[bytes]
 ) -> Tuple[Dict[str, str], MultipartStream]:
     multipart = MultipartStream(data=data, files=files, boundary=boundary)
     headers = multipart.get_headers()
@@ -151,18 +182,18 @@ def encode_json(json: Any) -> Tuple[Dict[str, str], ByteStream]:
 
 
 def encode_request(
-    content: RequestContent = None,
-    data: RequestData = None,
-    files: RequestFiles = None,
-    json: Any = None,
-    boundary: bytes = None,
+    content: Optional[RequestContent] = None,
+    data: Optional[RequestData] = None,
+    files: Optional[RequestFiles] = None,
+    json: Optional[Any] = None,
+    boundary: Optional[bytes] = None,
 ) -> Tuple[Dict[str, str], Union[SyncByteStream, AsyncByteStream]]:
     """
     Handles encoding the given `content`, `data`, `files`, and `json`,
     returning a two-tuple of (<headers>, <stream>).
     """
-    if data is not None and not isinstance(data, dict):
-        # We prefer to seperate `content=<bytes|str|byte iterator|bytes aiterator>`
+    if data is not None and not isinstance(data, Mapping):
+        # We prefer to separate `content=<bytes|str|byte iterator|bytes aiterator>`
         # for raw request content, and `data=<form data>` for url encoded or
         # multipart form content.
         #
@@ -186,10 +217,10 @@ def encode_request(
 
 
 def encode_response(
-    content: ResponseContent = None,
-    text: str = None,
-    html: str = None,
-    json: Any = None,
+    content: Optional[ResponseContent] = None,
+    text: Optional[str] = None,
+    html: Optional[str] = None,
+    json: Optional[Any] = None,
 ) -> Tuple[Dict[str, str], Union[SyncByteStream, AsyncByteStream]]:
     """
     Handles encoding the given `content`, returning a two-tuple of

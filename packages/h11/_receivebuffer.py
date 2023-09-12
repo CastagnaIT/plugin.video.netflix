@@ -1,5 +1,6 @@
 import re
 import sys
+from typing import List, Optional, Union
 
 __all__ = ["ReceiveBuffer"]
 
@@ -44,26 +45,26 @@ blank_line_regex = re.compile(b"\n\r?\n", re.MULTILINE)
 
 
 class ReceiveBuffer:
-    def __init__(self):
+    def __init__(self) -> None:
         self._data = bytearray()
         self._next_line_search = 0
         self._multiple_lines_search = 0
 
-    def __iadd__(self, byteslike):
+    def __iadd__(self, byteslike: Union[bytes, bytearray]) -> "ReceiveBuffer":
         self._data += byteslike
         return self
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(len(self))
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._data)
 
     # for @property unprocessed_data
-    def __bytes__(self):
+    def __bytes__(self) -> bytes:
         return bytes(self._data)
 
-    def _extract(self, count):
+    def _extract(self, count: int) -> bytearray:
         # extracting an initial slice of the data buffer and return it
         out = self._data[:count]
         del self._data[:count]
@@ -73,7 +74,7 @@ class ReceiveBuffer:
 
         return out
 
-    def maybe_extract_at_most(self, count):
+    def maybe_extract_at_most(self, count: int) -> Optional[bytearray]:
         """
         Extract a fixed number of bytes from the buffer.
         """
@@ -83,7 +84,7 @@ class ReceiveBuffer:
 
         return self._extract(count)
 
-    def maybe_extract_next_line(self):
+    def maybe_extract_next_line(self) -> Optional[bytearray]:
         """
         Extract the first line, if it is completed in the buffer.
         """
@@ -100,7 +101,7 @@ class ReceiveBuffer:
 
         return self._extract(idx)
 
-    def maybe_extract_lines(self):
+    def maybe_extract_lines(self) -> Optional[List[bytearray]]:
         """
         Extract everything up to the first blank line, and return a list of lines.
         """
@@ -143,7 +144,7 @@ class ReceiveBuffer:
     # This is especially interesting when peer is messing up with HTTPS and
     # sent us a TLS stream where we were expecting plain HTTP given all
     # versions of TLS so far start handshake with a 0x16 message type code.
-    def is_next_line_obviously_invalid_request_line(self):
+    def is_next_line_obviously_invalid_request_line(self) -> bool:
         try:
             # HTTP header line must not contain non-printable characters
             # and should not start with a space

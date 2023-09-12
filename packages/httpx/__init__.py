@@ -1,6 +1,6 @@
 from .__version__ import __description__, __title__, __version__
 from ._api import delete, get, head, options, patch, post, put, request, stream
-from ._auth import Auth, BasicAuth, DigestAuth
+from ._auth import Auth, BasicAuth, DigestAuth, NetRCAuth
 from ._client import USE_CLIENT_DEFAULT, AsyncClient, Client
 from ._config import Limits, Proxy, Timeout, create_ssl_context
 from ._content import ByteStream
@@ -34,18 +34,30 @@ from ._exceptions import (
     WriteError,
     WriteTimeout,
 )
-from ._models import URL, Cookies, Headers, QueryParams, Request, Response
+from ._models import Cookies, Headers, Request, Response
 from ._status_codes import codes
 from ._transports.asgi import ASGITransport
-from ._transports.base import (
-    AsyncBaseTransport,
-    AsyncByteStream,
-    BaseTransport,
-    SyncByteStream,
-)
+from ._transports.base import AsyncBaseTransport, BaseTransport
 from ._transports.default import AsyncHTTPTransport, HTTPTransport
 from ._transports.mock import MockTransport
 from ._transports.wsgi import WSGITransport
+from ._types import AsyncByteStream, SyncByteStream
+from ._urls import URL, QueryParams
+
+try:
+    from ._main import main
+except ImportError:  # pragma: no cover
+
+    def main() -> None:  # type: ignore
+        import sys
+
+        print(
+            "The httpx command line client could not run because the required "
+            "dependencies were not installed.\nMake sure you've installed "
+            "everything with: pip install 'httpx[cli]'"
+        )
+        sys.exit(1)
+
 
 __all__ = [
     "__description__",
@@ -80,7 +92,9 @@ __all__ = [
     "InvalidURL",
     "Limits",
     "LocalProtocolError",
+    "main",
     "MockTransport",
+    "NetRCAuth",
     "NetworkError",
     "options",
     "patch",

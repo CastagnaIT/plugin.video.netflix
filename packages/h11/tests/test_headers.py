@@ -1,9 +1,17 @@
 import pytest
 
-from .._headers import *
+from .._events import Request
+from .._headers import (
+    get_comma_header,
+    has_expect_100_continue,
+    Headers,
+    normalize_and_validate,
+    set_comma_header,
+)
+from .._util import LocalProtocolError
 
 
-def test_normalize_and_validate():
+def test_normalize_and_validate() -> None:
     assert normalize_and_validate([("foo", "bar")]) == [(b"foo", b"bar")]
     assert normalize_and_validate([(b"foo", b"bar")]) == [(b"foo", b"bar")]
 
@@ -84,7 +92,7 @@ def test_normalize_and_validate():
     assert excinfo.value.error_status_hint == 501  # Not Implemented
 
 
-def test_get_set_comma_header():
+def test_get_set_comma_header() -> None:
     headers = normalize_and_validate(
         [
             ("Connection", "close"),
@@ -95,10 +103,10 @@ def test_get_set_comma_header():
 
     assert get_comma_header(headers, b"connection") == [b"close", b"foo", b"bar"]
 
-    headers = set_comma_header(headers, b"newthing", ["a", "b"])
+    headers = set_comma_header(headers, b"newthing", ["a", "b"])  # type: ignore
 
     with pytest.raises(LocalProtocolError):
-        set_comma_header(headers, b"newthing", ["  a", "b"])
+        set_comma_header(headers, b"newthing", ["  a", "b"])  # type: ignore
 
     assert headers == [
         (b"connection", b"close"),
@@ -108,7 +116,7 @@ def test_get_set_comma_header():
         (b"newthing", b"b"),
     ]
 
-    headers = set_comma_header(headers, b"whatever", ["different thing"])
+    headers = set_comma_header(headers, b"whatever", ["different thing"])  # type: ignore
 
     assert headers == [
         (b"connection", b"close"),
@@ -119,9 +127,7 @@ def test_get_set_comma_header():
     ]
 
 
-def test_has_100_continue():
-    from .._events import Request
-
+def test_has_100_continue() -> None:
     assert has_expect_100_continue(
         Request(
             method="GET",

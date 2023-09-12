@@ -1,16 +1,26 @@
 import contextlib
-from typing import Dict, Iterator, Type
+from typing import Iterator, Mapping, Type
+
+ExceptionMapping = Mapping[Type[Exception], Type[Exception]]
 
 
 @contextlib.contextmanager
-def map_exceptions(map: Dict[Type[Exception], Type[Exception]]) -> Iterator[None]:
+def map_exceptions(map: ExceptionMapping) -> Iterator[None]:
     try:
         yield
     except Exception as exc:  # noqa: PIE786
         for from_exc, to_exc in map.items():
             if isinstance(exc, from_exc):
-                raise to_exc(exc) from None
-        raise
+                raise to_exc(exc) from exc
+        raise  # pragma: nocover
+
+
+class ConnectionNotAvailable(Exception):
+    pass
+
+
+class ProxyError(Exception):
+    pass
 
 
 class UnsupportedProtocol(Exception):
@@ -26,10 +36,6 @@ class RemoteProtocolError(ProtocolError):
 
 
 class LocalProtocolError(ProtocolError):
-    pass
-
-
-class ProxyError(Exception):
     pass
 
 
@@ -72,8 +78,4 @@ class ReadError(NetworkError):
 
 
 class WriteError(NetworkError):
-    pass
-
-
-class CloseError(NetworkError):
     pass

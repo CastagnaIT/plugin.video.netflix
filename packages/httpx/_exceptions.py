@@ -21,7 +21,6 @@ Our exception hierarchy:
       - UnsupportedProtocol
     + DecodingError
     + TooManyRedirects
-    + RequestBodyUnavailable
   x HTTPStatusError
 * InvalidURL
 * CookieConflict
@@ -35,7 +34,7 @@ import contextlib
 import typing
 
 if typing.TYPE_CHECKING:
-    from ._models import Request, Response  # pragma: nocover
+    from ._models import Request, Response  # pragma: no cover
 
 
 class HTTPError(Exception):
@@ -58,22 +57,7 @@ class HTTPError(Exception):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
-
-
-class RequestError(HTTPError):
-    """
-    Base class for all exceptions that may occur when issuing a `.request()`.
-    """
-
-    def __init__(self, message: str, *, request: "Request" = None) -> None:
-        super().__init__(message)
-        # At the point an exception is raised we won't typically have a request
-        # instance to associate it with.
-        #
-        # The 'request_context' context manager is used within the Client and
-        # Response methods in order to ensure that any raised exceptions
-        # have a `.request` property set on them.
-        self._request = request
+        self._request: typing.Optional["Request"] = None
 
     @property
     def request(self) -> "Request":
@@ -83,6 +67,24 @@ class RequestError(HTTPError):
 
     @request.setter
     def request(self, request: "Request") -> None:
+        self._request = request
+
+
+class RequestError(HTTPError):
+    """
+    Base class for all exceptions that may occur when issuing a `.request()`.
+    """
+
+    def __init__(
+        self, message: str, *, request: typing.Optional["Request"] = None
+    ) -> None:
+        super().__init__(message)
+        # At the point an exception is raised we won't typically have a request
+        # instance to associate it with.
+        #
+        # The 'request_context' context manager is used within the Client and
+        # Response methods in order to ensure that any raised exceptions
+        # have a `.request` property set on them.
         self._request = request
 
 
@@ -199,7 +201,7 @@ class RemoteProtocolError(ProtocolError):
     """
     The protocol was violated by the server.
 
-    For exaample, returning malformed HTTP.
+    For example, returning malformed HTTP.
     """
 
 
@@ -326,7 +328,9 @@ class RequestNotRead(StreamError):
 
 
 @contextlib.contextmanager
-def request_context(request: "Request" = None) -> typing.Iterator[None]:
+def request_context(
+    request: typing.Optional["Request"] = None,
+) -> typing.Iterator[None]:
     """
     A context manager that can be used to attach the given request context
     to any `RequestError` exceptions that are raised within the block.
