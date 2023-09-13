@@ -16,6 +16,7 @@ from .._exceptions import (
 )
 from .._utils import is_socket_readable
 from .base import SOCKET_OPTION, NetworkBackend, NetworkStream
+from .tcp_keep_alive import enable_tcp_keep_alive
 
 
 class TLSinTLSStream(NetworkStream):  # pragma: no cover
@@ -217,6 +218,8 @@ class SyncBackend(NetworkBackend):
             for option in socket_options:
                 sock.setsockopt(*option)  # pragma: no cover
             sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            # Enable TCP Keep-Alive
+            enable_tcp_keep_alive(sock)
         return SyncStream(sock)
 
     def connect_unix_socket(
