@@ -528,7 +528,7 @@ class H2StreamStateMachine:
 # For this reason, our state machine implementation below allows for
 # PUSH_PROMISE frames both in the IDLE state (as in the diagram), but also
 # in the OPEN, HALF_CLOSED_LOCAL, and HALF_CLOSED_REMOTE states.
-# Essentially, for hyper-h2, PUSH_PROMISE frames are effectively sent on
+# Essentially, for h2, PUSH_PROMISE frames are effectively sent on
 # two streams.
 #
 # The _transitions dictionary contains a mapping of tuples of

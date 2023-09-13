@@ -1,11 +1,12 @@
 import re
+from typing import Tuple
 
 import pytest
 
 from .._receivebuffer import ReceiveBuffer
 
 
-def test_receivebuffer():
+def test_receivebuffer() -> None:
     b = ReceiveBuffer()
     assert not b
     assert len(b) == 0
@@ -118,7 +119,7 @@ def test_receivebuffer():
         ),
     ],
 )
-def test_receivebuffer_for_invalid_delimiter(data):
+def test_receivebuffer_for_invalid_delimiter(data: Tuple[bytes]) -> None:
     b = ReceiveBuffer()
 
     for line in data:

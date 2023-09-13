@@ -203,9 +203,12 @@ def validate_headers(headers, hdr_validation_flags):
     # checking remains somewhat expensive, and attempts should be made wherever
     # possible to reduce the time spent doing them.
     #
-    # For example, we avoid tuple upacking in loops because it represents a
+    # For example, we avoid tuple unpacking in loops because it represents a
     # fixed cost that we don't want to spend, instead indexing into the header
     # tuples.
+    headers = _reject_empty_header_names(
+        headers, hdr_validation_flags
+    )
     headers = _reject_uppercase_header_fields(
         headers, hdr_validation_flags
     )
@@ -227,6 +230,19 @@ def validate_headers(headers, hdr_validation_flags):
     headers = _check_path_header(headers, hdr_validation_flags)
 
     return headers
+
+
+def _reject_empty_header_names(headers, hdr_validation_flags):
+    """
+    Raises a ProtocolError if any header names are empty (length 0).
+    While hpack decodes such headers without errors, they are semantically
+    forbidden in HTTP, see RFC 7230, stating that they must be at least one
+    character long.
+    """
+    for header in headers:
+        if len(header[0]) == 0:
+            raise ProtocolError("Received header name with zero length.")
+        yield header
 
 
 def _reject_uppercase_header_fields(headers, hdr_validation_flags):
@@ -272,7 +288,7 @@ def _reject_te(headers, hdr_validation_flags):
         if header[0] in (b'te', u'te'):
             if header[1].lower() not in (b'trailers', u'trailers'):
                 raise ProtocolError(
-                    "Invalid value for Transfer-Encoding header: %s" %
+                    "Invalid value for TE header: %s" %
                     header[1]
                 )
 

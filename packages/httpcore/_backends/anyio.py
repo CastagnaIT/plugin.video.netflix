@@ -1,10 +1,7 @@
-from ssl import SSLContext
-from typing import Optional
+import ssl
+import typing
 
-import anyio.abc
-from anyio import BrokenResourceError, EndOfStream
-from anyio.abc import ByteStream, SocketAttribute
-from anyio.streams.tls import TLSAttribute, TLSStream
+import anyio
 
 from .._exceptions import (
     ConnectError,
@@ -15,187 +12,134 @@ from .._exceptions import (
     WriteTimeout,
     map_exceptions,
 )
-from .._types import TimeoutDict
 from .._utils import is_socket_readable
-from .base import AsyncBackend, AsyncLock, AsyncSemaphore, AsyncSocketStream
+from .base import SOCKET_OPTION, AsyncNetworkBackend, AsyncNetworkStream
 
 
-class SocketStream(AsyncSocketStream):
-    def __init__(self, stream: ByteStream) -> None:
-        self.stream = stream
-        self.read_lock = anyio.Lock()
-        self.write_lock = anyio.Lock()
+class AnyIOStream(AsyncNetworkStream):
+    def __init__(self, stream: anyio.abc.ByteStream) -> None:
+        self._stream = stream
 
-    def get_http_version(self) -> str:
-        alpn_protocol = self.stream.extra(TLSAttribute.alpn_protocol, None)
-        return "HTTP/2" if alpn_protocol == "h2" else "HTTP/1.1"
+    async def read(
+        self, max_bytes: int, timeout: typing.Optional[float] = None
+    ) -> bytes:
+        exc_map = {
+            TimeoutError: ReadTimeout,
+            anyio.BrokenResourceError: ReadError,
+            anyio.ClosedResourceError: ReadError,
+        }
+        with map_exceptions(exc_map):
+            with anyio.fail_after(timeout):
+                try:
+                    return await self._stream.receive(max_bytes=max_bytes)
+                except anyio.EndOfStream:  # pragma: nocover
+                    return b""
+
+    async def write(
+        self, buffer: bytes, timeout: typing.Optional[float] = None
+    ) -> None:
+        if not buffer:
+            return
+
+        exc_map = {
+            TimeoutError: WriteTimeout,
+            anyio.BrokenResourceError: WriteError,
+            anyio.ClosedResourceError: WriteError,
+        }
+        with map_exceptions(exc_map):
+            with anyio.fail_after(timeout):
+                await self._stream.send(item=buffer)
+
+    async def aclose(self) -> None:
+        await self._stream.aclose()
 
     async def start_tls(
         self,
-        hostname: bytes,
-        ssl_context: SSLContext,
-        timeout: TimeoutDict,
-    ) -> "SocketStream":
-        connect_timeout = timeout.get("connect")
-        try:
-            with anyio.fail_after(connect_timeout):
-                ssl_stream = await TLSStream.wrap(
-                    self.stream,
-                    ssl_context=ssl_context,
-                    hostname=hostname.decode("ascii"),
-                    standard_compatible=False,
-                )
-        except TimeoutError:
-            raise ConnectTimeout from None
-        except BrokenResourceError as exc:
-            raise ConnectError from exc
-
-        return SocketStream(ssl_stream)
-
-    async def read(self, n: int, timeout: TimeoutDict) -> bytes:
-        read_timeout = timeout.get("read")
-        async with self.read_lock:
+        ssl_context: ssl.SSLContext,
+        server_hostname: typing.Optional[str] = None,
+        timeout: typing.Optional[float] = None,
+    ) -> AsyncNetworkStream:
+        exc_map = {
+            TimeoutError: ConnectTimeout,
+            anyio.BrokenResourceError: ConnectError,
+        }
+        with map_exceptions(exc_map):
             try:
-                with anyio.fail_after(read_timeout):
-                    return await self.stream.receive(n)
-            except TimeoutError:
-                await self.stream.aclose()
-                raise ReadTimeout from None
-            except BrokenResourceError as exc:
-                raise ReadError from exc
-            except EndOfStream:
-                return b""
+                with anyio.fail_after(timeout):
+                    ssl_stream = await anyio.streams.tls.TLSStream.wrap(
+                        self._stream,
+                        ssl_context=ssl_context,
+                        hostname=server_hostname,
+                        standard_compatible=False,
+                        server_side=False,
+                    )
+            except Exception as exc:  # pragma: nocover
+                await self.aclose()
+                raise exc
+        return AnyIOStream(ssl_stream)
 
-    async def write(self, data: bytes, timeout: TimeoutDict) -> None:
-        if not data:
-            return
-
-        write_timeout = timeout.get("write")
-        async with self.write_lock:
-            try:
-                with anyio.fail_after(write_timeout):
-                    return await self.stream.send(data)
-            except TimeoutError:
-                await self.stream.aclose()
-                raise WriteTimeout from None
-            except BrokenResourceError as exc:
-                raise WriteError from exc
-
-    async def aclose(self) -> None:
-        async with self.write_lock:
-            try:
-                await self.stream.aclose()
-            except BrokenResourceError:
-                pass
-
-    def is_readable(self) -> bool:
-        sock = self.stream.extra(SocketAttribute.raw_socket)
-        return is_socket_readable(sock)
+    def get_extra_info(self, info: str) -> typing.Any:
+        if info == "ssl_object":
+            return self._stream.extra(anyio.streams.tls.TLSAttribute.ssl_object, None)
+        if info == "client_addr":
+            return self._stream.extra(anyio.abc.SocketAttribute.local_address, None)
+        if info == "server_addr":
+            return self._stream.extra(anyio.abc.SocketAttribute.remote_address, None)
+        if info == "socket":
+            return self._stream.extra(anyio.abc.SocketAttribute.raw_socket, None)
+        if info == "is_readable":
+            sock = self._stream.extra(anyio.abc.SocketAttribute.raw_socket, None)
+            return is_socket_readable(sock)
+        return None
 
 
-class Lock(AsyncLock):
-    def __init__(self) -> None:
-        self._lock = anyio.Lock()
-
-    async def release(self) -> None:
-        self._lock.release()
-
-    async def acquire(self) -> None:
-        await self._lock.acquire()
-
-
-class Semaphore(AsyncSemaphore):
-    def __init__(self, max_value: int, exc_class: type):
-        self.max_value = max_value
-        self.exc_class = exc_class
-
-    @property
-    def semaphore(self) -> anyio.abc.Semaphore:
-        if not hasattr(self, "_semaphore"):
-            self._semaphore = anyio.Semaphore(self.max_value)
-        return self._semaphore
-
-    async def acquire(self, timeout: float = None) -> None:
-        with anyio.move_on_after(timeout):
-            await self.semaphore.acquire()
-            return
-
-        raise self.exc_class()
-
-    async def release(self) -> None:
-        self.semaphore.release()
-
-
-class AnyIOBackend(AsyncBackend):
-    async def open_tcp_stream(
+class AnyIOBackend(AsyncNetworkBackend):
+    async def connect_tcp(
         self,
-        hostname: bytes,
+        host: str,
         port: int,
-        ssl_context: Optional[SSLContext],
-        timeout: TimeoutDict,
-        *,
-        local_address: Optional[str],
-    ) -> AsyncSocketStream:
-        connect_timeout = timeout.get("connect")
-        unicode_host = hostname.decode("utf-8")
+        timeout: typing.Optional[float] = None,
+        local_address: typing.Optional[str] = None,
+        socket_options: typing.Optional[typing.Iterable[SOCKET_OPTION]] = None,
+    ) -> AsyncNetworkStream:
+        if socket_options is None:
+            socket_options = []  # pragma: no cover
         exc_map = {
             TimeoutError: ConnectTimeout,
             OSError: ConnectError,
-            BrokenResourceError: ConnectError,
+            anyio.BrokenResourceError: ConnectError,
         }
-
         with map_exceptions(exc_map):
-            with anyio.fail_after(connect_timeout):
-                stream: anyio.abc.ByteStream
-                stream = await anyio.connect_tcp(
-                    unicode_host, port, local_host=local_address
+            with anyio.fail_after(timeout):
+                stream: anyio.abc.ByteStream = await anyio.connect_tcp(
+                    remote_host=host,
+                    remote_port=port,
+                    local_host=local_address,
                 )
-                if ssl_context:
-                    stream = await TLSStream.wrap(
-                        stream,
-                        hostname=unicode_host,
-                        ssl_context=ssl_context,
-                        standard_compatible=False,
-                    )
+                # By default TCP sockets opened in `asyncio` include TCP_NODELAY.
+                for option in socket_options:
+                    stream._raw_socket.setsockopt(*option)  # type: ignore[attr-defined] # pragma: no cover
+        return AnyIOStream(stream)
 
-        return SocketStream(stream=stream)
-
-    async def open_uds_stream(
+    async def connect_unix_socket(
         self,
         path: str,
-        hostname: bytes,
-        ssl_context: Optional[SSLContext],
-        timeout: TimeoutDict,
-    ) -> AsyncSocketStream:
-        connect_timeout = timeout.get("connect")
-        unicode_host = hostname.decode("utf-8")
+        timeout: typing.Optional[float] = None,
+        socket_options: typing.Optional[typing.Iterable[SOCKET_OPTION]] = None,
+    ) -> AsyncNetworkStream:  # pragma: nocover
+        if socket_options is None:
+            socket_options = []
         exc_map = {
             TimeoutError: ConnectTimeout,
             OSError: ConnectError,
-            BrokenResourceError: ConnectError,
+            anyio.BrokenResourceError: ConnectError,
         }
-
         with map_exceptions(exc_map):
-            with anyio.fail_after(connect_timeout):
+            with anyio.fail_after(timeout):
                 stream: anyio.abc.ByteStream = await anyio.connect_unix(path)
-                if ssl_context:
-                    stream = await TLSStream.wrap(
-                        stream,
-                        hostname=unicode_host,
-                        ssl_context=ssl_context,
-                        standard_compatible=False,
-                    )
-
-        return SocketStream(stream=stream)
-
-    def create_lock(self) -> AsyncLock:
-        return Lock()
-
-    def create_semaphore(self, max_value: int, exc_class: type) -> AsyncSemaphore:
-        return Semaphore(max_value, exc_class=exc_class)
-
-    async def time(self) -> float:
-        return float(anyio.current_time())
+                for option in socket_options:
+                    stream._raw_socket.setsockopt(*option)  # type: ignore[attr-defined] # pragma: no cover
+        return AnyIOStream(stream)
 
     async def sleep(self, seconds: float) -> None:
-        await anyio.sleep(seconds)
+        await anyio.sleep(seconds)  # pragma: nocover
