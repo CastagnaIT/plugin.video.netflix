@@ -6,13 +6,17 @@
 # Don't subclass these. Stuff will break.
 
 import re
+from abc import ABC
+from dataclasses import dataclass, field
+from typing import Any, cast, Dict, List, Tuple, Union
 
-from . import _headers
-from ._abnf import request_target
+from ._abnf import method, request_target
+from ._headers import Headers, normalize_and_validate
 from ._util import bytesify, LocalProtocolError, validate
 
 # Everything in __all__ gets re-exported as part of the h11 public API.
 __all__ = [
+    "Event",
     "Request",
     "InformationalResponse",
     "Response",
@@ -21,75 +25,20 @@ __all__ = [
     "ConnectionClosed",
 ]
 
+method_re = re.compile(method.encode("ascii"))
 request_target_re = re.compile(request_target.encode("ascii"))
 
 
-class _EventBundle:
-    _fields = []
-    _defaults = {}
+class Event(ABC):
+    """
+    Base class for h11 events.
+    """
 
-    def __init__(self, **kwargs):
-        _parsed = kwargs.pop("_parsed", False)
-        allowed = set(self._fields)
-        for kwarg in kwargs:
-            if kwarg not in allowed:
-                raise TypeError(
-                    "unrecognized kwarg {} for {}".format(
-                        kwarg, self.__class__.__name__
-                    )
-                )
-        required = allowed.difference(self._defaults)
-        for field in required:
-            if field not in kwargs:
-                raise TypeError(
-                    "missing required kwarg {} for {}".format(
-                        field, self.__class__.__name__
-                    )
-                )
-        self.__dict__.update(self._defaults)
-        self.__dict__.update(kwargs)
-
-        # Special handling for some fields
-
-        if "headers" in self.__dict__:
-            self.headers = _headers.normalize_and_validate(
-                self.headers, _parsed=_parsed
-            )
-
-        if not _parsed:
-            for field in ["method", "target", "http_version", "reason"]:
-                if field in self.__dict__:
-                    self.__dict__[field] = bytesify(self.__dict__[field])
-
-            if "status_code" in self.__dict__:
-                if not isinstance(self.status_code, int):
-                    raise LocalProtocolError("status code must be integer")
-                # Because IntEnum objects are instances of int, but aren't
-                # duck-compatible (sigh), see gh-72.
-                self.status_code = int(self.status_code)
-
-        self._validate()
-
-    def _validate(self):
-        pass
-
-    def __repr__(self):
-        name = self.__class__.__name__
-        kwarg_strs = [
-            "{}={}".format(field, self.__dict__[field]) for field in self._fields
-        ]
-        kwarg_str = ", ".join(kwarg_strs)
-        return "{}({})".format(name, kwarg_str)
-
-    # Useful for tests
-    def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.__dict__ == other.__dict__
-
-    # This is an unhashable type.
-    __hash__ = None
+    __slots__ = ()
 
 
-class Request(_EventBundle):
+@dataclass(init=False, frozen=True)
+class Request(Event):
     """The beginning of an HTTP request.
 
     Fields:
@@ -123,10 +72,38 @@ class Request(_EventBundle):
 
     """
 
-    _fields = ["method", "target", "headers", "http_version"]
-    _defaults = {"http_version": b"1.1"}
+    __slots__ = ("method", "headers", "target", "http_version")
 
-    def _validate(self):
+    method: bytes
+    headers: Headers
+    target: bytes
+    http_version: bytes
+
+    def __init__(
+        self,
+        *,
+        method: Union[bytes, str],
+        headers: Union[Headers, List[Tuple[bytes, bytes]], List[Tuple[str, str]]],
+        target: Union[bytes, str],
+        http_version: Union[bytes, str] = b"1.1",
+        _parsed: bool = False,
+    ) -> None:
+        super().__init__()
+        if isinstance(headers, Headers):
+            object.__setattr__(self, "headers", headers)
+        else:
+            object.__setattr__(
+                self, "headers", normalize_and_validate(headers, _parsed=_parsed)
+            )
+        if not _parsed:
+            object.__setattr__(self, "method", bytesify(method))
+            object.__setattr__(self, "target", bytesify(target))
+            object.__setattr__(self, "http_version", bytesify(http_version))
+        else:
+            object.__setattr__(self, "method", method)
+            object.__setattr__(self, "target", target)
+            object.__setattr__(self, "http_version", http_version)
+
         # "A server MUST respond with a 400 (Bad Request) status code to any
         # HTTP/1.1 request message that lacks a Host header field and to any
         # request message that contains more than one Host header field or a
@@ -141,14 +118,61 @@ class Request(_EventBundle):
         if host_count > 1:
             raise LocalProtocolError("Found multiple Host: headers")
 
+        validate(method_re, self.method, "Illegal method characters")
         validate(request_target_re, self.target, "Illegal target characters")
 
-
-class _ResponseBase(_EventBundle):
-    _fields = ["status_code", "headers", "http_version", "reason"]
-    _defaults = {"http_version": b"1.1", "reason": b""}
+    # This is an unhashable type.
+    __hash__ = None  # type: ignore
 
 
+@dataclass(init=False, frozen=True)
+class _ResponseBase(Event):
+    __slots__ = ("headers", "http_version", "reason", "status_code")
+
+    headers: Headers
+    http_version: bytes
+    reason: bytes
+    status_code: int
+
+    def __init__(
+        self,
+        *,
+        headers: Union[Headers, List[Tuple[bytes, bytes]], List[Tuple[str, str]]],
+        status_code: int,
+        http_version: Union[bytes, str] = b"1.1",
+        reason: Union[bytes, str] = b"",
+        _parsed: bool = False,
+    ) -> None:
+        super().__init__()
+        if isinstance(headers, Headers):
+            object.__setattr__(self, "headers", headers)
+        else:
+            object.__setattr__(
+                self, "headers", normalize_and_validate(headers, _parsed=_parsed)
+            )
+        if not _parsed:
+            object.__setattr__(self, "reason", bytesify(reason))
+            object.__setattr__(self, "http_version", bytesify(http_version))
+            if not isinstance(status_code, int):
+                raise LocalProtocolError("status code must be integer")
+            # Because IntEnum objects are instances of int, but aren't
+            # duck-compatible (sigh), see gh-72.
+            object.__setattr__(self, "status_code", int(status_code))
+        else:
+            object.__setattr__(self, "reason", reason)
+            object.__setattr__(self, "http_version", http_version)
+            object.__setattr__(self, "status_code", status_code)
+
+        self.__post_init__()
+
+    def __post_init__(self) -> None:
+        pass
+
+    # This is an unhashable type.
+    __hash__ = None  # type: ignore
+
+
+@dataclass(init=False, frozen=True)
 class InformationalResponse(_ResponseBase):
     """An HTTP informational response.
 
@@ -179,14 +203,18 @@ class InformationalResponse(_ResponseBase):
 
     """
 
-    def _validate(self):
+    def __post_init__(self) -> None:
         if not (100 <= self.status_code < 200):
             raise LocalProtocolError(
                 "InformationalResponse status_code should be in range "
                 "[100, 200), not {}".format(self.status_code)
             )
 
+    # This is an unhashable type.
+    __hash__ = None  # type: ignore
 
+
+@dataclass(init=False, frozen=True)
 class Response(_ResponseBase):
     """The beginning of an HTTP response.
 
@@ -196,7 +224,7 @@ class Response(_ResponseBase):
 
        The status code of this response, as an integer. For an
        :class:`Response`, this is always in the range [200,
-       600).
+       1000).
 
     .. attribute:: headers
 
@@ -216,16 +244,20 @@ class Response(_ResponseBase):
 
     """
 
-    def _validate(self):
-        if not (200 <= self.status_code < 600):
+    def __post_init__(self) -> None:
+        if not (200 <= self.status_code < 1000):
             raise LocalProtocolError(
-                "Response status_code should be in range [200, 600), not {}".format(
+                "Response status_code should be in range [200, 1000), not {}".format(
                     self.status_code
                 )
             )
 
+    # This is an unhashable type.
+    __hash__ = None  # type: ignore
 
-class Data(_EventBundle):
+
+@dataclass(init=False, frozen=True)
+class Data(Event):
     """Part of an HTTP message body.
 
     Fields:
@@ -258,8 +290,21 @@ class Data(_EventBundle):
 
     """
 
-    _fields = ["data", "chunk_start", "chunk_end"]
-    _defaults = {"chunk_start": False, "chunk_end": False}
+    __slots__ = ("data", "chunk_start", "chunk_end")
+
+    data: bytes
+    chunk_start: bool
+    chunk_end: bool
+
+    def __init__(
+        self, data: bytes, chunk_start: bool = False, chunk_end: bool = False
+    ) -> None:
+        object.__setattr__(self, "data", data)
+        object.__setattr__(self, "chunk_start", chunk_start)
+        object.__setattr__(self, "chunk_end", chunk_end)
+
+    # This is an unhashable type.
+    __hash__ = None  # type: ignore
 
 
 # XX FIXME: "A recipient MUST ignore (or consider as an error) any fields that
@@ -267,7 +312,8 @@ class Data(_EventBundle):
 # present in the header section might bypass external security filters."
 # https://svn.tools.ietf.org/svn/wg/httpbis/specs/rfc7230.html#chunked.trailer.part
 # Unfortunately, the list of forbidden fields is long and vague :-/
-class EndOfMessage(_EventBundle):
+@dataclass(init=False, frozen=True)
+class EndOfMessage(Event):
     """The end of an HTTP message.
 
     Fields:
@@ -284,11 +330,32 @@ class EndOfMessage(_EventBundle):
 
     """
 
-    _fields = ["headers"]
-    _defaults = {"headers": []}
+    __slots__ = ("headers",)
+
+    headers: Headers
+
+    def __init__(
+        self,
+        *,
+        headers: Union[
+            Headers, List[Tuple[bytes, bytes]], List[Tuple[str, str]], None
+        ] = None,
+        _parsed: bool = False,
+    ) -> None:
+        super().__init__()
+        if headers is None:
+            headers = Headers([])
+        elif not isinstance(headers, Headers):
+            headers = normalize_and_validate(headers, _parsed=_parsed)
+
+        object.__setattr__(self, "headers", headers)
+
+    # This is an unhashable type.
+    __hash__ = None  # type: ignore
 
 
-class ConnectionClosed(_EventBundle):
+@dataclass(frozen=True)
+class ConnectionClosed(Event):
     """This event indicates that the sender has closed their outgoing
     connection.
 

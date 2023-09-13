@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-hyper-h2
+h2
 ~~
 
 A HTTP/2 implementation.
 """
-__version__ = '4.0.0'
+__version__ = '4.1.0'

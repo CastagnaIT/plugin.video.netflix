@@ -1,9 +1,10 @@
+from typing import Any, Dict, NoReturn, Pattern, Tuple, Type, TypeVar, Union
+
 __all__ = [
     "ProtocolError",
     "LocalProtocolError",
     "RemoteProtocolError",
     "validate",
-    "make_sentinel",
     "bytesify",
 ]
 
@@ -37,7 +38,7 @@ class ProtocolError(Exception):
 
     """
 
-    def __init__(self, msg, error_status_hint=400):
+    def __init__(self, msg: str, error_status_hint: int = 400) -> None:
         if type(self) is ProtocolError:
             raise TypeError("tried to directly instantiate ProtocolError")
         Exception.__init__(self, msg)
@@ -56,14 +57,14 @@ class ProtocolError(Exception):
 #   LocalProtocolError is for local errors and RemoteProtocolError is for
 #   remote errors.
 class LocalProtocolError(ProtocolError):
-    def _reraise_as_remote_protocol_error(self):
+    def _reraise_as_remote_protocol_error(self) -> NoReturn:
         # After catching a LocalProtocolError, use this method to re-raise it
         # as a RemoteProtocolError. This method must be called from inside an
         # except: block.
         #
         # An easy way to get an equivalent RemoteProtocolError is just to
         # modify 'self' in place.
-        self.__class__ = RemoteProtocolError
+        self.__class__ = RemoteProtocolError  # type: ignore
         # But the re-raising is somewhat non-trivial -- you might think that
         # now that we've modified the in-flight exception object, that just
         # doing 'raise' to re-raise it would be enough. But it turns out that
@@ -80,7 +81,9 @@ class RemoteProtocolError(ProtocolError):
     pass
 
 
-def validate(regex, data, msg="malformed data", *format_args):
+def validate(
+    regex: Pattern[bytes], data: bytes, msg: str = "malformed data", *format_args: Any
+) -> Dict[str, bytes]:
     match = regex.fullmatch(data)
     if not match:
         if format_args:
@@ -97,21 +100,31 @@ def validate(regex, data, msg="malformed data", *format_args):
 #
 # The bonus property is useful if you want to take the return value from
 # next_event() and do some sort of dispatch based on type(event).
-class _SentinelBase(type):
-    def __repr__(self):
+
+_T_Sentinel = TypeVar("_T_Sentinel", bound="Sentinel")
+
+
+class Sentinel(type):
+    def __new__(
+        cls: Type[_T_Sentinel],
+        name: str,
+        bases: Tuple[type, ...],
+        namespace: Dict[str, Any],
+        **kwds: Any
+    ) -> _T_Sentinel:
+        assert bases == (Sentinel,)
+        v = super().__new__(cls, name, bases, namespace, **kwds)
+        v.__class__ = v  # type: ignore
+        return v
+
+    def __repr__(self) -> str:
         return self.__name__
-
-
-def make_sentinel(name):
-    cls = _SentinelBase(name, (_SentinelBase,), {})
-    cls.__class__ = cls
-    return cls
 
 
 # Used for methods, request targets, HTTP versions, header names, and header
 # values. Accepts ascii-strings, or bytes/bytearray/memoryview/..., and always
 # returns bytes.
-def bytesify(s):
+def bytesify(s: Union[bytes, bytearray, memoryview, int, str]) -> bytes:
     # Fast-path:
     if type(s) is bytes:
         return s

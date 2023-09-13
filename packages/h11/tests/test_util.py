@@ -1,18 +1,26 @@
 import re
 import sys
 import traceback
+from typing import NoReturn
 
 import pytest
 
-from .._util import *
+from .._util import (
+    bytesify,
+    LocalProtocolError,
+    ProtocolError,
+    RemoteProtocolError,
+    Sentinel,
+    validate,
+)
 
 
-def test_ProtocolError():
+def test_ProtocolError() -> None:
     with pytest.raises(TypeError):
         ProtocolError("abstract base class")
 
 
-def test_LocalProtocolError():
+def test_LocalProtocolError() -> None:
     try:
         raise LocalProtocolError("foo")
     except LocalProtocolError as e:
@@ -25,7 +33,7 @@ def test_LocalProtocolError():
         assert str(e) == "foo"
         assert e.error_status_hint == 418
 
-    def thunk():
+    def thunk() -> NoReturn:
         raise LocalProtocolError("a", error_status_hint=420)
 
     try:
@@ -42,8 +50,8 @@ def test_LocalProtocolError():
         assert new_traceback.endswith(orig_traceback)
 
 
-def test_validate():
-    my_re = re.compile(br"(?P<group1>[0-9]+)\.(?P<group2>[0-9]+)")
+def test_validate() -> None:
+    my_re = re.compile(rb"(?P<group1>[0-9]+)\.(?P<group2>[0-9]+)")
     with pytest.raises(LocalProtocolError):
         validate(my_re, b"0.")
 
@@ -57,8 +65,8 @@ def test_validate():
         validate(my_re, b"0.1\n")
 
 
-def test_validate_formatting():
-    my_re = re.compile(br"foo")
+def test_validate_formatting() -> None:
+    my_re = re.compile(rb"foo")
 
     with pytest.raises(LocalProtocolError) as excinfo:
         validate(my_re, b"", "oops")
@@ -73,21 +81,26 @@ def test_validate_formatting():
     assert "oops 10 xx" in str(excinfo.value)
 
 
-def test_make_sentinel():
-    S = make_sentinel("S")
+def test_make_sentinel() -> None:
+    class S(Sentinel, metaclass=Sentinel):
+        pass
+
     assert repr(S) == "S"
     assert S == S
     assert type(S).__name__ == "S"
     assert S in {S}
     assert type(S) is S
-    S2 = make_sentinel("S2")
+
+    class S2(Sentinel, metaclass=Sentinel):
+        pass
+
     assert repr(S2) == "S2"
     assert S != S2
     assert S not in {S2}
     assert type(S) is not type(S2)
 
 
-def test_bytesify():
+def test_bytesify() -> None:
     assert bytesify(b"123") == b"123"
     assert bytesify(bytearray(b"123")) == b"123"
     assert bytesify("123") == b"123"

@@ -8,20 +8,16 @@ import io
 import typing
 import zlib
 
+from ._compat import brotli
 from ._exceptions import DecodingError
-
-try:
-    import brotlicffi
-except ImportError:  # pragma: nocover
-    brotlicffi = None
 
 
 class ContentDecoder:
     def decode(self, data: bytes) -> bytes:
-        raise NotImplementedError()  # pragma: nocover
+        raise NotImplementedError()  # pragma: no cover
 
     def flush(self) -> bytes:
-        raise NotImplementedError()  # pragma: nocover
+        raise NotImplementedError()  # pragma: no cover
 
 
 class IdentityDecoder(ContentDecoder):
@@ -61,7 +57,7 @@ class DeflateDecoder(ContentDecoder):
     def flush(self) -> bytes:
         try:
             return self.decompressor.flush()
-        except zlib.error as exc:  # pragma: nocover
+        except zlib.error as exc:  # pragma: no cover
             raise DecodingError(str(exc)) from exc
 
 
@@ -84,7 +80,7 @@ class GZipDecoder(ContentDecoder):
     def flush(self) -> bytes:
         try:
             return self.decompressor.flush()
-        except zlib.error as exc:  # pragma: nocover
+        except zlib.error as exc:  # pragma: no cover
             raise DecodingError(str(exc)) from exc
 
 
@@ -99,27 +95,30 @@ class BrotliDecoder(ContentDecoder):
     """
 
     def __init__(self) -> None:
-        if brotlicffi is None:  # pragma: nocover
+        if brotli is None:  # pragma: no cover
             raise ImportError(
-                "Using 'BrotliDecoder', but the 'brotlicffi' library "
-                "is not installed."
+                "Using 'BrotliDecoder', but neither of the 'brotlicffi' or 'brotli' "
+                "packages have been installed. "
                 "Make sure to install httpx using `pip install httpx[brotli]`."
             ) from None
 
-        self.decompressor = brotlicffi.Decompressor()
+        self.decompressor = brotli.Decompressor()
         self.seen_data = False
+        self._decompress: typing.Callable[[bytes], bytes]
         if hasattr(self.decompressor, "decompress"):
-            self._decompress = self.decompressor.decompress
+            # The 'brotlicffi' package.
+            self._decompress = self.decompressor.decompress  # pragma: no cover
         else:
-            self._decompress = self.decompressor.process  # pragma: nocover
+            # The 'brotli' package.
+            self._decompress = self.decompressor.process  # pragma: no cover
 
     def decode(self, data: bytes) -> bytes:
         if not data:
             return b""
         self.seen_data = True
         try:
-            return self.decompressor.decompress(data)
-        except brotlicffi.Error as exc:
+            return self._decompress(data)
+        except brotli.error as exc:
             raise DecodingError(str(exc)) from exc
 
     def flush(self) -> bytes:
@@ -127,9 +126,14 @@ class BrotliDecoder(ContentDecoder):
             return b""
         try:
             if hasattr(self.decompressor, "finish"):
-                self.decompressor.finish()
+                # Only available in the 'brotlicffi' package.
+
+                # As the decompressor decompresses eagerly, this
+                # will never actually emit any data. However, it will potentially throw
+                # errors if a truncated or damaged data stream has been used.
+                self.decompressor.finish()  # pragma: no cover
             return b""
-        except brotlicffi.Error as exc:  # pragma: nocover
+        except brotli.error as exc:  # pragma: no cover
             raise DecodingError(str(exc)) from exc
 
 
@@ -163,13 +167,13 @@ class ByteChunker:
     Handles returning byte content in fixed-size chunks.
     """
 
-    def __init__(self, chunk_size: int = None) -> None:
+    def __init__(self, chunk_size: typing.Optional[int] = None) -> None:
         self._buffer = io.BytesIO()
         self._chunk_size = chunk_size
 
     def decode(self, content: bytes) -> typing.List[bytes]:
         if self._chunk_size is None:
-            return [content]
+            return [content] if content else []
 
         self._buffer.write(content)
         if self._buffer.tell() >= self._chunk_size:
@@ -202,7 +206,7 @@ class TextChunker:
     Handles returning text content in fixed-size chunks.
     """
 
-    def __init__(self, chunk_size: int = None) -> None:
+    def __init__(self, chunk_size: typing.Optional[int] = None) -> None:
         self._buffer = io.StringIO()
         self._chunk_size = chunk_size
 
@@ -241,52 +245,13 @@ class TextDecoder:
     Handles incrementally decoding bytes into text
     """
 
-    def __init__(self, encoding: typing.Optional[str] = None):
-        self.decoder: typing.Optional[codecs.IncrementalDecoder] = None
-        if encoding is not None:
-            self.decoder = codecs.getincrementaldecoder(encoding)(errors="strict")
+    def __init__(self, encoding: str = "utf-8"):
+        self.decoder = codecs.getincrementaldecoder(encoding)(errors="replace")
 
     def decode(self, data: bytes) -> str:
-        """
-        If an encoding is explicitly specified, then we use that.
-        Otherwise our strategy is to attempt UTF-8, and fallback to Windows 1252.
-
-        Note that UTF-8 is a strict superset of ascii, and Windows 1252 is a
-        superset of the non-control characters in iso-8859-1, so we essentially
-        end up supporting any of ascii, utf-8, iso-8859-1, cp1252.
-
-        Given that UTF-8 is now by *far* the most widely used encoding, this
-        should be a pretty robust strategy for cases where a charset has
-        not been explicitly included.
-
-        Useful stats on the prevalence of different charsets in the wild...
-
-        * https://w3techs.com/technologies/overview/character_encoding
-        * https://w3techs.com/technologies/history_overview/character_encoding
-
-        The HTML5 spec also has some useful guidelines, suggesting defaults of
-        either UTF-8 or Windows 1252 in most cases...
-
-        * https://dev.w3.org/html5/spec-LC/Overview.html
-        """
-        if self.decoder is None:
-            # If this is the first decode pass then we need to determine which
-            # encoding to use by attempting UTF-8 and raising any decode errors.
-            attempt_utf_8 = codecs.getincrementaldecoder("utf-8")(errors="strict")
-            try:
-                attempt_utf_8.decode(data)
-            except UnicodeDecodeError:
-                # Could not decode as UTF-8. Use Windows 1252.
-                self.decoder = codecs.getincrementaldecoder("cp1252")(errors="replace")
-            else:
-                # Can decode as UTF-8. Use UTF-8 with lenient error settings.
-                self.decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
-
         return self.decoder.decode(data)
 
     def flush(self) -> str:
-        if self.decoder is None:
-            return ""
         return self.decoder.decode(b"", True)
 
 
@@ -294,66 +259,56 @@ class LineDecoder:
     """
     Handles incrementally reading lines from text.
 
-    Uses universal line decoding, supporting any of `\n`, `\r`, or `\r\n`
-    as line endings, normalizing to `\n`.
+    Has the same behaviour as the stdllib splitlines, but handling the input iteratively.
     """
 
     def __init__(self) -> None:
-        self.buffer = ""
+        self.buffer: typing.List[str] = []
+        self.trailing_cr: bool = False
 
     def decode(self, text: str) -> typing.List[str]:
-        lines = []
+        # See https://docs.python.org/3/library/stdtypes.html#str.splitlines
+        NEWLINE_CHARS = "\n\r\x0b\x0c\x1c\x1d\x1e\x85\u2028\u2029"
 
-        if text and self.buffer and self.buffer[-1] == "\r":
-            if text.startswith("\n"):
-                # Handle the case where we have an "\r\n" split across
-                # our previous input, and our new chunk.
-                lines.append(self.buffer[:-1] + "\n")
-                self.buffer = ""
-                text = text[1:]
-            else:
-                # Handle the case where we have "\r" at the end of our
-                # previous input.
-                lines.append(self.buffer[:-1] + "\n")
-                self.buffer = ""
+        # We always push a trailing `\r` into the next decode iteration.
+        if self.trailing_cr:
+            text = "\r" + text
+            self.trailing_cr = False
+        if text.endswith("\r"):
+            self.trailing_cr = True
+            text = text[:-1]
 
-        while text:
-            num_chars = len(text)
-            for idx in range(num_chars):
-                char = text[idx]
-                next_char = None if idx + 1 == num_chars else text[idx + 1]
-                if char == "\n":
-                    lines.append(self.buffer + text[: idx + 1])
-                    self.buffer = ""
-                    text = text[idx + 1 :]
-                    break
-                elif char == "\r" and next_char == "\n":
-                    lines.append(self.buffer + text[:idx] + "\n")
-                    self.buffer = ""
-                    text = text[idx + 2 :]
-                    break
-                elif char == "\r" and next_char is not None:
-                    lines.append(self.buffer + text[:idx] + "\n")
-                    self.buffer = ""
-                    text = text[idx + 1 :]
-                    break
-                elif next_char is None:
-                    self.buffer += text
-                    text = ""
-                    break
+        if not text:
+            return []
+
+        trailing_newline = text[-1] in NEWLINE_CHARS
+        lines = text.splitlines()
+
+        if len(lines) == 1 and not trailing_newline:
+            # No new lines, buffer the input and continue.
+            self.buffer.append(lines[0])
+            return []
+
+        if self.buffer:
+            # Include any existing buffer in the first portion of the
+            # splitlines result.
+            lines = ["".join(self.buffer) + lines[0]] + lines[1:]
+            self.buffer = []
+
+        if not trailing_newline:
+            # If the last segment of splitlines is not newline terminated,
+            # then drop it from our output and start a new buffer.
+            self.buffer = [lines.pop()]
 
         return lines
 
     def flush(self) -> typing.List[str]:
-        if self.buffer.endswith("\r"):
-            # Handle the case where we had a trailing '\r', which could have
-            # been a '\r\n' pair.
-            lines = [self.buffer[:-1] + "\n"]
-        elif self.buffer:
-            lines = [self.buffer]
-        else:
-            lines = []
-        self.buffer = ""
+        if not self.buffer and not self.trailing_cr:
+            return []
+
+        lines = ["".join(self.buffer)]
+        self.buffer = []
+        self.trailing_cr = False
         return lines
 
 
@@ -365,5 +320,5 @@ SUPPORTED_DECODERS = {
 }
 
 
-if brotlicffi is None:
-    SUPPORTED_DECODERS.pop("br")  # pragma: nocover
+if brotli is None:
+    SUPPORTED_DECODERS.pop("br")  # pragma: no cover

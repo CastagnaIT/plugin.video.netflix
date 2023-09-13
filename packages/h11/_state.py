@@ -110,9 +110,10 @@
 # tables. But it can't automatically read the transitions that are written
 # directly in Python code. So if you touch those, you need to also update the
 # script to keep it in sync!
+from typing import cast, Dict, Optional, Set, Tuple, Type, Union
 
 from ._events import *
-from ._util import LocalProtocolError, make_sentinel
+from ._util import LocalProtocolError, Sentinel
 
 # Everything in __all__ gets re-exported as part of the h11 public API.
 __all__ = [
@@ -129,26 +130,70 @@ __all__ = [
     "ERROR",
 ]
 
-CLIENT = make_sentinel("CLIENT")
-SERVER = make_sentinel("SERVER")
+
+class CLIENT(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class SERVER(Sentinel, metaclass=Sentinel):
+    pass
+
 
 # States
-IDLE = make_sentinel("IDLE")
-SEND_RESPONSE = make_sentinel("SEND_RESPONSE")
-SEND_BODY = make_sentinel("SEND_BODY")
-DONE = make_sentinel("DONE")
-MUST_CLOSE = make_sentinel("MUST_CLOSE")
-CLOSED = make_sentinel("CLOSED")
-ERROR = make_sentinel("ERROR")
+class IDLE(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class SEND_RESPONSE(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class SEND_BODY(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class DONE(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class MUST_CLOSE(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class CLOSED(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class ERROR(Sentinel, metaclass=Sentinel):
+    pass
+
 
 # Switch types
-MIGHT_SWITCH_PROTOCOL = make_sentinel("MIGHT_SWITCH_PROTOCOL")
-SWITCHED_PROTOCOL = make_sentinel("SWITCHED_PROTOCOL")
+class MIGHT_SWITCH_PROTOCOL(Sentinel, metaclass=Sentinel):
+    pass
 
-_SWITCH_UPGRADE = make_sentinel("_SWITCH_UPGRADE")
-_SWITCH_CONNECT = make_sentinel("_SWITCH_CONNECT")
 
-EVENT_TRIGGERED_TRANSITIONS = {
+class SWITCHED_PROTOCOL(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class _SWITCH_UPGRADE(Sentinel, metaclass=Sentinel):
+    pass
+
+
+class _SWITCH_CONNECT(Sentinel, metaclass=Sentinel):
+    pass
+
+
+EventTransitionType = Dict[
+    Type[Sentinel],
+    Dict[
+        Type[Sentinel],
+        Dict[Union[Type[Event], Tuple[Type[Event], Type[Sentinel]]], Type[Sentinel]],
+    ],
+]
+
+EVENT_TRIGGERED_TRANSITIONS: EventTransitionType = {
     CLIENT: {
         IDLE: {Request: SEND_BODY, ConnectionClosed: CLOSED},
         SEND_BODY: {Data: SEND_BODY, EndOfMessage: DONE},
@@ -181,9 +226,13 @@ EVENT_TRIGGERED_TRANSITIONS = {
     },
 }
 
+StateTransitionType = Dict[
+    Tuple[Type[Sentinel], Type[Sentinel]], Dict[Type[Sentinel], Type[Sentinel]]
+]
+
 # NB: there are also some special-case state-triggered transitions hard-coded
 # into _fire_state_triggered_transitions below.
-STATE_TRIGGERED_TRANSITIONS = {
+STATE_TRIGGERED_TRANSITIONS: StateTransitionType = {
     # (Client state, Server state) -> new states
     # Protocol negotiation
     (MIGHT_SWITCH_PROTOCOL, SWITCHED_PROTOCOL): {CLIENT: SWITCHED_PROTOCOL},
@@ -198,7 +247,7 @@ STATE_TRIGGERED_TRANSITIONS = {
 
 
 class ConnectionState:
-    def __init__(self):
+    def __init__(self) -> None:
         # Extra bits of state that don't quite fit into the state model.
 
         # If this is False then it enables the automatic DONE -> MUST_CLOSE
@@ -207,23 +256,29 @@ class ConnectionState:
 
         # This is a subset of {UPGRADE, CONNECT}, containing the proposals
         # made by the client for switching protocols.
-        self.pending_switch_proposals = set()
+        self.pending_switch_proposals: Set[Type[Sentinel]] = set()
 
-        self.states = {CLIENT: IDLE, SERVER: IDLE}
+        self.states: Dict[Type[Sentinel], Type[Sentinel]] = {CLIENT: IDLE, SERVER: IDLE}
 
-    def process_error(self, role):
+    def process_error(self, role: Type[Sentinel]) -> None:
         self.states[role] = ERROR
         self._fire_state_triggered_transitions()
 
-    def process_keep_alive_disabled(self):
+    def process_keep_alive_disabled(self) -> None:
         self.keep_alive = False
         self._fire_state_triggered_transitions()
 
-    def process_client_switch_proposal(self, switch_event):
+    def process_client_switch_proposal(self, switch_event: Type[Sentinel]) -> None:
         self.pending_switch_proposals.add(switch_event)
         self._fire_state_triggered_transitions()
 
-    def process_event(self, role, event_type, server_switch_event=None):
+    def process_event(
+        self,
+        role: Type[Sentinel],
+        event_type: Type[Event],
+        server_switch_event: Optional[Type[Sentinel]] = None,
+    ) -> None:
+        _event_type: Union[Type[Event], Tuple[Type[Event], Type[Sentinel]]] = event_type
         if server_switch_event is not None:
             assert role is SERVER
             if server_switch_event not in self.pending_switch_proposals:
@@ -232,30 +287,35 @@ class ConnectionState:
                         server_switch_event
                     )
                 )
-            event_type = (event_type, server_switch_event)
-        if server_switch_event is None and event_type is Response:
+            _event_type = (event_type, server_switch_event)
+        if server_switch_event is None and _event_type is Response:
             self.pending_switch_proposals = set()
-        self._fire_event_triggered_transitions(role, event_type)
+        self._fire_event_triggered_transitions(role, _event_type)
         # Special case: the server state does get to see Request
         # events.
-        if event_type is Request:
+        if _event_type is Request:
             assert role is CLIENT
             self._fire_event_triggered_transitions(SERVER, (Request, CLIENT))
         self._fire_state_triggered_transitions()
 
-    def _fire_event_triggered_transitions(self, role, event_type):
+    def _fire_event_triggered_transitions(
+        self,
+        role: Type[Sentinel],
+        event_type: Union[Type[Event], Tuple[Type[Event], Type[Sentinel]]],
+    ) -> None:
         state = self.states[role]
         try:
             new_state = EVENT_TRIGGERED_TRANSITIONS[role][state][event_type]
         except KeyError:
+            event_type = cast(Type[Event], event_type)
             raise LocalProtocolError(
                 "can't handle event type {} when role={} and state={}".format(
                     event_type.__name__, role, self.states[role]
                 )
-            )
+            ) from None
         self.states[role] = new_state
 
-    def _fire_state_triggered_transitions(self):
+    def _fire_state_triggered_transitions(self) -> None:
         # We apply these rules repeatedly until converging on a fixed point
         while True:
             start_states = dict(self.states)
@@ -295,7 +355,7 @@ class ConnectionState:
                 # Fixed point reached
                 return
 
-    def start_next_cycle(self):
+    def start_next_cycle(self) -> None:
         if self.states != {CLIENT: DONE, SERVER: DONE}:
             raise LocalProtocolError(
                 "not in a reusable state. self.states={}".format(self.states)

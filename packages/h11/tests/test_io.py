@@ -1,6 +1,16 @@
+from typing import Any, Callable, Generator, List
+
 import pytest
 
-from .._events import *
+from .._events import (
+    ConnectionClosed,
+    Data,
+    EndOfMessage,
+    Event,
+    InformationalResponse,
+    Request,
+    Response,
+)
 from .._headers import Headers, normalize_and_validate
 from .._readers import (
     _obsolete_line_fold,
@@ -10,7 +20,18 @@ from .._readers import (
     READERS,
 )
 from .._receivebuffer import ReceiveBuffer
-from .._state import *
+from .._state import (
+    CLIENT,
+    CLOSED,
+    DONE,
+    IDLE,
+    MIGHT_SWITCH_PROTOCOL,
+    MUST_CLOSE,
+    SEND_BODY,
+    SEND_RESPONSE,
+    SERVER,
+    SWITCHED_PROTOCOL,
+)
 from .._util import LocalProtocolError
 from .._writers import (
     ChunkedWriter,
@@ -40,7 +61,7 @@ SIMPLE_CASES = [
     ),
     (
         (SERVER, SEND_RESPONSE),
-        Response(status_code=200, headers=[], reason=b"OK"),
+        Response(status_code=200, headers=[], reason=b"OK"),  # type: ignore[arg-type]
         b"HTTP/1.1 200 OK\r\n\r\n",
     ),
     (
@@ -52,36 +73,35 @@ SIMPLE_CASES = [
     ),
     (
         (SERVER, SEND_RESPONSE),
-        InformationalResponse(status_code=101, headers=[], reason=b"Upgrade"),
+        InformationalResponse(status_code=101, headers=[], reason=b"Upgrade"),  # type: ignore[arg-type]
         b"HTTP/1.1 101 Upgrade\r\n\r\n",
     ),
 ]
 
 
-def dowrite(writer, obj):
-    got_list = []
+def dowrite(writer: Callable[..., None], obj: Any) -> bytes:
+    got_list: List[bytes] = []
     writer(obj, got_list.append)
     return b"".join(got_list)
 
 
-def tw(writer, obj, expected):
+def tw(writer: Any, obj: Any, expected: Any) -> None:
     got = dowrite(writer, obj)
     assert got == expected
 
 
-def makebuf(data):
+def makebuf(data: bytes) -> ReceiveBuffer:
     buf = ReceiveBuffer()
     buf += data
     return buf
 
 
-def tr(reader, data, expected):
-    def check(got):
+def tr(reader: Any, data: bytes, expected: Any) -> None:
+    def check(got: Any) -> None:
         assert got == expected
         # Headers should always be returned as bytes, not e.g. bytearray
         # https://github.com/python-hyper/wsproto/pull/54#issuecomment-377709478
         for name, value in getattr(got, "headers", []):
-            print(name, value)
             assert type(name) is bytes
             assert type(value) is bytes
 
@@ -104,17 +124,17 @@ def tr(reader, data, expected):
     assert bytes(buf) == b"trailing"
 
 
-def test_writers_simple():
+def test_writers_simple() -> None:
     for ((role, state), event, binary) in SIMPLE_CASES:
         tw(WRITERS[role, state], event, binary)
 
 
-def test_readers_simple():
+def test_readers_simple() -> None:
     for ((role, state), event, binary) in SIMPLE_CASES:
         tr(READERS[role, state], binary, event)
 
 
-def test_writers_unusual():
+def test_writers_unusual() -> None:
     # Simple test of the write_headers utility routine
     tw(
         write_headers,
@@ -145,7 +165,7 @@ def test_writers_unusual():
         )
 
 
-def test_readers_unusual():
+def test_readers_unusual() -> None:
     # Reading HTTP/1.0
     tr(
         READERS[CLIENT, IDLE],
@@ -162,7 +182,7 @@ def test_readers_unusual():
     tr(
         READERS[CLIENT, IDLE],
         b"HEAD /foo HTTP/1.0\r\n\r\n",
-        Request(method="HEAD", target="/foo", headers=[], http_version="1.0"),
+        Request(method="HEAD", target="/foo", headers=[], http_version="1.0"),  # type: ignore[arg-type]
     )
 
     tr(
@@ -305,7 +325,7 @@ def test_readers_unusual():
         tr(READERS[CLIENT, IDLE], b"HEAD /foo HTTP/1.1\r\n" b": line\r\n\r\n", None)
 
 
-def test__obsolete_line_fold_bytes():
+def test__obsolete_line_fold_bytes() -> None:
     # _obsolete_line_fold has a defensive cast to bytearray, which is
     # necessary to protect against O(n^2) behavior in case anyone ever passes
     # in regular bytestrings... but right now we never pass in regular
@@ -318,7 +338,9 @@ def test__obsolete_line_fold_bytes():
     ]
 
 
-def _run_reader_iter(reader, buf, do_eof):
+def _run_reader_iter(
+    reader: Any, buf: bytes, do_eof: bool
+) -> Generator[Any, None, None]:
     while True:
         event = reader(buf)
         if event is None:
@@ -333,12 +355,12 @@ def _run_reader_iter(reader, buf, do_eof):
         yield reader.read_eof()
 
 
-def _run_reader(*args):
+def _run_reader(*args: Any) -> List[Event]:
     events = list(_run_reader_iter(*args))
     return normalize_data_events(events)
 
 
-def t_body_reader(thunk, data, expected, do_eof=False):
+def t_body_reader(thunk: Any, data: bytes, expected: Any, do_eof: bool = False) -> None:
     # Simple: consume whole thing
     print("Test 1")
     buf = makebuf(data)
@@ -361,7 +383,7 @@ def t_body_reader(thunk, data, expected, do_eof=False):
         assert _run_reader(thunk(), buf, False) == expected
 
 
-def test_ContentLengthReader():
+def test_ContentLengthReader() -> None:
     t_body_reader(lambda: ContentLengthReader(0), b"", [EndOfMessage()])
 
     t_body_reader(
@@ -371,7 +393,7 @@ def test_ContentLengthReader():
     )
 
 
-def test_Http10Reader():
+def test_Http10Reader() -> None:
     t_body_reader(Http10Reader, b"", [EndOfMessage()], do_eof=True)
     t_body_reader(Http10Reader, b"asdf", [Data(data=b"asdf")], do_eof=False)
     t_body_reader(
@@ -379,7 +401,7 @@ def test_Http10Reader():
     )
 
 
-def test_ChunkedReader():
+def test_ChunkedReader() -> None:
     t_body_reader(ChunkedReader, b"0\r\n\r\n", [EndOfMessage()])
 
     t_body_reader(
@@ -433,8 +455,14 @@ def test_ChunkedReader():
         [Data(data=b"xxxxx"), EndOfMessage()],
     )
 
+    t_body_reader(
+        ChunkedReader,
+        b"5   	 \r\n01234\r\n" + b"0\r\n\r\n",
+        [Data(data=b"01234"), EndOfMessage()],
+    )
 
-def test_ContentLengthWriter():
+
+def test_ContentLengthWriter() -> None:
     w = ContentLengthWriter(5)
     assert dowrite(w, Data(data=b"123")) == b"123"
     assert dowrite(w, Data(data=b"45")) == b"45"
@@ -461,7 +489,7 @@ def test_ContentLengthWriter():
         dowrite(w, EndOfMessage(headers=[("Etag", "asdf")]))
 
 
-def test_ChunkedWriter():
+def test_ChunkedWriter() -> None:
     w = ChunkedWriter()
     assert dowrite(w, Data(data=b"aaa")) == b"3\r\naaa\r\n"
     assert dowrite(w, Data(data=b"a" * 20)) == b"14\r\n" + b"a" * 20 + b"\r\n"
@@ -476,7 +504,7 @@ def test_ChunkedWriter():
     )
 
 
-def test_Http10Writer():
+def test_Http10Writer() -> None:
     w = Http10Writer()
     assert dowrite(w, Data(data=b"1234")) == b"1234"
     assert dowrite(w, EndOfMessage()) == b""
@@ -485,12 +513,12 @@ def test_Http10Writer():
         dowrite(w, EndOfMessage(headers=[("Etag", "asdf")]))
 
 
-def test_reject_garbage_after_request_line():
+def test_reject_garbage_after_request_line() -> None:
     with pytest.raises(LocalProtocolError):
         tr(READERS[SERVER, SEND_RESPONSE], b"HTTP/1.0 200 OK\x00xxxx\r\n\r\n", None)
 
 
-def test_reject_garbage_after_response_line():
+def test_reject_garbage_after_response_line() -> None:
     with pytest.raises(LocalProtocolError):
         tr(
             READERS[CLIENT, IDLE],
@@ -499,7 +527,7 @@ def test_reject_garbage_after_response_line():
         )
 
 
-def test_reject_garbage_in_header_line():
+def test_reject_garbage_in_header_line() -> None:
     with pytest.raises(LocalProtocolError):
         tr(
             READERS[CLIENT, IDLE],
@@ -508,7 +536,7 @@ def test_reject_garbage_in_header_line():
         )
 
 
-def test_reject_non_vchar_in_path():
+def test_reject_non_vchar_in_path() -> None:
     for bad_char in b"\x00\x20\x7f\xee":
         message = bytearray(b"HEAD /")
         message.append(bad_char)
@@ -518,7 +546,7 @@ def test_reject_non_vchar_in_path():
 
 
 # https://github.com/python-hyper/h11/issues/57
-def test_allow_some_garbage_in_cookies():
+def test_allow_some_garbage_in_cookies() -> None:
     tr(
         READERS[CLIENT, IDLE],
         b"HEAD /foo HTTP/1.1\r\n"
@@ -536,7 +564,7 @@ def test_allow_some_garbage_in_cookies():
     )
 
 
-def test_host_comes_first():
+def test_host_comes_first() -> None:
     tw(
         write_headers,
         normalize_and_validate([("foo", "bar"), ("Host", "example.com")]),

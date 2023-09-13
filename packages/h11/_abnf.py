@@ -125,5 +125,8 @@ chunk_ext = r";.*"
 chunk_header = (
     r"(?P<chunk_size>{chunk_size})"
     r"(?P<chunk_ext>{chunk_ext})?"
-    r"\r\n".format(**globals())
+    r"{OWS}\r\n".format(
+        **globals()
+    )  # Even though the specification does not allow for extra whitespaces,
+    # we are lenient with trailing whitespaces because some servers on the wild use it.
 )
