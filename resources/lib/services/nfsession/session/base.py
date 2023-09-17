@@ -41,10 +41,8 @@ class SessionBase:
             LOG.info('Session closed')
         except AttributeError:
             pass
-        import httpx
-        # (http1=False, http2=True) means that the client know that server support HTTP/2 and avoid to do negotiations,
-        # prior knowledge: https://python-hyper.org/projects/hyper-h2/en/v2.3.1/negotiating-http2.html#prior-knowledge
-        self.session = httpx.Client(http1=False, http2=True)
+        from requests import Session
+        self.session = Session()
         self.session.max_redirects = 10  # Too much redirects should means some problem
         self.session.headers.update({
             'User-Agent': common.get_user_agent(enable_android_mediaflag_fix=True),

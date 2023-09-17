@@ -13,7 +13,7 @@ import json
 import time
 import zlib
 
-import httpx
+import requests.exceptions as req_exceptions
 
 import resources.lib.common as common
 from resources.lib.common import get_system_platform, is_device_l1_enabled
@@ -210,7 +210,7 @@ class MSLRequests(MSLRequestBuilder):
                 LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned response with status {}', response.status_code)
                 break
-            except httpx.ConnectError as exc:
+            except req_exceptions.ConnectionError as exc:
                 LOG.error('HTTP request error: {}', exc)
                 if retry == 3:
                     raise
