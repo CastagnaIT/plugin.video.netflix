@@ -11,7 +11,7 @@
 import json
 import time
 
-import httpx
+import requests.exceptions as req_exceptions
 
 import resources.lib.common as common
 import resources.lib.utils.website as website
@@ -75,7 +75,7 @@ class SessionHTTPRequests(SessionBase):
                 LOG.debug('Request took {}s', time.perf_counter() - start)
                 LOG.debug('Request returned status code {}', response.status_code)
                 break
-            except httpx.RemoteProtocolError as exc:
+            except req_exceptions.ConnectionError as exc:
                 if 'Server disconnected' in str(exc):
                     LOG.error('HTTP request error: {}', exc)
                     if retry == 3:  # We retry 2 times to make sure that is not failed for another reason
@@ -87,19 +87,12 @@ class SessionHTTPRequests(SessionBase):
                         raise NotLoggedInError from exc
                     retry += 1
                     LOG.warn('Another attempt will be performed ({})', retry)
-                raise
-            except httpx.ConnectError as exc:
-                LOG.error('HTTP request error: {}', exc)
-                if retry == 3:
-                    raise
-                retry += 1
-                LOG.warn('Another attempt will be performed ({})', retry)
-            except httpx.ReadError as exc:
-                if retry == 3 or 'Try again' not in str(exc):
-                    raise
-                LOG.error('HTTP request error: {}', exc)
-                retry += 1
-                LOG.warn('Another attempt will be performed ({})', retry)
+                else:
+                    LOG.error('HTTP request error: {}', exc)
+                    if retry == 3:
+                        raise
+                    retry += 1
+                    LOG.warn('Another attempt will be performed ({})', retry)
         # for redirect in response.history:
         #     LOG.warn('Redirected to: [{}] {}', redirect.status_code, redirect.url)
         if not session_refreshed:
@@ -123,7 +116,7 @@ class SessionHTTPRequests(SessionBase):
         """Refresh session data from the Netflix website"""
         try:
             self.auth_url = website.extract_session_data(self.get('browse'))['auth_url']
-            cookies.save(self.session.cookies.jar)
+            cookies.save(self.session.cookies)
             LOG.debug('Successfully refreshed session data')
             return True
         except MbrStatusError:
@@ -141,9 +134,9 @@ class SessionHTTPRequests(SessionBase):
             common.purge_credentials()
             ui.show_notification(common.get_local_string(30008))
             raise NotLoggedInError from exc
-        except httpx.RequestError:
+        except req_exceptions.RequestException:
             import traceback
-            LOG.warn('Failed to refresh session data, request error (RequestError)')
+            LOG.warn('Failed to refresh session data, request error (RequestException)')
             LOG.warn(traceback.format_exc())
             if raise_exception:
                 raise

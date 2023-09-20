@@ -13,6 +13,7 @@ from threading import RLock
 from time import time
 
 import xbmcvfs
+from requests.sessions import cookiejar_from_dict
 
 from resources.lib.common.exceptions import MissingCookiesError
 from resources.lib.globals import G
@@ -43,14 +44,16 @@ class PickleableCookieJar(CookieJar):
         if '_cookies_lock' not in self.__dict__:
             self._cookies_lock = RLock()
 
-
 def save(cookie_jar, log_output=True):
     """Save a cookie jar to file and in-memory storage"""
     if log_output:
         log_cookie(cookie_jar)
     cookie_file = xbmcvfs.File(cookie_file_path(), 'wb')
     try:
-        cookie_file.write(bytearray(pickle.dumps(PickleableCookieJar.cast(cookie_jar))))
+        # Requests RequestsCookieJar it's a dict, for compatibility we convert it to the generic http.cookiejar
+        # to keep possibility to change in future Requests module with another one
+        jar = cookiejar_from_dict(cookie_jar)
+        cookie_file.write(bytearray(pickle.dumps(PickleableCookieJar.cast(jar))))
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
@@ -73,7 +76,7 @@ def load():
         raise MissingCookiesError
     cookie_file = xbmcvfs.File(file_path, 'rb')
     try:
-        cookie_jar: PickleableCookieJar = pickle.loads(cookie_file.readBytes())
+        cookie_jar = pickle.loads(cookie_file.readBytes())
         # Clear flwssn cookie if present, as it is trouble with early expiration
         # Commented: this seem not produce any change
         # for cookie in cookie_jar:
@@ -81,7 +84,12 @@ def load():
         #        cookie_jar.clear(cookie.domain, cookie.path, cookie.name)
         LOG.debug('Cookies loaded from file')
         log_cookie(cookie_jar)
-        return cookie_jar
+        # Convert the generic http.cookiejar in to RequestsCookieJar of Request module
+        from requests.cookies import RequestsCookieJar
+        req_cookie_jar = RequestsCookieJar()
+        req_cookie_jar.update(cookie_jar)
+
+        return req_cookie_jar
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)

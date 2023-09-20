@@ -27,7 +27,6 @@ exclude_paths:
   - "resources/skins/"
   - "resources/settings.xml"
   - "tests/"
-  - "packages/"
   - "addon.xml"
   - "changelog.txt"
   - "Contributing.md"
