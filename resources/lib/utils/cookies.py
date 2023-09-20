@@ -13,7 +13,6 @@ from threading import RLock
 from time import time
 
 import xbmcvfs
-from requests.sessions import cookiejar_from_dict
 
 from resources.lib.common.exceptions import MissingCookiesError
 from resources.lib.globals import G
@@ -72,7 +71,7 @@ class PickleableCookieJar(CookieJar):
                     if path is None or cookie.path == path:
                         if to_return is not None:
                             # if there are multiple cookies that meet passed in criteria
-                            raise Exception(f"There are multiple cookies with name, {name!r}")  # pylint: disable=broad-except
+                            raise Exception(f"There are multiple cookies with name, {name!r}")  # pylint: disable=broad-exception-raised
                         # we will eventually return this as long as no cookie conflict
                         to_return = cookie.value
         if to_return:
