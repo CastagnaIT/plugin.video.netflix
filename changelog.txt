@@ -1,3 +1,8 @@
+v1.22.3 (2023-09-20)
+- Removed HTTPX module (http2) to fix compatibility with python >= 3.11
+- Restored Requests module (details https://github.com/CastagnaIT/plugin.video.netflix/pull/1622)
+- Fix cookies errors of 1.22.2
+
 v1.22.2 (2023-09-20)
 - Removed HTTPX module (http2) to fix compatibility with python >= 3.11
 - Restored Requests module (details https://github.com/CastagnaIT/plugin.video.netflix/pull/1622)
