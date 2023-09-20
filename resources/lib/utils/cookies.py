@@ -50,10 +50,9 @@ def save(cookie_jar, log_output=True):
         log_cookie(cookie_jar)
     cookie_file = xbmcvfs.File(cookie_file_path(), 'wb')
     try:
-        # Requests RequestsCookieJar it's a dict, for compatibility we convert it to the generic http.cookiejar
+        # For compatibility, we convert CookieJar object to our PickleableCookieJar
         # to keep possibility to change in future Requests module with another one
-        jar = cookiejar_from_dict(cookie_jar)
-        cookie_file.write(bytearray(pickle.dumps(PickleableCookieJar.cast(jar))))
+        cookie_file.write(bytearray(pickle.dumps(PickleableCookieJar.cast(cookie_jar))))
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Failed to save cookies to file: {exc}', exc=exc)
     finally:
@@ -84,12 +83,7 @@ def load():
         #        cookie_jar.clear(cookie.domain, cookie.path, cookie.name)
         LOG.debug('Cookies loaded from file')
         log_cookie(cookie_jar)
-        # Convert the generic http.cookiejar in to RequestsCookieJar of Request module
-        from requests.cookies import RequestsCookieJar
-        req_cookie_jar = RequestsCookieJar()
-        req_cookie_jar.update(cookie_jar)
-
-        return req_cookie_jar
+        return cookie_jar
     except Exception as exc:  # pylint: disable=broad-except
         import traceback
         LOG.error('Failed to load cookies from file: {exc}', exc=exc)
