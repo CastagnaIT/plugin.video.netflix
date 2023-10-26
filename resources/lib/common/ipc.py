@@ -20,10 +20,10 @@ from .misc_utils import run_threaded
 IPC_TIMEOUT_SECS = 20
 
 # IPC over HTTP endpoints
-IPC_ENDPOINT_CACHE = '/cache'
-IPC_ENDPOINT_MSL = '/msl'
-IPC_ENDPOINT_NFSESSION = '/nfsession'
-IPC_ENDPOINT_NFSESSION_TEST = '/nfsessiontest'
+IPC_ENDPOINT_CACHE = '/netflix_service/cache'
+IPC_ENDPOINT_MSL = '/netflix_service/msl'
+IPC_ENDPOINT_NFSESSION = '/netflix_service/nfsession'
+IPC_ENDPOINT_NFSESSION_TEST = '/netflix_service/nfsessiontest'
 
 
 class Signals:  # pylint: disable=no-init,too-few-public-methods
