@@ -197,22 +197,20 @@ def exec_query(row_id, search_type, search_params, search_value, perpetual_range
         }
         dir_items, extra_data = common.make_call('get_video_list_search', call_args)
     elif search_type == 'audio_lang':
-        menu_data['query_without_reference'] = True
         call_args = {
             'menu_data': menu_data,
             'pathitems': ['search', 'search', row_id],
             'perpetual_range_start': perpetual_range_start,
-            'context_name': 'spokenAudio',
+            'context_name': 'genres',
             'context_id': common.convert_from_string(search_params, dict)['lang_code']
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)
     elif search_type == 'subtitles_lang':
-        menu_data['query_without_reference'] = True
         call_args = {
             'menu_data': menu_data,
             'pathitems': ['search', 'search', row_id],
             'perpetual_range_start': perpetual_range_start,
-            'context_name': 'subtitles',
+            'context_name': 'genres',
             'context_id': common.convert_from_string(search_params, dict)['lang_code']
         }
         dir_items, extra_data = common.make_call('get_video_list_sorted_sp', call_args)

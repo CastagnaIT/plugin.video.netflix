@@ -11,7 +11,8 @@ from typing import TYPE_CHECKING
 
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
-                                            SearchVideoList, CustomVideoList, LoLoMoCategory, VideoListSupplemental)
+                                            SearchVideoList, CustomVideoList, LoLoMoCategory, VideoListSupplemental,
+                                            VideosList)
 from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVideoId
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
@@ -186,6 +187,36 @@ class DirectoryPathRequests:
 
         path_response = self.nfsession.perpetual_path_request(paths, [response_type, base_path], perpetual_range_start)
         return VideoListSorted(path_response, context_name, context_id, req_sort_order_type)
+
+
+    @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_from_kwarg_name='context_id',
+                              identify_append_from_kwarg_name='perpetual_range_start', ignore_self_class=True)
+    def req_videos_list_sorted(self, context_name, context_id=None, perpetual_range_start=None, menu_data=None):
+        """Retrieve a video's list sorted"""
+        # This type of request allows to obtain more than ~40 results
+        LOG.debug('Requesting video\'s list sorted for context name: "{}", context id: "{}"',
+                  context_name, context_id)
+        base_path = [context_name]
+        response_type = 'videoslist'
+        if context_id:
+            base_path.append(context_id)
+
+        # enum order: AZ|ZA|Suggested|Year
+        # sort order the "mylist" is supported only in US country, the only way to query is use 'az'
+        sort_order_types = ['az', 'za', 'su', 'yr'] if context_name != 'mylist' else ['az', 'az']
+        req_sort_order_type = sort_order_types[
+            int(G.ADDON.getSettingInt('menu_sortorder_' + menu_data.get('initial_menu_id', menu_data['path'][1])))
+        ]
+        base_path.append(req_sort_order_type)
+        _base_path = list(base_path)
+        _base_path.append(RANGE_PLACEHOLDER)
+        if not menu_data.get('query_without_reference', False):
+            _base_path.append('reference')
+        paths = (build_paths(_base_path, VIDEO_LIST_PARTIAL_PATHS) +
+                 [base_path[:-1] + [['id', 'name', 'requestId', 'trackIds']]])
+
+        path_response = self.nfsession.perpetual_path_request(paths, [response_type, ['videos']], perpetual_range_start)
+        return VideosList(path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_SUPPLEMENTAL, identify_append_from_kwarg_name='supplemental_type',
                               ignore_self_class=True)
