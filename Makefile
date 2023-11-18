@@ -14,7 +14,7 @@ else
 	zip_name = $(name)-$(version)-$(git_branch)-$(git_hash).zip
 endif
 
-include_files = addon.py addon.xml LICENSE.txt README.md resources/ service.py packages/
+include_files = addon.py addon.xml LICENSE.txt README.md resources/ service.py
 include_paths = $(patsubst %,$(name)/%,$(include_files))
 exclude_files = \*.new \*.orig \*.pyc \*.pyo
 zip_dir = $(name)/
