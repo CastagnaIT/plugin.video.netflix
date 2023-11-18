@@ -30,6 +30,7 @@ LENGTH_ATTRIBUTES = {
     'stdlist': lambda r, context, key: jgrapgh_len(r[context][key]),
     'stdlist_wid': lambda r, context, uid, key: jgrapgh_len(r[context][uid][key]),
     'searchlist': lambda r, context, key: len(list(r[context][key].values())[0]),
+    'videoslist': lambda r, list_name: jgrapgh_len(r[list_name])
 }
 
 """Predefined lambda expressions that return the number of video results within a path response dict"""

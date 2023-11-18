@@ -218,27 +218,32 @@ def verify_profile_lock(guid, pin):
 
 def get_available_audio_languages():
     """Get the list of available audio languages of videos"""
+    # originalAudioLanguages genres: 81555714
     call_args = {
-        'paths': [['spokenAudioLanguages', {'from': 0, 'to': 25}, ['id', 'name']]]
+        'paths': [['genres', 81555714, 'subgenres', {'to': 50}, ['id', 'name', 'languageCode']]]
     }
     response = common.make_call('path_request', call_args)
     lang_list = {}
-    for lang_dict in response.get('spokenAudioLanguages', {}).values():
+    data_list = response.get('genres', {}).get('81555714', {}).get('subgenres', {})
+    for lang_dict in data_list.values():
         lang_id = lang_dict['id'].get('value')
         if lang_id is None:  # If none the list is ended
             break
         lang_list[lang_id] = lang_dict['name']['value']
     return lang_list
 
+# todo: dubbingLanguages genres: 81586478
 
 def get_available_subtitles_languages():
     """Get the list of available subtitles languages of videos"""
+    # subtitleLanguages genres: 81586477
     call_args = {
-        'paths': [['subtitleLanguages', {'from': 0, 'to': 25}, ['id', 'name']]]
+        'paths': [['genres', 81586477, 'subgenres', {'to': 50}, ['id', 'name', 'languageCode']]]
     }
     response = common.make_call('path_request', call_args)
     lang_list = {}
-    for lang_dict in response.get('subtitleLanguages', {}).values():
+    data_list = response.get('genres', {}).get('81586477', {}).get('subgenres', {})
+    for lang_dict in data_list.values():
         lang_id = lang_dict['id'].get('value')
         if lang_id is None:  # If none the list is ended
             break

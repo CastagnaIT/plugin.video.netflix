@@ -105,10 +105,10 @@ class DirectoryBuilder(DirectoryPathRequests):
     @measure_exec_time_decorator(is_immediate=True)
     def get_video_list_sorted_sp(self, pathitems, menu_data, context_name, context_id, perpetual_range_start):
         # Method used for the menu search
-        video_list = self.req_video_list_sorted(context_name,
-                                                context_id=context_id,
-                                                perpetual_range_start=perpetual_range_start,
-                                                menu_data=menu_data)
+        video_list = self.req_videos_list_sorted(context_name,
+                                                 context_id=context_id,
+                                                 perpetual_range_start=perpetual_range_start,
+                                                 menu_data=menu_data)
         return build_video_listing(video_list, menu_data, None, pathitems, perpetual_range_start,
                                    self.req_mylist_items())
 

@@ -221,6 +221,24 @@ class CustomVideoList:
         return _check_sentinel(self.data.get(key, default))
 
 
+class VideosList:
+    """A video's list"""
+    def __init__(self, path_response):
+        # LOG.debug('VideosList data: {}', path_response)
+        self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
+        self.data = path_response
+        self.videos = OrderedDict(self.data.get('videos', {}))
+        self.artitem = list(self.videos.values())[0] if self.videos else None
+        self.contained_titles = _get_titles(self.videos)
+
+    def __getitem__(self, key):
+        return _check_sentinel(self.data[key])
+
+    def get(self, key, default=None):
+        """Pass call on to the backing dict of this VideoList."""
+        return _check_sentinel(self.data.get(key, default))
+
+
 class SeasonList:
     """A list of seasons. Includes tvshow art."""
     def __init__(self, videoid, path_response):
