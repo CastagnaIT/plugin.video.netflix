@@ -33,7 +33,7 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 #### Quick download links
 
 Install add-on via repository - provide automatic installation of updates:<br/>
-[CastagnaIT Repository for Kodi - repository.castagnait-2.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/kodi/repository.castagnait-2.0.0.zip)<br/>
+[CastagnaIT Repository for Kodi - repository.castagnait-2.0.1.zip](https://github.com/castagnait/repository.castagnait/raw/kodi/repository.castagnait-2.0.1.zip)<br/>
 _**KODI v18 is not supported.**_
 
 Install add-on manually - updates should always be installed manually:<br/>
