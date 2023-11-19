@@ -75,6 +75,10 @@ def extract_session_data(content, validate=False, update_profiles=False):
 
     user_data = extract_userdata(react_context)
     _check_membership_status(user_data.get('membershipStatus'))
+    if user_data.get('isAdsPlan') is None:
+        G.LOCAL_DB.delete_key('is_ads_plan', TABLE_SESSION)
+    else:
+        G.LOCAL_DB.set_value('is_ads_plan', user_data['isAdsPlan'], TABLE_SESSION)
 
     api_data = extract_api_data(react_context)
     # Note: Falcor cache does not exist if membershipStatus is not CURRENT_MEMBER

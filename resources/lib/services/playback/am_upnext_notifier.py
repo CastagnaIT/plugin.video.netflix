@@ -34,6 +34,7 @@ class AMUpNextNotifier(ActionManager):
         super().__init__()
         self.nfsession = nfsession
         self.upnext_info = None
+        self.need_delay_init = False
 
     def __str__(self):
         return f'enabled={self.enabled}'
@@ -58,16 +59,29 @@ class AMUpNextNotifier(ActionManager):
             LOG.warn('Up Next add-on signal skipped, the videoid for the next episode does not exist in the database')
 
     def on_playback_started(self, player_state):  # pylint: disable=unused-argument
+        if player_state['nf_is_ads_stream']:
+            self.need_delay_init = True
+            return
+        self._init()
+
+    def on_tick(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
+        if self.need_delay_init:
+            self._init(player_state['nf_pts_offset'])
+            self.need_delay_init = False
+
+    def _init(self, pts_offset=0):
         if self.upnext_info:
+            if pts_offset > 0 and 'notification_offset' in self.upnext_info:
+                # Fix notification offset
+                self.upnext_info['notification_offset'] += pts_offset
             LOG.debug('Sending initialization signal to Up Next Add-on')
             import AddonSignals
             AddonSignals.sendSignal(
                 source_id=G.ADDON_ID,
                 signal='upnext_data',
                 data=self.upnext_info)
-
-    def on_tick(self, player_state):
-        pass
 
     def _get_upnext_info(self, videoid_next_ep, info_next_ep, metadata, is_played_from_strm):
         """Get the data to send to Up Next add-on"""

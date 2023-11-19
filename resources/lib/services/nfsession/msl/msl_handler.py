@@ -123,10 +123,12 @@ class MSLHandler:
                            'This problem could be solved in the future, but at the moment there is no solution.')
                 raise ErrorMsgNoReport(err_msg) from exc
             raise
-        if manifest.get('adverts', {}).get('adBreaks', []):
-            # Todo: manifest converter should handle ads streams with additional DASH periods
-            raise ErrorMsgNoReport('This add-on dont support playback videos with ads. '
-                                   'Please use an account plan without ads.')
+        if G.KODI_VERSION < 20 and manifest.get('adverts', {}).get('adBreaks', []):
+            # InputStream Adaptive version on Kodi 19 is too old and dont handle correctly these manifests
+            raise ErrorMsgNoReport('On Kodi 19 the Netflix ADS plans are not supported. \n'
+                                   'You must use Kodi 20 or higher versions.')
+        if manifest.get('streamingType', 'VOD') != 'VOD':
+            raise ErrorMsgNoReport('Live videos are not supported.')
         return self._tranform_to_dash(manifest)
 
     @measure_exec_time_decorator(is_immediate=True)
@@ -285,7 +287,7 @@ class MSLHandler:
             'requestSegmentVmaf': False,
             'supportsPartialHydration': False,
             'contentPlaygraph': ['start'],
-            'supportsAdBreakHydration': False,
+            'supportsAdBreakHydration': True, # True if this client support separate ADS management, false to use ADS merged on stream (next future?) currently disallowed due to feature not implemented on server side
             'liveMetadataFormat': 'INDEXED_SEGMENT_TEMPLATE',
             'useBetterTextUrls': True,
             'profileGroups': [{

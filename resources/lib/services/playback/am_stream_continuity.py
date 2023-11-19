@@ -9,7 +9,6 @@
     See LICENSES/MIT.md for more information.
 """
 import copy
-import re
 
 import xbmc
 
@@ -61,6 +60,7 @@ class AMStreamContinuity(ActionManager):
         self.is_kodi_forced_subtitles_only = None
         self.is_prefer_alternative_lang = None
         self.ignore_av_change_event = False
+        self.need_delay_init = False
 
     def __str__(self):
         return f'enabled={self.enabled}, videoid_parent={self.videoid_parent}'
@@ -70,6 +70,12 @@ class AMStreamContinuity(ActionManager):
         self.is_prefer_alternative_lang = G.ADDON.getSettingBool('prefer_alternative_lang')
 
     def on_playback_started(self, player_state):  # pylint: disable=too-many-branches
+        if player_state['nf_is_ads_stream']:
+            self.need_delay_init = True
+        else:
+            self._init(player_state)
+
+    def _init(self, player_state):  # pylint: disable=too-many-branches
         is_enabled = G.ADDON.getSettingBool('StreamContinuityManager_enabled')  # remember audio/subtitle preferences
         if is_enabled:
             # Get user saved preferences
@@ -146,6 +152,11 @@ class AMStreamContinuity(ActionManager):
 
     def on_tick(self, player_state):
         self.player_state = player_state
+        if player_state['nf_is_ads_stream']:
+            return
+        if self.need_delay_init:
+            self._init(player_state)
+            self.need_delay_init = False
         # Check if the audio stream is changed
         current_stream = self.current_streams['audio']
         player_stream = player_state.get(STREAMS['audio']['current'])
@@ -184,6 +195,8 @@ class AMStreamContinuity(ActionManager):
                 LOG.debug('subtitleenabled has changed from {} to {}', current_stream, player_stream)
 
     def on_playback_avchange_delayed(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
         if self.ignore_av_change_event:
             self.ignore_av_change_event = False
             return
@@ -492,12 +505,10 @@ def _determine_fixed_zoom_factor(player_state):
     # Calculate the zoom factor based on the percentage of the portion of the screen which black bands can occupy,
     # by taking in account that each video may have a different crop value.
     blackbar_perc = G.ADDON.getSettingInt('blackbars_minimizer_value')
-    # Try to find the crop info to the track name
-    stream = player_state['videostreams'][0]
-    result = re.match(r'\(Crop (\d+\.\d+)\)', stream['name'])
+    crop_factor = player_state['nf_video_crop_factor']
     zoom_factor = 1.0
-    if result:
-        crop_factor = float(result.group(1))
+    if crop_factor:
+        stream = player_state['videostreams'][0]
         stream_height = stream['height']
         video_height = stream['height'] / crop_factor
         blackbar_px = stream_height - video_height
@@ -513,12 +524,10 @@ def _determine_relative_zoom_factor(player_state):
     # NOTE: Has been chosen to calculate the factor by using video height px instead of black bands height px
     #       to have a more short scale for the user setting
     blackbar_perc = G.ADDON.getSettingInt('blackbars_minimizer_value')
-    # Try to find the crop info to the track name
-    stream = player_state['videostreams'][0]
-    result = re.match(r'\(Crop (\d+\.\d+)\)', stream['name'])
+    crop_factor = player_state['nf_video_crop_factor']
     zoom_factor = 1.0
-    if result:
-        crop_factor = float(result.group(1))
+    if crop_factor:
+        stream = player_state['videostreams'][0]
         stream_height = stream['height']
         video_height = stream['height'] / crop_factor
         video_zoomed_h = video_height + (video_height / 100 * blackbar_perc)

@@ -85,6 +85,8 @@ class AMPlayback(ActionManager):
         self.is_player_in_pause = False
 
     def on_playback_stopped(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
         # It could happen that Kodi does not assign as watched a video,
         # this because the credits can take too much time, then the point where playback is stopped
         # falls in the part that kodi recognizes as unwatched (playcountminimumpercent 90% + no-mans land 2%)
@@ -92,7 +94,7 @@ class AMPlayback(ActionManager):
         # In these cases we try change/fix manually the watched status of the video by using netflix offset data
         if int(player_state['percentage']) > 92:
             return
-        if not self.watched_threshold or not player_state['elapsed_seconds'] > self.watched_threshold:
+        if not self.watched_threshold or not player_state['current_pts'] > self.watched_threshold:
             return
         if G.ADDON.getSettingBool('sync_watched_status') and not self.is_played_from_strm:
             # This have not to be applied with our custom watched status of Netflix sync, within the addon

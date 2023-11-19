@@ -15,6 +15,7 @@ from resources.lib.common.exceptions import (LoginError, MissingCredentialsError
                                              ErrorMsg)
 from .api_paths import EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS, build_paths
 from .logging import LOG, measure_exec_time_decorator
+from ..database.db_utils import TABLE_SESSION
 
 
 def logout():
@@ -25,8 +26,12 @@ def logout():
 def login(ask_credentials=True):
     """Perform a login"""
     try:
+        is_success = False
         credentials = None
         is_login_with_credentials = True
+        # The database 'isAdsPlan' value is stored after the login, so the first time we have None value
+        # this avoids to show the notice message multiple times if more login attempts will be done over the time
+        show_ads_notice = G.LOCAL_DB.get_value('is_ads_plan', None, table=TABLE_SESSION) is None
         if ask_credentials:
             is_login_with_credentials = ui.show_yesno_dialog('Login', common.get_local_string(30340),
                                                              yeslabel=common.get_local_string(30341),
@@ -35,14 +40,23 @@ def login(ask_credentials=True):
                 credentials = {'credentials': ui.ask_credentials()}
         if is_login_with_credentials:
             if common.make_call('login', credentials):
-                return True
+                is_success = True
         else:
             data = common.run_nf_authentication_key()
             if not data:
                 raise MissingCredentialsError
             password = ui.ask_for_password()
             if password and common.make_call('login_auth_data', {'data': data, 'password': password}):
-                return True
+                is_success = True
+        if is_success:
+            if show_ads_notice and G.LOCAL_DB.get_value('is_ads_plan', False, table=TABLE_SESSION):
+                from resources.lib.kodi.ui import show_ok_dialog
+                show_ok_dialog('Netflix - ADS plan',
+                               'ADS PLAN support is EXPERIMENTAL! You may experience of '
+                               'malfunctions of add-on features (e.g. language selection).\n'
+                               'ADS will be displayed at the beginning of the videos to allow the add-on '
+                               'to work properly. Press OK to agree the terms.')
+            return True
     except MissingCredentialsError:
         # Aborted from user or leave an empty field
         ui.show_notification(common.get_local_string(30112))
