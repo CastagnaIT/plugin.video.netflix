@@ -1,3 +1,8 @@
+v1.23.0 (2023-11-19)
+- Add experimental support to ADS plan, for Kodi 20 and higher only, please note add-on features may not work correctly
+- Fix search menus (sort order dont work yet)
+- Audio description menu is broken, atm cannot be fixed, website problems
+
 v1.22.3 (2023-09-20)
 - Removed HTTPX module (http2) to fix compatibility with python >= 3.11
 - Restored Requests module (details https://github.com/CastagnaIT/plugin.video.netflix/pull/1622)
