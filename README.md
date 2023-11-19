@@ -34,10 +34,11 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 
 Install add-on via repository - provide automatic installation of updates:<br/>
 [CastagnaIT Repository for Kodi - repository.castagnait-2.0.0.zip](https://github.com/castagnait/repository.castagnait/raw/kodi/repository.castagnait-2.0.0.zip)<br/>
-_**NOTICE FOR KODI v18**: Support and development for Kodi v18 has been stopped [#975](https://github.com/CastagnaIT/plugin.video.netflix/issues/975), use Kodi v19 or above._
+_**KODI v18 is not supported.**_
 
 Install add-on manually - updates should always be installed manually:<br/>
-https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)
+https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)<br/>
+Note: The release files in to "kodi19" folder are compatible with Kodi v19, v20, v21.
 
 ## Login with Authentication key
 
