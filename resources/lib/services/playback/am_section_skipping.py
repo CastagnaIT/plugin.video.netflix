@@ -29,6 +29,7 @@ class AMSectionSkipper(ActionManager):
         self.markers = {}
         self.auto_skip = False
         self.pause_on_skip = False
+        self.pts_offset = 0
 
     def __str__(self):
         return f'enabled={self.enabled}, markers={self.markers}, auto_skip={self.auto_skip}, pause_on_skip={self.pause_on_skip}'
@@ -39,8 +40,11 @@ class AMSectionSkipper(ActionManager):
         self.pause_on_skip = G.ADDON.getSettingBool('pause_on_skip')
 
     def on_tick(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
+        self.pts_offset = player_state['nf_pts_offset']
         for section in SKIPPABLE_SECTIONS:
-            self._check_section(section, player_state['elapsed_seconds'])
+            self._check_section(section, player_state['current_pts'])
 
     def _check_section(self, section, elapsed):
         if self.markers.get(section) and self.markers[section]['start'] <= elapsed <= self.markers[section]['end']:
@@ -62,18 +66,18 @@ class AMSectionSkipper(ActionManager):
         if self.pause_on_skip:
             player.pause()
             xbmc.sleep(1000)  # give kodi the chance to execute
-            player.seekTime(self.markers[section]['end'])
+            player.seekTime(self.markers[section]['end'] + self.pts_offset)
             xbmc.sleep(1000)  # give kodi the chance to execute
             player.pause()  # unpause playback at seek position
         else:
-            player.seekTime(self.markers[section]['end'])
+            player.seekTime(self.markers[section]['end'] + self.pts_offset)
 
     def _ask_to_skip(self, section):
         LOG.debug('Asking to skip {}', section)
         dialog_duration = (self.markers[section]['end'] -
                            self.markers[section]['start'])
         ui.show_skip_dialog(dialog_duration,
-                            seek_time=self.markers[section]['end'],
+                            seek_time=self.markers[section]['end'] + self.pts_offset,
                             label=common.get_local_string(SKIPPABLE_SECTIONS[section]))
 
     def on_playback_stopped(self, player_state):

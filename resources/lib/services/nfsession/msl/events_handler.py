@@ -146,7 +146,7 @@ class EventsHandler(threading.Thread):
         # else:
         #     list_id = G.LOCAL_DB.get_value('last_menu_id', 'unknown')
 
-        position = player_state['elapsed_seconds']
+        position = player_state['current_pts']
         if position != 1:
             position *= 1000
 

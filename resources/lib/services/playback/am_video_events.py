@@ -78,6 +78,8 @@ class AMVideoEvents(ActionManager):
             pass
 
     def on_tick(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
         if self.lock_events:
             return
         if self.is_player_in_pause and (self.tick_elapsed - self.last_tick_count) >= 1800:
@@ -91,9 +93,9 @@ class AMVideoEvents(ActionManager):
                 # We do not use _on_playback_started() to send EVENT_START, because the action managers
                 # AMStreamContinuity and AMPlayback may cause inconsistencies with the content of player_state data
 
-                # When the playback starts for the first time, for correctness should send elapsed_seconds value to 1
+                # When the playback starts for the first time, for correctness should send current_pts value to 1
                 if self.tick_elapsed < 5 and self.event_data['resume_position'] is None:
-                    player_state['elapsed_seconds'] = 1
+                    player_state['current_pts'] = 1
                 self._send_event(EVENT_START, self.event_data, player_state)
                 self.is_event_start_sent = True
                 self.tick_elapsed = 0
@@ -101,7 +103,7 @@ class AMVideoEvents(ActionManager):
                 # Generate events to send to Netflix service every 1 minute (60secs=1m)
                 if (self.tick_elapsed - self.last_tick_count) >= 60:
                     self._send_event(EVENT_KEEP_ALIVE, self.event_data, player_state)
-                    self._save_resume_time(player_state['elapsed_seconds'])
+                    self._save_resume_time(player_state['current_pts'])
                     self.last_tick_count = self.tick_elapsed
                     # Allow request of loco update (for continueWatching and bookmark) only after the first minute
                     # it seems that most of the time if sent earlier returns error
@@ -109,34 +111,40 @@ class AMVideoEvents(ActionManager):
         self.tick_elapsed += 1  # One tick almost always represents one second
 
     def on_playback_pause(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
         if not self.is_event_start_sent:
             return
         self._reset_tick_count()
         self.is_player_in_pause = True
         self._send_event(EVENT_ENGAGE, self.event_data, player_state)
-        self._save_resume_time(player_state['elapsed_seconds'])
+        self._save_resume_time(player_state['current_pts'])
 
     def on_playback_resume(self, player_state):
         self.is_player_in_pause = False
         self.lock_events = False
 
     def on_playback_seek(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
         if not self.is_event_start_sent or self.lock_events:
             # This might happen when the action manager AMPlayback perform a video skip
             return
         self._reset_tick_count()
         self._send_event(EVENT_ENGAGE, self.event_data, player_state)
-        self._save_resume_time(player_state['elapsed_seconds'])
+        self._save_resume_time(player_state['current_pts'])
         self.allow_request_update_loco = True
 
     def on_playback_stopped(self, player_state):
+        if player_state['nf_is_ads_stream']:
+            return
         if not self.is_event_start_sent or self.lock_events:
             return
         self._reset_tick_count()
         self._send_event(EVENT_ENGAGE, self.event_data, player_state)
         self._send_event(EVENT_STOP, self.event_data, player_state)
         # Update the resume here may not always work due to race conditions with GUI directory refresh and Stop event
-        self._save_resume_time(player_state['elapsed_seconds'])
+        self._save_resume_time(player_state['current_pts'])
 
     def _save_resume_time(self, resume_time):
         """Save resume time value in order to update the infolabel cache"""

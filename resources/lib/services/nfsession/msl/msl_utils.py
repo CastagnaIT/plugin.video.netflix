@@ -84,7 +84,7 @@ def is_media_changed(previous_player_state, player_state):
 
 def update_play_times_duration(play_times, player_state):
     """Update the playTimes duration values"""
-    duration = player_state['elapsed_seconds'] * 1000
+    duration = player_state['current_pts'] * 1000
     play_times['total'] = duration
     play_times['audio'][0]['duration'] = duration
     play_times['video'][0]['duration'] = duration

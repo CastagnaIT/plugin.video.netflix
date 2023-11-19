@@ -21,20 +21,75 @@ def convert_to_dash(manifest):
     """Convert a Netflix style manifest to MPEG-DASH manifest"""
     # If a CDN server has stability problems it may cause errors with streaming,
     # we allow users to select a different CDN server
-    # (should be managed by ISA but is currently is not implemented)
+    # (should be managed automatically by add more MPD "BaseURL" tags, but is currently is not implemented in ISA)
     cdn_index = int(G.ADDON.getSettingString('cdn_server')[-1]) - 1
+    mpd_tag = _create_mpd_tag()
 
-    seconds = manifest['duration'] / 1000
-    duration = "PT" + str(int(seconds)) + ".00S"
+    # Netflix ADS appear to have a complex customization with the browser/player this leads us to several headaches
+    # to be able to implement it in the add-on.
+    # Things to solve to have a decent ADS playback implementation:
+    # - Their player, once an ad is displayed is removed from the video timeline in real time, there is no way to do
+    #   a similar thing with Kodi platform. But could be not a big problem, but we need somewhat find a solution
+    #   to know when same ads is played multiple times to avoid send multiple MSL events (see next point)
+    # - Every time an ADS is played the website player send a MSL event like adStart/adProgress/... in similar way
+    #   as done to send playback progress updates, his data should be related to "adverts/adBreaks" json path
+    #   from MSL manifest data, i think this is used by netflix to know when an ad is displayed for their business.
+    #   Here its difficult know when a specific ads is played and then make a callback to send the MSL event, due to:
+    #   Problem 1: There is a Kodi bug that when a chapter change cause JSON RPC Player.GetProperties api
+    #              to provide wrong info, this problem is reflected also on Kodi GUI
+    #   Problem 2: we should not send multiple times these events because with kodi same ads may be played more times.
+    # - Manifest DASH conversion problem: Im not sure how to split the main stream in the manifest in to multiple
+    #   periods by injecting the ads in the middle of stream, because usually DASH SegmentBase needs to know the
+    #   segments ranges (e.g. init) that we dont have(?). For now as workaround all ads (periods) are add before the movie.
+    # - JSON RPC Player.GetProperties chapter bug prevent to have a good management of action_controller.py features
+    #   (such as language track selection) however a bad workaround has been found,
+    #   in addition to being not 100% reliable makes the code more mess...
+    # - When ADS is played you should prevent the user from skipping ads and also prevent them from forwarding the video
+    #   now this should be managed by InputStream Adaptive addon, then changes to ISA will be required to fix this.
 
-    root = _mpd_manifest_root(duration)
-    period = ET.SubElement(root, 'Period', start='PT0S', duration=duration)
+    ads_manifest_list = []
+    if 'auxiliaryManifests' in manifest and manifest['auxiliaryManifests']:
+        # Find auxiliary ADS manifests
+        ads_manifest_list = [m for m in manifest['auxiliaryManifests'] if 'isAd' in m and m['isAd']]
+
+    total_duration_secs = 0
+    for ads_man in ads_manifest_list:
+        total_duration_secs += _add_period(mpd_tag, ads_man, cdn_index, total_duration_secs, False)
+
+    total_duration_secs += _add_period(mpd_tag, manifest, cdn_index, total_duration_secs, True)
+
+    mpd_tag.attrib['mediaPresentationDuration'] = _convert_secs_to_time(total_duration_secs)
+
+    xml = ET.tostring(mpd_tag, encoding='utf-8', method='xml')
+    if LOG.is_enabled:
+        common.save_file_def('manifest.mpd', xml)
+    return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
+
+
+def _add_period(mpd_tag, manifest, cdn_index, start_pts, add_pts_to_track_name):
+    seconds = int(manifest['duration'] / 1000)
+    movie_id = str(manifest['movieId'])
+    is_ads_stream = 'isAd' in manifest and manifest['isAd']
+    if is_ads_stream:
+        movie_id += '_ads'
+    period_tag = ET.SubElement(mpd_tag, 'Period', id=movie_id, start=_convert_secs_to_time(start_pts),
+                               duration=_convert_secs_to_time(seconds))
+
+    if is_ads_stream:  # Custom ADS signal
+        # todo: could be used in future by ISAdaptive to identify ADS period, will require ISAdaptive implementation
+        ET.SubElement(period_tag,  # Parent
+                      'EventStream',  # Tag
+                      schemeIdUri='urn:scte:scte35:2013:xml',
+                      value='ads')
 
     has_video_drm_streams = manifest['video_tracks'][0].get('hasDrmStreams', False)
     video_protection_info = _get_protection_info(manifest['video_tracks'][0]) if has_video_drm_streams else None
 
-    for video_track in manifest['video_tracks']:
-        _convert_video_track(video_track, period, video_protection_info, has_video_drm_streams, cdn_index)
+    if not add_pts_to_track_name:  # workaround for kodi bug, see action_controller.py
+        start_pts = 0
+    for index, video_track in enumerate(manifest['video_tracks']):
+        _convert_video_track(index, video_track, period_tag, video_protection_info, has_video_drm_streams, cdn_index,
+                             movie_id, start_pts)
 
     common.apply_lang_code_changes(manifest['audio_tracks'])
     common.apply_lang_code_changes(manifest['timedtexttracks'])
@@ -42,28 +97,28 @@ def convert_to_dash(manifest):
     has_audio_drm_streams = manifest['audio_tracks'][0].get('hasDrmStreams', False)
 
     id_default_audio_tracks = _get_id_default_audio_tracks(manifest)
-    for audio_track in manifest['audio_tracks']:
+    for index, audio_track in enumerate(manifest['audio_tracks']):
         is_default = audio_track['id'] == id_default_audio_tracks
-        _convert_audio_track(audio_track, period, is_default, has_audio_drm_streams, cdn_index)
+        _convert_audio_track(index, audio_track, period_tag, is_default, has_audio_drm_streams, cdn_index)
 
-    for text_track in manifest['timedtexttracks']:
+    for index, text_track in enumerate(manifest['timedtexttracks']):
         if text_track['isNoneTrack']:
             continue
         is_default = _is_default_subtitle(manifest, text_track)
-        _convert_text_track(text_track, period, is_default, cdn_index)
+        _convert_text_track(index, text_track, period_tag, is_default, cdn_index)
 
-    xml = ET.tostring(root, encoding='utf-8', method='xml')
-    if LOG.is_enabled:
-        common.save_file_def('manifest.mpd', xml)
-    return xml.decode('utf-8').replace('\n', '').replace('\r', '').encode('utf-8')
+    return seconds
 
 
-def _mpd_manifest_root(duration):
-    root = ET.Element('MPD')
-    root.attrib['xmlns'] = 'urn:mpeg:dash:schema:mpd:2011'
-    root.attrib['xmlns:cenc'] = 'urn:mpeg:cenc:2013'
-    root.attrib['mediaPresentationDuration'] = duration
-    return root
+def _convert_secs_to_time(secs):
+    return "PT" + str(int(secs)) + ".00S"
+
+
+def _create_mpd_tag():
+    mpd_tag = ET.Element('MPD')
+    mpd_tag.attrib['xmlns'] = 'urn:mpeg:dash:schema:mpd:2011'
+    mpd_tag.attrib['xmlns:cenc'] = 'urn:mpeg:cenc:2013'
+    return mpd_tag
 
 
 def _add_base_url(representation, base_url):
@@ -133,10 +188,11 @@ def _add_protection_info(video_track, adaptation_set, pssh, keyid):
         ET.SubElement(protection, 'cenc:pssh').text = pssh
 
 
-def _convert_video_track(video_track, period, protection, has_drm_streams, cdn_index):
+def _convert_video_track(index, video_track, period, protection, has_drm_streams, cdn_index, movie_id, pts_offset):
     adaptation_set = ET.SubElement(
         period,  # Parent
         'AdaptationSet',  # Tag
+        id=str(index),
         mimeType='video/mp4',
         contentType='video')
     if protection:
@@ -151,12 +207,17 @@ def _convert_video_track(video_track, period, protection, has_drm_streams, cdn_i
             if int(downloadable['res_h']) > limit_res:
                 continue
         _convert_video_downloadable(downloadable, adaptation_set, cdn_index)
+    # Set the name to the AdaptationSet tag
+    # this will become the name of the video stream, that can be read in the Kodi GUI on the video stream track list
+    # and can be read also by using jsonrpc Player.GetProperties "videostreams" used by action_controller.py
+    name = f"(Id {movie_id})(pts offset {pts_offset})"
     # Calculate the crop factor, will be used on am_playback.py to set zoom viewmode
     try:
         factor = video_track['maxHeight'] / video_track['maxCroppedHeight']
-        adaptation_set.set('name', f'(Crop {factor:0.2f})')
+        name += f'(Crop {factor:0.2f})'
     except Exception as exc:  # pylint: disable=broad-except
         LOG.error('Cannot calculate crop factor: {}', exc)
+    adaptation_set.set('name', name)
 
 
 def _limit_video_resolution(video_tracks, has_drm_streams):
@@ -210,12 +271,12 @@ def _determine_video_codec(content_profile):
     if content_profile.startswith('vp9'):
         return f'vp9.{content_profile[11:12]}'
     if 'av1' in content_profile:
-        return 'av1'
+        return 'av01'
     return 'h264'
 
 
 # pylint: disable=unused-argument
-def _convert_audio_track(audio_track, period, default, has_drm_streams, cdn_index):
+def _convert_audio_track(index, audio_track, period, default, has_drm_streams, cdn_index):
     channels_count = {'1.0': '1', '2.0': '2', '5.1': '6', '7.1': '8'}
     impaired = 'true' if audio_track['trackType'] == 'ASSISTIVE' else 'false'
     original = 'true' if audio_track['isNative'] else 'false'
@@ -224,6 +285,7 @@ def _convert_audio_track(audio_track, period, default, has_drm_streams, cdn_inde
     adaptation_set = ET.SubElement(
         period,  # Parent
         'AdaptationSet',  # Tag
+        id=str(index),
         lang=audio_track['language'],
         contentType='audio',
         mimeType='audio/mp4',
@@ -242,7 +304,7 @@ def _convert_audio_track(audio_track, period, default, has_drm_streams, cdn_inde
 
 
 def _convert_audio_downloadable(downloadable, adaptation_set, channels_count, cdn_index):
-    codec_type = 'aac'
+    codec_type = 'mp4a.40.5' # he-aac
     if 'ddplus-' in downloadable['content_profile'] or 'dd-' in downloadable['content_profile']:
         codec_type = 'ec-3'
     representation = ET.SubElement(
@@ -261,7 +323,7 @@ def _convert_audio_downloadable(downloadable, adaptation_set, channels_count, cd
     _add_segment_base(representation, downloadable)
 
 
-def _convert_text_track(text_track, period, default, cdn_index):
+def _convert_text_track(index, text_track, period, default, cdn_index):
     # Only one subtitle representation per adaptationset
     downloadable = text_track.get('ttDownloadables')
     if not text_track:
@@ -274,6 +336,7 @@ def _convert_text_track(text_track, period, default, cdn_index):
     adaptation_set = ET.SubElement(
         period,  # Parent
         'AdaptationSet',  # Tag
+        id=str(index),
         lang=text_track['language'],
         codecs=('stpp', 'wvtt')[is_ios8],
         contentType='text',
