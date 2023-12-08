@@ -216,7 +216,7 @@ class DirectoryPathRequests:
                  [base_path[:-1] + [['id', 'name', 'requestId', 'trackIds']]])
 
         path_response = self.nfsession.perpetual_path_request(paths, [response_type, ['videos']], perpetual_range_start)
-        return VideosList(path_response)
+        return VideosList(path_response, [context_name, context_id])
 
     @cache_utils.cache_output(cache_utils.CACHE_SUPPLEMENTAL, identify_append_from_kwarg_name='supplemental_type',
                               ignore_self_class=True)

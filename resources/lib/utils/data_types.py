@@ -223,13 +223,17 @@ class CustomVideoList:
 
 class VideosList:
     """A video's list"""
-    def __init__(self, path_response):
+    def __init__(self, path_response, list_info_path):
         # LOG.debug('VideosList data: {}', path_response)
         self.perpetual_range_selector = path_response.get('_perpetual_range_selector')
         self.data = path_response
         self.videos = OrderedDict(self.data.get('videos', {}))
         self.artitem = list(self.videos.values())[0] if self.videos else None
         self.contained_titles = _get_titles(self.videos)
+
+        track_ids = common.get_path_safe(list_info_path, path_response, False, {}).get('trackIds')
+        if track_ids:
+            self.component_summary = {'trackIds': track_ids.get('value', {})}
 
     def __getitem__(self, key):
         return _check_sentinel(self.data[key])
