@@ -106,6 +106,11 @@ def search_add():
     # (otherwise will retrigger input dialog on Back or Container.Refresh)
     if row_id is not None and search_query(row_id, 0, False):
         url = common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY, params={'dir_update_listing': True})
+        from time import sleep
+        # The forced sleep its needed because seem that change the container path too fast
+        # make problems in Kodi core and the GUI fails to update, when this happens cause side effects to context menus
+        # like "add/remove from my list" that when used ask again to make a new search because re-open the initial path
+        sleep(1)
         common.container_update(url, False)
         return True
     return False
