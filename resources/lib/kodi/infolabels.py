@@ -312,6 +312,7 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
     # Check from db if user has manually changed the watched status
     is_watched_user_overrided = G.SHARED_DB.get_watched_status(common_data['active_profile_guid'], video_id, None, bool)
     resume_time = 0
+    video_runtime = video_data.get('runtime', {}).get('value', 0)
     if is_watched_user_overrided is None:
         # Note to shakti properties:
         # 'watched':  unlike the name this value is used to other purposes, so not to set a video as watched
@@ -319,16 +320,16 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
         #                        is available only with the metadata api and only for "episode" video type
         # 'creditsOffset' :  this value is used as position where to show the (play) "Next" (episode) button
         #                    on the website, but it may not be always available with the "movie" video type
-        credits_offset_val = video_data.get('creditsOffset', {}).get('value')
-        if credits_offset_val is not None:
+        credits_offset_val = video_data.get('creditsOffset', {}).get('value', 0)
+        if credits_offset_val > 0:
             # To better ensure that a video is marked as watched also when a user do not reach the ending credits
             # we generally lower the watched threshold by 50 seconds for 50 minutes of video (3000 secs)
-            lower_value = video_data['runtime']['value'] / 3000 * 50
+            lower_value = video_runtime / 3000 * 50
             watched_threshold = credits_offset_val - lower_value
         else:
             # When missing the value should be only a video of movie type,
             # then we simulate the default Kodi playcount behaviour (playcountminimumpercent)
-            watched_threshold = video_data['runtime']['value'] / 100 * 90
+            watched_threshold = video_runtime / 100 * 90
         # To avoid asking to the server again the entire list of titles (after watched a video)
         # to get the updated value, we override the value with the value saved in memory (see am_video_events.py)
         try:
@@ -336,7 +337,7 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
         except CacheMiss:
             # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
             bookmark_position = video_data['bookmarkPosition'].get('value', 0)
-        playcount = 1 if bookmark_position >= watched_threshold else 0
+        playcount = 1 if 0 < watched_threshold <= bookmark_position else 0
         if playcount == 0 and bookmark_position > 0:
             resume_time = bookmark_position
     else:
@@ -344,5 +345,5 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug
     # when a item is already watched and you force to set again watched, the override do not work
     list_item.updateInfo({'PlayCount': playcount})
-    list_item.setProperty('TotalTime', str(video_data['runtime']['value']))
+    list_item.setProperty('TotalTime', str(video_runtime))
     list_item.setProperty('ResumeTime', str(resume_time))
