@@ -1,3 +1,8 @@
+v1.23.1 (2023-12-16)
+- Fix missing Add/Remove to my list context menu on Search results
+- Fix misbehavior of Add/Remove context menu in my list on search pages that ask for new search
+- Fix titles wrongly marked as watched due to no watched status data
+
 v1.23.0 (2023-11-19)
 - Add experimental support to ADS plan, for Kodi 20 and higher only, please note add-on features may not work correctly
 - Fix search menus (sort order dont work yet)
