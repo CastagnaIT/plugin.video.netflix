@@ -23,7 +23,7 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
     if pathitems and perpetual_range_selector:
         if 'previous_start' in perpetual_range_selector:
             params = {'perpetual_range_start': perpetual_range_selector.get('previous_start'),
-                      'sub_genre_id': sub_genre_id if perpetual_range_selector.get('previous_start') == 0 else None}
+                      'sub_genre_id': sub_genre_id}
             if path_params:
                 params.update(path_params)
             previous_page_item = ListItemW(label=common.get_local_string(30148))
@@ -33,7 +33,8 @@ def add_items_previous_next_page(directory_items, pathitems, perpetual_range_sel
                                        previous_page_item,
                                        True))
         if 'next_start' in perpetual_range_selector:
-            params = {'perpetual_range_start': perpetual_range_selector.get('next_start')}
+            params = {'perpetual_range_start': perpetual_range_selector.get('next_start'),
+                      'sub_genre_id': sub_genre_id}
             if path_params:
                 params.update(path_params)
             next_page_item = ListItemW(label=common.get_local_string(30147))
