@@ -167,7 +167,7 @@ def set_video_info_tag(info: Dict[str, str], video_info_tag: xbmc.InfoTagVideo):
     # From Kodi v20 ListItem.setInfo is deprecated, we need to use the methods of InfoTagVideo object
     # "Cast" and "Tag" keys need to be converted
     cast_names = info.pop('Cast', [])
-    video_info_tag.setCast([xbmc.Actor(name) for name in cast_names])
+    video_info_tag.setCast([xbmc.Actor(name) for name in cast_names if name])
     tag_names = info.pop('Tag', [])
     video_info_tag.setTagLine(' / '.join(tag_names))
     for key, value in info.items():
