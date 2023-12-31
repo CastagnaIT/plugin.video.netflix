@@ -324,7 +324,8 @@ def jgrapgh_len(data_dict):
     """
     count = 0
     for value in data_dict:
-        if data_dict[value].get('$type') == 'atom':
+        ref = _remove_nesting(data_dict[value])
+        if ref.get('$type') == 'atom':
             break
         count += 1
     return count
