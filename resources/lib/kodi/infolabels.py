@@ -171,6 +171,9 @@ def parse_info(videoid, item, raw_data, common_data):
     infos.update(_parse_referenced_infos(item, raw_data))
     infos.update(_parse_tags(item))
 
+    if infos['Cast']:
+        infos['Cast'] = [name for name in infos['Cast'] if name]
+
     if videoid.mediatype == common.VideoId.EPISODE:
         # 01/12/2022: The 'delivery' info in the episode data are wrong (e.g. wrong resolution)
         # as workaround we get the 'delivery' info from tvshow data
