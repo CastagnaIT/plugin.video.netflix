@@ -255,11 +255,8 @@ class SeasonList:
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
         self.seasons = OrderedDict(
             resolve_refs(self.tvshow['seasonList'], self.data))
-        if self.tvshow['seasonList']['current']:
-            self.current_seasonid_vaule = self.tvshow['seasonList']['current']['value'][1]
-            self.current_seasonid = videoid.derive_season(self.current_seasonid_vaule)
-            self.current_season = self.seasons[self.current_seasonid_vaule]
-            self.current_episodeid_value = int(self.current_season['episodes']['current']['value'][1])
+        if 'current' in self.tvshow['seasonList']:
+            self.current_seasonid = videoid.derive_season(self.tvshow['seasonList']['current']['value'][1])
 
 
 class EpisodeList:
