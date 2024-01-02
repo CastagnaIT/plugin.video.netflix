@@ -70,7 +70,7 @@ GENRE_PARTIAL_PATHS = [
 SEASONS_PARTIAL_PATHS = [
     ['seasonList', RANGE_PLACEHOLDER, 'summary'],
     ['title'],
-    ["seasonList","current","episodes","current","summary"]
+    ["seasonList","current"]
 ] + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
