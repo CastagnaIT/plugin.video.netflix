@@ -144,7 +144,7 @@ def build_season_listing(season_list, tvshowid, current_episode=None, pathitems=
         episodeid_value, episode_data = current_episode.episode
         current_episode_item = _create_episode_item(season_list.current_seasonid, episodeid_value, episode_data, current_episode, common_data_episode)
         list_item = current_episode_item[1]
-            
+
         if list_item.getProperty('isPlayable') == 'true':
             episode_summary = episode_data['summary']['value']
             label = f"{episode_summary['season']}x{episode_summary['episode']:02d}. {episode_data['title']['value']}"

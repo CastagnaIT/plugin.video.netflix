@@ -140,7 +140,7 @@ class DirectoryPathRequests:
         }
         path_response = self.nfsession.perpetual_path_request(**call_args)
         return EpisodeList(videoid, path_response)
-    
+
     def req_current_episode(self, videoid):
         """Retrieve the current episode of a season"""
         if videoid.mediatype != common.VideoId.SEASON:
@@ -150,7 +150,7 @@ class DirectoryPathRequests:
                  [['seasons', videoid.seasonid, 'componentSummary']] +
                  build_paths(['seasons', videoid.seasonid, 'episodes', 'current'], EPISODES_PARTIAL_PATHS) +
                  build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [[['title', 'delivery']]]))
-        
+
         call_args = {
             'paths': paths,
             'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']]
