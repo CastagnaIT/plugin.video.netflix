@@ -269,7 +269,7 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
                        in video_list.videos.items()]
     # If genre_id exists add possibility to browse LoCo sub-genres
     # With checking if 'previous_start' is existing, we know that it is the first page
-    if sub_genre_id and sub_genre_id != 'None' and 'previous_start' not in video_list.perpetual_range_selector:
+    if sub_genre_id and sub_genre_id != 'None' and (not video_list.perpetual_range_selector or 'previous_start' not in video_list.perpetual_range_selector):
         # Create dynamic sub-menu info in MAIN_MENU_ITEMS
         menu_id = f'subgenre_{sub_genre_id}'
         sub_menu_data = menu_data.copy()
