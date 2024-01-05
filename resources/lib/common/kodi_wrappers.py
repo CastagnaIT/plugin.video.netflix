@@ -79,6 +79,9 @@ class ListItemW(xbmcgui.ListItem):
                 total_time = float(state['properties'].pop('TotalTime', 0))
                 video_info.setResumePoint(resume_time, total_time)
         super().setProperties(state['properties'])
+        for part in ['thumb', 'landscape']:
+            if part not in state['art'] or state['art'][part] == {}:
+                state['art'][part] = ''
         super().setArt(state['art'])
         super().addContextMenuItems(state.get('context_menus', []))
         super().select(state.get('is_selected', False))
