@@ -184,7 +184,6 @@ class ActionController(xbmc.Monitor):
                 # usually 1 sec is enough time to receive up to 3 OnAVChange events (audio/video/subs)
                 if (time.time() - self._av_change_last_ts) > 1:
                     if self._is_av_started:
-                        self._is_av_started = False
                         self._on_avchange_delayed(player_state)
                     if self._is_delayed_seek:
                         self._is_delayed_seek = False

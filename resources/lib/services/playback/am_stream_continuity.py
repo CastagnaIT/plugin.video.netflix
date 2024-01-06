@@ -145,7 +145,7 @@ class AMStreamContinuity(ActionManager):
                 self._save_changed_stream('video_zoom', None)
             common.json_rpc('Player.SetViewMode', {'viewmode': {'zoom': 1.0}})
 
-        if is_enabled:
+        if is_enabled and not self.need_delay_init:
             # It is mandatory to wait at least 1 second to allow the Kodi system to update the values
             # changed by restore, otherwise when on_tick is executed it will save twice unnecessarily
             xbmc.sleep(1000)
