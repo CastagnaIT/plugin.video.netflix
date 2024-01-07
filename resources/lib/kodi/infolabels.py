@@ -204,7 +204,8 @@ def _parse_referenced_infos(item, raw_data):
     resolved within the raw data"""
     return {target: [person['name']['value']
                      for _, person
-                     in paths.resolve_refs(item.get(source, {}), raw_data)]
+                     in paths.resolve_refs(item.get(source, {}), raw_data)
+                     if person['name']['value']]
             for target, source in paths.REFERENCE_MAPPINGS.items()}
 
 
