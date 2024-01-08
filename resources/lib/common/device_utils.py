@@ -70,6 +70,20 @@ def get_machine():
         return 'arm'
 
 
+def is_android_tv(props=None):
+    """Check Android properties to determine if the device has an Android TV system"""
+    if props is None:
+        props = get_android_system_props()
+    ret = 'TV' in props.get('ro.build.characteristics', '').upper()
+    # Xiaomi box devices like Mi Box 3, Mi Box S, Tv Stick, and maybe other models
+    # don't have "tv" value into ro.build.characteristics
+    # therefore we check the name from ro.com.google.clientidbase, that at least to the mentioned models are the same
+    if (not ret and props.get('ro.product.manufacturer', '').upper() == 'XIAOMI'
+        and props.get('ro.com.google.clientidbase', '').upper() == 'ANDROID-XIAOMI-TV'):
+        ret = True
+    return ret
+
+
 def is_device_4k_capable():
     """Check if the device is 4k capable"""
     # Currently only on android is it possible to use 4K
@@ -177,16 +191,18 @@ def _check_internet():
             pass
     return False
 
+
 def get_supported_hdr_types():
     """
     Get supported HDR types by the display
     :return: supported type as list ['hdr10', 'hlg', 'hdr10+', 'dolbyvision']
     """
-    if G.KODI_VERSION < 20: # The infolabel 'System.SupportedHDRTypes' is supported from Kodi v20
+    if G.KODI_VERSION < 20:  # The infolabel 'System.SupportedHDRTypes' is supported from Kodi v20
         return []
     # The infolabel System.SupportedHDRTypes returns the HDR types supported by the hardware as a string:
     # "HDR10, HLG, HDR10+, Dolby Vision"
     return xbmc.getInfoLabel('System.SupportedHDRTypes').replace(' ', '').lower().split(',')
+
 
 def get_android_system_props():
     """Get Android system properties by parsing the raw output of getprop into a dictionary"""

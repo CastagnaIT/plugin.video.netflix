@@ -13,7 +13,7 @@ from xbmcaddon import Addon
 from xbmcgui import getScreenHeight, getScreenWidth
 
 from resources.lib.common import (get_system_platform, is_device_4k_capable, get_local_string, json_rpc,
-                                  get_supported_hdr_types, get_android_system_props, is_device_l1_enabled)
+                                  get_supported_hdr_types, is_device_l1_enabled, is_android_tv)
 from resources.lib.common.exceptions import InputStreamHelperError
 from resources.lib.globals import G
 from resources.lib.kodi.ui import show_ok_dialog, ask_for_confirmation
@@ -84,8 +84,7 @@ def _set_codec_profiles():
         # ...we do not enable VP9 because many older mobile devices do not support it
         enable_vp9_profiles = False
         # ...we enable HEVC by default on tv boxes and 4K capable devices
-        is_android_tv = 'TV' in get_android_system_props().get('ro.build.characteristics', '').upper()
-        enable_hevc_profiles = is_android_tv or is_device_4k_capable()
+        enable_hevc_profiles = is_android_tv() or is_device_4k_capable()
         # Get supported HDR types by the display (configuration works from Kodi v20)
         supported_hdr_types = get_supported_hdr_types()
         if supported_hdr_types and enable_hevc_profiles: # for now only HEVC have HDR/DV

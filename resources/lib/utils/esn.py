@@ -91,11 +91,10 @@ def regen_esn(esn):
 
 def generate_android_esn(wv_force_sec_lev=None):
     """Generate an ESN if on android or return the one from user_data"""
-    from resources.lib.common.device_utils import get_system_platform, get_android_system_props
+    from resources.lib.common.device_utils import get_system_platform, get_android_system_props, is_android_tv
     if get_system_platform() == 'android':
         props = get_android_system_props()
-        is_android_tv = 'TV' in props.get('ro.build.characteristics', '').upper()
-        if is_android_tv:
+        if is_android_tv(props):
             return _generate_esn_android_tv(props, wv_force_sec_lev)
         return _generate_esn_android(props, wv_force_sec_lev)
     return None
