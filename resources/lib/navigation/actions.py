@@ -224,10 +224,22 @@ class AddonActionExecutor:
                                     f'{msg}[CR]{common.get_local_string(30621)}',
                                     default_yes_button=True):
                 # Create a basic trailer ListItem (all other info if available are set on Play callback)
-                list_item = xbmcgui.ListItem(xbmc.getInfoLabel('ListItem.Title'), offscreen=True)
+                list_item = xbmcgui.ListItem(xbmc.getInfoLabel('ListItem.Title'),
+                                             path=trailer_path,
+                                             offscreen=True)
                 list_item.setInfo('video', {'Title': xbmc.getInfoLabel('ListItem.Title')})
                 list_item.setProperty('isPlayable', 'true')
-                xbmc.Player().play(trailer_path, list_item)
+                if G.KODI_VERSION < 21:
+                    xbmc.Player().play(trailer_path, list_item)
+                else:
+                    # Due to a kodi bug if you use xbmc.Player().play Kodi crashes
+                    # this due to Kodi GUI dialog bug, details on issue: https://github.com/xbmc/xbmc/issues/24526
+                    # To reproduce: set ISAdaptive setting "Stream selection type" to "Ask quality" and play
+                    from xbmcplugin import setResolvedUrl
+                    setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
+            else:
+                from xbmcplugin import endOfDirectory
+                endOfDirectory(handle=G.PLUGIN_HANDLE, succeeded=True)
         else:
             ui.show_ok_dialog(xbmc.getInfoLabel('ListItem.Label'), msg)
 
