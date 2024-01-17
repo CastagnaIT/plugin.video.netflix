@@ -1,3 +1,12 @@
+v1.23.2 (2024-01-17)
+- Fix/workaround for Kodi crash when play a promo trailer
+- Fix wrong ESN generation for Xiaomi tv boxes
+- Fix missing video zoom when video starts after ADS
+- Fix "TypeError: Actor" error that prevent to show video list
+- Fix wrong "Next page" shown when there are no more videos
+- Fix missing "Browse subgenres" folder when returning from a next page
+- Update translation zh_tw
+
 v1.23.1 (2023-12-16)
 - Fix missing Add/Remove to my list context menu on Search results
 - Fix misbehavior of Add/Remove context menu in my list on search pages that ask for new search
