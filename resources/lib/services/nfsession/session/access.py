@@ -228,7 +228,7 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
 
 def _login_payload(credentials, auth_url, react_context):
-    country_id = react_context['models']['loginContext']['data']['geo']['requestCountry']['id']
+    country_id = react_context['models']['signupContext']['data']['geo']['requestCountry']['id']
     country_codes = react_context['models']['countryCodes']['data']['codes']
     try:
         country_code = '+' + next(dict_item for dict_item in country_codes if dict_item["id"] == country_id)['code']
@@ -258,7 +258,7 @@ def _get_accept_language_string(react_context):
     # and also influence the reactContext data (locale data and messages strings).
     # Locale is usually automatically determined by the browser,
     # we try get the locale code by reading the locale set as default in the reactContext.
-    supported_locales = react_context['models']['loginContext']['data']['geo']['supportedLocales']
+    supported_locales = react_context['models']['signupContext']['data']['geo']['supportedLocales']
     try:
         locale = next(dict_item for dict_item in supported_locales if dict_item["default"] is True)['locale']
     except StopIteration:
