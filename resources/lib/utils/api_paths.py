@@ -69,7 +69,8 @@ GENRE_PARTIAL_PATHS = [
 
 SEASONS_PARTIAL_PATHS = [
     ['seasonList', RANGE_PLACEHOLDER, 'summary'],
-    ['title']
+    ['title'],
+    ["seasonList","current"]
 ] + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
@@ -174,6 +175,10 @@ def iterate_references(source):
             continue
         yield (index, path)
 
+    if 'current' in source:
+        path = reference_path(source['current'])
+        if path is not None:
+            yield ('current', path)
 
 def count_references(source):
     counter = 0

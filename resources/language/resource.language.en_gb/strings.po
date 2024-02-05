@@ -845,7 +845,13 @@ msgctxt "#30216"
 msgid "Color of the titles marked as \"Remind me\""
 msgstr ""
 
-#. Unused 30217 to 30218
+msgctxt "#30217"
+msgid "Color of the title of the current episode in a season"
+msgstr "
+
+msgctxt "#30218"
+msgid "Show the current episode in the season list"
+msgstr "
 
 msgctxt "#30219"
 msgid "Disable notification for synchronization completed"

@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from resources.lib import common
 from resources.lib.utils.data_types import (VideoListSorted, SubgenreList, SeasonList, EpisodeList, LoCo, VideoList,
                                             SearchVideoList, CustomVideoList, LoLoMoCategory, VideoListSupplemental,
-                                            VideosList)
+                                            VideosList, CurrentEpisode)
 from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVideoId
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
@@ -140,6 +140,24 @@ class DirectoryPathRequests:
         }
         path_response = self.nfsession.perpetual_path_request(**call_args)
         return EpisodeList(videoid, path_response)
+
+    def req_current_episode(self, videoid):
+        """Retrieve the current episode of a season"""
+        if videoid.mediatype != common.VideoId.SEASON:
+            raise InvalidVideoId(f'Cannot request episode list for {videoid}')
+        LOG.debug('Requesting current episode for {}', videoid)
+        paths = ([['seasons', videoid.seasonid, 'summary']] +
+                 [['seasons', videoid.seasonid, 'componentSummary']] +
+                 build_paths(['seasons', videoid.seasonid, 'episodes', 'current'], EPISODES_PARTIAL_PATHS) +
+                 build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [[['title', 'delivery']]]))
+
+        call_args = {
+            'paths': paths,
+            'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']]
+        }
+        path_response = self.nfsession.perpetual_path_request(**call_args)
+
+        return CurrentEpisode(videoid, path_response)
 
     @cache_utils.cache_output(cache_utils.CACHE_COMMON, identify_append_from_kwarg_name='perpetual_range_start',
                               ignore_self_class=True)
