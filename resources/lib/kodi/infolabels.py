@@ -252,18 +252,20 @@ def parse_art(videoid, item):
         paths.ART_PARTIAL_PATHS[2] + ['url'], item)
     fanart = common.get_path_safe(
         paths.ART_PARTIAL_PATHS[3] + [0, 'url'], item)
+    fallback = common.get_path_safe(['itemSummary', 'value', 'boxArt', 'url'], item)
     return _assign_art(videoid,
                        boxart_large=boxarts.get(paths.ART_SIZE_FHD),
                        boxart_small=boxarts.get(paths.ART_SIZE_SD),
                        poster=boxarts.get(paths.ART_SIZE_POSTER),
                        interesting_moment=interesting_moment.get(paths.ART_SIZE_FHD),
                        clearlogo=clearlogo,
-                       fanart=fanart)
+                       fanart=fanart,
+                       fallback=fallback)
 
 
 def _assign_art(videoid, **kwargs):
     """Assign the art available from Netflix to appropriate Kodi art"""
-    art = {'poster': _best_art([kwargs['poster']]),
+    art = {'poster': _best_art([kwargs['poster'], kwargs['fallback']]),
            'fanart': _best_art([kwargs['fanart'],
                                 kwargs['interesting_moment'],
                                 kwargs['boxart_large'],
