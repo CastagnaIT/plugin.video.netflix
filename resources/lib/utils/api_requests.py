@@ -28,7 +28,7 @@ def login(ask_credentials=True):
     try:
         is_success = False
         credentials = None
-        is_login_with_credentials = True
+        is_login_with_credentials = False
         # The database 'isAdsPlan' value is stored after the login, so the first time we have None value
         # this avoids to show the notice message multiple times if more login attempts will be done over the time
         show_ads_notice = G.LOCAL_DB.get_value('is_ads_plan', None, table=TABLE_SESSION) is None
@@ -36,8 +36,17 @@ def login(ask_credentials=True):
             is_login_with_credentials = ui.show_yesno_dialog('Login', common.get_local_string(30340),
                                                              yeslabel=common.get_local_string(30341),
                                                              nolabel=common.get_local_string(30342))
-            if is_login_with_credentials:
-                credentials = {'credentials': ui.ask_credentials()}
+            # if is_login_with_credentials:
+            #     credentials = {'credentials': ui.ask_credentials()}
+        if is_login_with_credentials:
+            # The login page is changed now part of HTML seem protected by reCaptcha
+            # in the HTML page the reactContext data is added after the reCaptcha checks so at the moment
+            # it is not accessible by requesting the login page through python script,
+            # this prevents us to get the authURL code needed to perform the login request
+            ui.show_ok_dialog('Login',
+                              'Due to new website protections at moment the login with credentials is not available.')
+            is_login_with_credentials = False
+
         if is_login_with_credentials:
             if common.make_call('login', credentials):
                 is_success = True

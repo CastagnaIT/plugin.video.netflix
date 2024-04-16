@@ -28,7 +28,7 @@ CHROME_PLAYAPI_URL = 'https://www.netflix.com/msl/playapi/cadmium/'
 
 ENDPOINTS = {
     'manifest_v1': CHROME_BASE_URL + 'pbo_manifests/%5E1.0.0/router',  # "pbo_manifests/^1.0.0/router"
-    'manifest': CHROME_PLAYAPI_URL + 'licensedmanifest',
+    'manifest': CHROME_PLAYAPI_URL + 'licensedmanifest/1',
     'license': CHROME_BASE_URL + 'pbo_licenses/%5E1.0.0/router',
     'events': CHROME_PLAYAPI_URL + 'event/1',
     'logblobs': CHROME_PLAYAPI_URL + 'logblob/1'

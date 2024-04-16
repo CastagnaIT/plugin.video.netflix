@@ -122,8 +122,8 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
                              'If you have just done "Sign out of all devices" from Netflix account settings '
                              'wait about 10 minutes before generating a new AuthKey.') from exc
         # Get the account e-mail
-        page_response = self.get('your_account').decode('utf-8')
-        email_match = re.search(r'account-email[^<]+>([^<]+@[^</]+)</', page_response)
+        page_response = self.get('account_security').decode('utf-8')
+        email_match = re.search(r'>([^<]+@[^</]+)<', page_response)
         email = email_match.group(1).strip() if email_match else None
         if not email:
             raise WebsiteParsingError('E-mail field not found')

@@ -59,8 +59,8 @@ ENDPOINTS = {
          'use_default_params': False,
          'add_auth_url': None,
          'accept': 'text/html,application/xhtml+xml,application/xml'},
-    'your_account':
-        {'address': '/YourAccount',
+    'account_security':
+        {'address': '/account/security',
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
@@ -82,7 +82,7 @@ ENDPOINTS = {
          'is_api_call': False,
          'use_default_params': False,
          'add_auth_url': None,
-         'accept': 'application/json, text/javascript, */*'},
+         'accept': '*/*'},
     'profile_lock':
         {'address': '/api/shakti/mre/profileLock',
          'is_api_call': False,
