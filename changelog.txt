@@ -1,3 +1,8 @@
+v1.23.3 (2024-04-16)
+- Disabled login with e-mail/password (new website protections)
+- Add workaround for missing images to tvshow/movies
+- Fixed login with Auth key due to e-mail parsing problem
+
 v1.23.2 (2024-01-17)
 - Fix/workaround for Kodi crash when play a promo trailer
 - Fix wrong ESN generation for Xiaomi tv boxes
