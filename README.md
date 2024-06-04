@@ -15,6 +15,11 @@ The trademark "Netflix" is registered by "Netflix, Inc."
 
 ## Main features
 
+> [!WARNING]
+> **DUE TO CHANGES TO THE WEBSITE THAT PREVENT THE PROPER PLAYBACK OF VIDEOS, THE DEVELOPMENT OF THE ADD-ON HAS BEEN SUSPENDED.
+> THE VIDEO PLAYBACK, WHEN IT WORKS, IS LIMITED TO _SD QUALITY AND ONLY ON SOME LINUX/ANDROID DEVICES_.
+> WHO WANTS TO HELP FIND A SOLUTION TO THE PLAYBACK PROBLEM CAN FIND SOME INFO ON THE ISSUE [#1627](https://github.com/CastagnaIT/plugin.video.netflix/issues/1627).**
+
 - Access to all profiles and relative My list management
 - Show the most used lists such as New releases, Recently added, Netflix originals, ...
 - Show trailers lists (by context menu)
