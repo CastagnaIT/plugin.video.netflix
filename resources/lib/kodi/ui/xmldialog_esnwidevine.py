@@ -115,10 +115,10 @@ class ESNWidevine(xbmcgui.WindowXMLDialog):
     def _esn_checks(self, esn):
         """Sanity checks for ESN"""
         if self.is_android:
-            if not esn.startswith(('NFANDROID1-PRV-', 'NFANDROID2-PRV-')) or esn.count('-') < 5:
+            if not esn.startswith(('NFANDROID1-PRV-', 'NFANDROID2-PRV-', 'NFANDROID3-PRV-', 'NFANDROID4-PRV-')) or esn.count('-') < 5:
                 return False
         else:
-            if esn.count('-') != 3 or len(esn) != 40:
+            if esn.count('-') != 2 or len(esn) != 40:
                 return False
         return True
 
