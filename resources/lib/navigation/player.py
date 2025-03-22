@@ -7,6 +7,9 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import base64
+import json
+
 import xbmcgui
 import xbmcplugin
 
@@ -119,23 +122,38 @@ def get_inputstream_listitem(videoid):
     list_item.setProperty(
         key='inputstream.adaptive.stream_headers',
         value=f'user-agent={common.get_user_agent()}')
-    list_item.setProperty(
-        key='inputstream.adaptive.license_type',
-        value='com.widevine.alpha')
-    list_item.setProperty(
-        key='inputstream.adaptive.manifest_type',
-        value='mpd')
-    list_item.setProperty(
-        key='inputstream.adaptive.license_key',
-        value=service_url + LICENSE_PATH_FORMAT.format(videoid.value) + '||b{SSM}!b{SID}|')
-    list_item.setProperty(
-        key='inputstream.adaptive.server_certificate',
-        value=INPUTSTREAM_SERVER_CERTIFICATE)
-    # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
-    if common.get_system_platform() != 'android':
+    if G.KODI_VERSION < '22':
         list_item.setProperty(
-            key='inputstream.adaptive.pre_init_data',
-            value=PSSH_KID)
+            key='inputstream.adaptive.license_type',
+            value='com.widevine.alpha')
+        list_item.setProperty(
+            key='inputstream.adaptive.manifest_type',
+            value='mpd')
+        list_item.setProperty(
+            key='inputstream.adaptive.license_key',
+            value=service_url + LICENSE_PATH_FORMAT.format(videoid.value) + '||b{SSM}!b{SID}|')
+        list_item.setProperty(
+            key='inputstream.adaptive.server_certificate',
+            value=INPUTSTREAM_SERVER_CERTIFICATE)
+        # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
+        if common.get_system_platform() != 'android':
+            list_item.setProperty(
+                key='inputstream.adaptive.pre_init_data',
+                value=PSSH_KID)
+    else: # Kodi 22 and above
+        drm_config = {
+            "com.widevine.alpha": {
+                "priority": 1,
+                "license": {
+                    "server_url": service_url + LICENSE_PATH_FORMAT.format(videoid.value),
+                    "req_data": base64.b64encode(b'{CHA-B64}!{SID-B64}').decode('utf-8'),
+                    "server_certificate": INPUTSTREAM_SERVER_CERTIFICATE
+                },
+                "pre_init_data": PSSH_KID
+            }
+        }
+        list_item.setProperty('inputstream.adaptive.drm', json.dumps(drm_config))
+
     # Override InputStreamAdaptive "Stream selection type" setting (Kodi v20 and above, this is ignored on old versions)
     stream_sel_type = G.ADDON.getSettingString('isa_streamselection_override')
     if stream_sel_type != 'disabled':
