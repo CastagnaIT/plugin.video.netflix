@@ -122,6 +122,12 @@ def get_inputstream_listitem(videoid):
     list_item.setProperty(
         key='inputstream.adaptive.stream_headers',
         value=f'user-agent={common.get_user_agent()}')
+
+    # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
+    pre_init_data = ''
+    if common.get_system_platform() != 'android':
+        pre_init_data = PSSH_KID
+
     if G.KODI_VERSION < '22':
         list_item.setProperty(
             key='inputstream.adaptive.license_type',
@@ -135,11 +141,10 @@ def get_inputstream_listitem(videoid):
         list_item.setProperty(
             key='inputstream.adaptive.server_certificate',
             value=INPUTSTREAM_SERVER_CERTIFICATE)
-        # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
         if common.get_system_platform() != 'android':
             list_item.setProperty(
                 key='inputstream.adaptive.pre_init_data',
-                value=PSSH_KID)
+                value=pre_init_data)
     else: # Kodi 22 and above
         drm_config = {
             "com.widevine.alpha": {
@@ -149,7 +154,7 @@ def get_inputstream_listitem(videoid):
                     "req_data": base64.b64encode(b'{CHA-B64}!{SID-B64}').decode('utf-8'),
                     "server_certificate": INPUTSTREAM_SERVER_CERTIFICATE
                 },
-                "pre_init_data": PSSH_KID
+                "pre_init_data": pre_init_data
             }
         }
         list_item.setProperty('inputstream.adaptive.drm', json.dumps(drm_config))
