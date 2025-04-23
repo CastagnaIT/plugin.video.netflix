@@ -64,6 +64,11 @@
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
+                <setting id="show_current_episode" type="boolean" label="30218">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
                 <setting id="mylist_titles_color" type="integer" label="30215" help="">
                     <level>0</level>
                     <default>1</default>
@@ -101,6 +106,23 @@
                 <setting id="supplemental_info_color" type="integer" label="30239" help="">
                     <level>0</level>
                     <default>3</default>
+                    <constraints>
+                        <options>
+                            <option label="13106">0</option>
+                            <option label="762">1</option>
+                            <option label="13343">2</option>
+                            <option label="13341">3</option>
+                            <option label="761">4</option>
+                            <option label="760">5</option>
+                            <option label="731">6</option>
+                            <option label="767">7</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="current_episode_titles_color" type="integer" label="30217" help="">
+                    <level>0</level>
+                    <default>5</default>
                     <constraints>
                         <options>
                             <option label="13106">0</option>
