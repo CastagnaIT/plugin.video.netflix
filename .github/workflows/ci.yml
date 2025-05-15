@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
     - name: Check out ${{ github.sha }} from repository ${{ github.repository }}
       uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
         args: >
           -Dsonar.organization=add-ons
           -Dsonar.projectKey=add-ons_plugin.video.netflix
-          -Dsonar.python.version=3.7,3.8,3.9,3.10
+          -Dsonar.python.version=3.10,3.11,3.12,3.13
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
