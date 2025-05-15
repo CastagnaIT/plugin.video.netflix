@@ -1,3 +1,8 @@
+v1.23.4 (2025-05-15)
+- Fix authUrl not valid error
+- Better InputStream Adaptive support on Kodi 22
+- Other minor fixes
+
 v1.23.3 (2024-04-16)
 - Disabled login with e-mail/password (new website protections)
 - Add workaround for missing images to tvshow/movies
