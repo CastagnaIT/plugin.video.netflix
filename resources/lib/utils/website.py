@@ -91,10 +91,10 @@ def extract_session_data(content, validate=False, update_profiles=False):
         set_website_esn(user_data['esn'])
     G.LOCAL_DB.set_value('locale_id', user_data.get('preferredLocale').get('id', 'en-US'))
     # Extract the client version from assets core
-    result = search(r'-([0-9\.]+)\.js$', api_data.pop('asset_core'))
+    result = search(r'-([0-9\.]+)\.js.*$', api_data.pop('asset_core'))
     if not result:
         LOG.error('It was not possible to extract the client version!')
-        api_data['client_version'] = '6.0023.976.011'
+        api_data['client_version'] = '6.0049.787.911'
     else:
         api_data['client_version'] = result.groups()[0]
     # Save api urls
@@ -240,7 +240,7 @@ def extract_api_data(react_context, debug_log=True):
 
 def assert_valid_auth_url(user_data):
     """Raise an exception if user_data does not contain a valid authURL"""
-    if len(user_data.get('auth_url', '')) != 42:
+    if len(user_data.get('auth_url', '')) != 77:
         raise InvalidAuthURLError('authURL is not valid')
     return user_data
 
