@@ -20,5 +20,6 @@ disable=
     too-many-public-methods,
     too-many-return-statements,
     too-many-statements,
+	too-many-positional-arguments,
     useless-object-inheritance,
     consider-using-from-import
