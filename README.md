@@ -1,6 +1,6 @@
 # Netflix Plugin for Kodi (plugin.video.netflix)
 
-[![Kodi version](https://img.shields.io/badge/kodi%20versions-19--20--21-blue)](https://kodi.tv/)
+[![Kodi version](https://img.shields.io/badge/kodi%20versions-19--20--21--22-blue)](https://kodi.tv/)
 [![GitHub release](https://img.shields.io/github/release/castagnait/plugin.video.netflix.svg)](https://github.com/castagnait/plugin.video.netflix/releases)
 [![CI](https://github.com/castagnait/plugin.video.netflix/workflows/CI/badge.svg)](https://github.com/castagnait/plugin.video.netflix/actions?query=workflow:CI)
 [![Code Climate - Maintainability](https://api.codeclimate.com/v1/badges/9fbe3ac732f86c05ff00/maintainability)](https://codeclimate.com/github/CastagnaIT/plugin.video.netflix/maintainability)
@@ -43,7 +43,7 @@ _**KODI v18 is not supported.**_
 
 Install add-on manually - updates should always be installed manually:<br/>
 https://castagnait.github.io/repository.castagnait/ (url to add in the Kodi file manager)<br/>
-Note: The release files in to "kodi19" folder are compatible with Kodi v19, v20, v21.
+Note: The release files in to "kodi19" folder are compatible with Kodi v19, v20, v21, v22.
 
 ## Login with Authentication key
 
