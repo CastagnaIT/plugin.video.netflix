@@ -1,3 +1,7 @@
+v1.23.5 (2025-08-24)
+- Fix esn error on login due to website changes
+- Fix Nonetype error on startup due to website changes
+
 v1.23.4 (2025-05-15)
 - Fix authUrl not valid error
 - Better InputStream Adaptive support on Kodi 22
