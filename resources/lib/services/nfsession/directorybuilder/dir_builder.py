@@ -66,13 +66,21 @@ class DirectoryBuilder(DirectoryPathRequests):
     def get_seasons(self, pathitems, tvshowid_dict, perpetual_range_start):
         tvshowid = VideoId.from_dict(tvshowid_dict)
         season_list = self.req_seasons(tvshowid, perpetual_range_start=perpetual_range_start)
-        return build_season_listing(season_list, tvshowid, pathitems)
+        if len(season_list.seasons) > 1 and G.ADDON.getSettingBool('show_current_episode'):
+            current_episode = self.req_current_episode(season_list.current_seasonid)
+        else:
+            current_episode = None
+        return build_season_listing(season_list, tvshowid, current_episode, pathitems)
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_episodes(self, pathitems, seasonid_dict, perpetual_range_start):
         seasonid = VideoId.from_dict(seasonid_dict)
         episodes_list = self.req_episodes(seasonid, perpetual_range_start=perpetual_range_start)
-        return build_episode_listing(episodes_list, seasonid, pathitems)
+        if G.ADDON.getSettingInt('current_episode_titles_color') > 0:
+            current_episode = self.req_current_episode(seasonid)
+        else:
+            current_episode = None
+        return build_episode_listing(episodes_list, seasonid, current_episode, pathitems)
 
     @measure_exec_time_decorator(is_immediate=True)
     def get_video_list(self, list_id, menu_data, is_dynamic_id):

@@ -255,6 +255,8 @@ class SeasonList:
         self.tvshow = self.data['videos'][self.videoid.tvshowid]
         self.seasons = OrderedDict(
             resolve_refs(self.tvshow['seasonList'], self.data))
+        if 'current' in self.tvshow['seasonList']:
+            self.current_seasonid = videoid.derive_season(self.tvshow['seasonList']['current']['value'][1])
 
 
 class EpisodeList:
@@ -269,6 +271,13 @@ class EpisodeList:
         self.episodes = OrderedDict(
             resolve_refs(self.season['episodes'], self.data))
 
+class CurrentEpisode:
+    def __init__(self, videoid, path_response):
+        self.data = path_response
+        self.videoid = videoid
+        self.tvshow = self.data['videos'][self.videoid.tvshowid]
+        self.season = self.data['seasons'][self.videoid.seasonid]
+        self.episode = next(resolve_refs(self.season['episodes'], self.data))
 
 class SubgenreList:
     """A list of subgenre."""

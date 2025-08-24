@@ -129,11 +129,32 @@ def _create_profile_item(profile_guid, is_selected, is_autoselect, is_autoselect
 
 
 @measure_exec_time_decorator(is_immediate=True)
-def build_season_listing(season_list, tvshowid, pathitems=None):
+def build_season_listing(season_list, tvshowid, current_episode=None, pathitems=None):
     """Build a season listing"""
     common_data = get_common_data()
     directory_items = [_create_season_item(tvshowid, seasonid_value, season, season_list, common_data)
                        for seasonid_value, season in season_list.seasons.items()]
+
+    if current_episode:
+        common_data_episode = get_common_data()
+        common_data_episode['params'] = get_param_watched_status_by_profile()
+        common_data_episode['set_watched_status'] = G.ADDON.getSettingBool('sync_watched_status')
+        common_data_episode['active_profile_guid'] = G.LOCAL_DB.get_active_profile_guid()
+
+        episodeid_value, episode_data = current_episode.episode
+        current_episode_item = _create_episode_item(season_list.current_seasonid, episodeid_value, episode_data, current_episode, common_data_episode)
+        list_item = current_episode_item[1]
+
+        if list_item.getProperty('isPlayable') == 'true':
+            episode_summary = episode_data['summary']['value']
+            label = f"{episode_summary['season']}x{episode_summary['episode']:02d}. {episode_data['title']['value']}"
+            list_item.setLabel(label)
+
+            episodeid = season_list.current_seasonid.derive_episode(episodeid_value)
+            add_info_list_item(list_item, episodeid, episode_data, current_episode.data, False, common_data_episode)
+
+            directory_items.insert(0, current_episode_item)
+
     # add_items_previous_next_page use the new value of perpetual_range_selector
     add_items_previous_next_page(directory_items, pathitems, season_list.perpetual_range_selector, tvshowid)
     G.CACHE_MANAGEMENT.execute_pending_db_ops()
@@ -151,14 +172,20 @@ def _create_season_item(tvshowid, seasonid_value, season, season_list, common_da
 
 
 @measure_exec_time_decorator(is_immediate=True)
-def build_episode_listing(episodes_list, seasonid, pathitems=None):
+def build_episode_listing(episodes_list, seasonid, current_episode=None, pathitems=None):
     """Build a episodes listing of a season"""
     common_data = get_common_data()
     common_data['params'] = get_param_watched_status_by_profile()
     common_data['set_watched_status'] = G.ADDON.getSettingBool('sync_watched_status')
     common_data['active_profile_guid'] = G.LOCAL_DB.get_active_profile_guid()
 
-    directory_items = [_create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data)
+    if current_episode:
+        common_data['current_episode_titles_color'] = get_color_name(G.ADDON.getSettingInt('current_episode_titles_color'))
+        current_episodeid_value = current_episode.episode[0]
+    else:
+        current_episodeid_value = None
+
+    directory_items = [_create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data, current_episodeid_value == episodeid_value)
                        for episodeid_value, episode
                        in episodes_list.episodes.items()]
     # add_items_previous_next_page use the new value of perpetual_range_selector
@@ -168,7 +195,7 @@ def build_episode_listing(episodes_list, seasonid, pathitems=None):
         'title': f'{episodes_list.tvshow["title"]["value"]} - {episodes_list.season["summary"]["value"]["name"]}'}
 
 
-def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data):
+def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, common_data, is_current_episode=False):
     is_playable = episode['availability'].get('value', {}).get('isPlayable', False)
     episodeid = seasonid.derive_episode(episodeid_value)
     list_item = ListItemW(label=episode['title']['value'])
@@ -176,7 +203,7 @@ def _create_episode_item(seasonid, episodeid_value, episode, episodes_list, comm
         'isPlayable': str(is_playable).lower(),
         'nf_videoid': episodeid.to_string()
     })
-    add_info_list_item(list_item, episodeid, episode, episodes_list.data, False, common_data)
+    add_info_list_item(list_item, episodeid, episode, episodes_list.data, False, common_data, None, False, is_current_episode)
     set_watched_status(list_item, episode, common_data)
     if is_playable:
         url = common.build_url(videoid=episodeid, mode=G.MODE_PLAY, params=common_data['params'])

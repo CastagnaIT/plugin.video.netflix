@@ -69,11 +69,14 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
 
 
 def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None,
-                       is_in_remind_me=False):
+                       is_in_remind_me=False, is_current_episode=False):
     """Add infolabels and art to a ListItem"""
     infos, quality_infos = get_info(videoid, item, raw_data, delayed_db_op=True, common_data=common_data)
     list_item.addStreamInfoFromDict(quality_infos)
-    if is_in_mylist and common_data.get('mylist_titles_color'):
+    if is_current_episode and common_data.get('current_episode_titles_color'):
+        # Highlight ListItem title when it is the current episode of the season
+        list_item.setLabel(_colorize_text(common_data['current_episode_titles_color'], list_item.getLabel()))
+    elif is_in_mylist and common_data.get('mylist_titles_color'):
         # Highlight ListItem title when the videoid is contained in "My list"
         list_item.setLabel(_colorize_text(common_data['mylist_titles_color'], list_item.getLabel()))
     elif is_in_remind_me:
