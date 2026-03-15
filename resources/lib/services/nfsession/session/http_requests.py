@@ -170,13 +170,15 @@ class SessionHTTPRequests(SessionBase):
         #                   it is still added in an 'empty' form in the response
         if endpoint_conf['use_default_params']:
             params = {
+                'webp': 'true',
                 'drmSystem': 'widevine',
-                'falcor_server': '0.1.0',
-                'withSize': 'false',
-                'materialize': 'false',
-                'routeAPIRequestsThroughFTL': 'false',
                 'isVolatileBillboardsEnabled': 'true',
                 'isTop10Supported': 'true',
+                'hasVideoMerchInBob': 'true',
+                'hasVideoMerchInJaw': 'true',
+                'falcor_server': '0.1.0',
+                'withSize': 'true',
+                'materialize': 'true',
                 'original_path': '/shakti/mre/pathEvaluator'
             }
         if endpoint_conf['add_auth_url'] == 'to_params':
