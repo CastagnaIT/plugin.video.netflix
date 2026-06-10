@@ -80,8 +80,9 @@ PROFILES = {
 
 def enabled_profiles():
     """Return a list of all base and enabled additional profiles"""
+    # H.264 PRK-QC profiles can fail sample decryption in InputStream Adaptive/Widevine.
     return (PROFILES['base'] +
-            PROFILES['h264'] + PROFILES['h264_prk_qc'] +
+            PROFILES['h264'] +
             _subtitle_profiles() +
             _additional_profiles('vp9profile0', 'enable_vp9_profiles') +
             _additional_profiles('vp9profile2', ['enable_vp9_profiles', 'enable_vp9.2_profiles']) +
