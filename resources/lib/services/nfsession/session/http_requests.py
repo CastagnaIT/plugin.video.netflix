@@ -174,9 +174,6 @@ class SessionHTTPRequests(SessionBase):
                 'falcor_server': '0.1.0',
                 'withSize': 'false',
                 'materialize': 'false',
-                'routeAPIRequestsThroughFTL': 'false',
-                'isVolatileBillboardsEnabled': 'true',
-                'isTop10Supported': 'true',
                 'original_path': '/shakti/mre/pathEvaluator'
             }
         if endpoint_conf['add_auth_url'] == 'to_params':

@@ -17,7 +17,7 @@ from resources.lib.common.exceptions import InvalidVideoListTypeError, InvalidVi
 from resources.lib.utils.api_paths import (VIDEO_LIST_PARTIAL_PATHS, RANGE_PLACEHOLDER, VIDEO_LIST_BASIC_PARTIAL_PATHS,
                                            SEASONS_PARTIAL_PATHS, EPISODES_PARTIAL_PATHS, ART_PARTIAL_PATHS,
                                            TRAILER_PARTIAL_PATHS, PATH_REQUEST_SIZE_STD, build_paths,
-                                           PATH_REQUEST_SIZE_MAX)
+                                           PATH_REQUEST_SIZE_MAX, jgraph_get)
 from resources.lib.common import cache_utils
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
@@ -55,16 +55,26 @@ class DirectoryPathRequests:
         # - To get items for the main menu
         #      (when 'loco_known'==True and loco_contexts is set, see MAIN_MENU_ITEMS in globals.py)
         # - To get list items for menus that have multiple contexts set to 'loco_contexts' like 'recommendations' menu
-        LOG.debug('Requesting LoCo root lists')
-        paths = ([['loco', 'componentSummary'],
-                  ['loco', {'from': 0, 'to': 50}, 'componentSummary'],
-                  # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
-                  ['loco', {'from': 0, 'to': 50}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]] +
-                 # Art for the first video of each context list (needed only to add art to the menu item)
-                 build_paths(['loco', {'from': 0, 'to': 50}, 0, 'reference'], ART_PARTIAL_PATHS))
+        LOG.debug('Requesting LoCo\'s root ID')
+        paths = ([['loco', 'componentSummary']])
         call_args = {'paths': paths}
-        path_response = self.nfsession.path_request(**call_args)
-        return LoCo(path_response)
+        loco_response = self.nfsession.path_request(**call_args)
+        loco_data = jgraph_get('loco', loco_response)
+        comp_data = jgraph_get('componentSummary', loco_data)
+        loco_id = comp_data.get('id')
+        if loco_id:
+            LOG.debug('Requesting LoCo root lists')
+            paths = ([['locos', loco_id, {'from': 0, 'to': 50}, 'componentSummary'],
+                      # Titles of first 4 videos in each video list (needed only to show titles in the plot description)
+                      ['locos', loco_id, {'from': 0, 'to': 50}, {'from': 0, 'to': 3}, 'reference', ['title', 'summary']]])
+                     # Art for the first video of each context list (needed only to add art to the menu item)
+                     # + build_paths(['locos', loco_id, {'from': 0, 'to': 50}, 0, 'reference'], ART_PARTIAL_PATHS))
+            call_args = {'paths': paths}
+            path_response = self.nfsession.path_request(**call_args)
+            return LoCo(path_response)
+        else:
+            LOG.error('Cannot get the LoCo\'s root ID, response data: {}', loco_response)
+            return LoCo({})
 
     @cache_utils.cache_output(cache_utils.CACHE_GENRES, identify_from_kwarg_name='genre_id', ignore_self_class=True)
     def req_loco_list_genre(self, genre_id):
@@ -113,9 +123,9 @@ class DirectoryPathRequests:
             raise InvalidVideoId(f'Cannot request season list for {videoid}')
         LOG.debug('Requesting the seasons list for show {}', videoid)
         call_args = {
-            'paths': (build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS) +
-                      build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS) +
-                      [['videos', videoid.tvshowid, 'componentSummary']]),
+            'paths': (build_paths(['videos', videoid.tvshowid], SEASONS_PARTIAL_PATHS)),
+                      #+ build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS) +
+                      #[['videos', videoid.tvshowid, 'componentSummary']]),
             'length_params': ['stdlist_wid', ['videos', videoid.tvshowid, 'seasonList']],
             'perpetual_range_start': perpetual_range_start
         }
@@ -130,9 +140,10 @@ class DirectoryPathRequests:
             raise InvalidVideoId(f'Cannot request episode list for {videoid}')
         LOG.debug('Requesting episode list for {}', videoid)
         paths = ([['seasons', videoid.seasonid, 'summary']] +
-                 [['seasons', videoid.seasonid, 'componentSummary']] +
-                 build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS) +
-                 build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [[['title', 'delivery']]]))
+                 [['videos', videoid.tvshowid, ['title', 'delivery']]] +
+                 #[['seasons', videoid.seasonid, 'componentSummary']] +
+                 build_paths(['seasons', videoid.seasonid, 'episodes', RANGE_PLACEHOLDER], EPISODES_PARTIAL_PATHS))
+                 # + build_paths(['videos', videoid.tvshowid], ART_PARTIAL_PATHS + [[['title', 'delivery']]]))
         call_args = {
             'paths': paths,
             'length_params': ['stdlist_wid', ['seasons', videoid.seasonid, 'episodes']],

@@ -104,27 +104,28 @@ class NFSessionOperations(SessionPathRequests):
             # Change the current profile while a video is playing can cause problems with outgoing HTTP requests
             # (MSL/NFSession) causing a failure in the HTTP request or sending data on the wrong profile
             raise ErrorMsgNoReport('It is not possible select a profile while a video is playing.')
-        timestamp = time.time()
         LOG.info('Activating profile {}', guid)
-        # 20/05/2020 - The method 1 not more working for switching PIN locked profiles
+
         # INIT Method 1 - HTTP mode
-        # response = self._get('switch_profile', params={'tkn': guid})
-        # self.nfsession.auth_url = self.website_extract_session_data(response)['auth_url']
+        response = self.get_safe('switch_profile', params={'tkn': guid})
+        self.auth_url = self.website_extract_session_data(response)['auth_url']
         # END Method 1
-        # INIT Method 2 - API mode
-        try:
-            response = self.get_safe(endpoint='activate_profile',
-                                     params={'switchProfileGuid': guid,
-                                             '_': int(timestamp * 1000),
-                                             'authURL': self.auth_url})
-            if response.get('status') != 'success':
-                raise InvalidProfilesError('Unable to access to the selected profile.')
-        except HttpError401 as exc:
-            # Profile guid not more valid
-            raise InvalidProfilesError('Unable to access to the selected profile.') from exc
+
+        # INIT Method 2 - API mode **** 07/2026 not working anymore ****
+        # try:
+        #     timestamp = time.time()
+        #     response = self.get_safe(endpoint='activate_profile',
+        #                              params={'switchProfileGuid': guid,
+        #                                      '_': int(timestamp * 1000),
+        #                                      'authURL': self.auth_url})
+        #     if response.get('status') != 'success':
+        #         raise InvalidProfilesError('Unable to access to the selected profile.')
+        # except HttpError401 as exc:
+        #     # Profile guid not more valid
+        #     raise InvalidProfilesError('Unable to access to the selected profile.') from exc
         # Retrieve browse page to update authURL
-        response = self.get_safe('browse')
-        self.auth_url = website.extract_session_data(response)['auth_url']
+        # response = self.get_safe('browse')
+        # self.auth_url = website.extract_session_data(response)['auth_url']
         # END Method 2
 
         G.LOCAL_DB.switch_active_profile(guid)

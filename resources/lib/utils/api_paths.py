@@ -35,7 +35,7 @@ LENGTH_ATTRIBUTES = {
 
 """Predefined lambda expressions that return the number of video results within a path response dict"""
 
-ART_PARTIAL_PATHS = [
+ART_PARTIAL_PATHS = [ # art moved to graphql endpoint
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg', 'value'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg', 'value'],
     ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', '_550x124', 'png', 'value'],  # 11/05/2020 same img of bb2OGLogo
@@ -48,16 +48,16 @@ ART_PARTIAL_PATHS = [
 
 
 VIDEO_LIST_PARTIAL_PATHS = [
-    [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'inRemindMeList',
-      'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'availability', 'trackIds',
+    [['summary', 'title', 'synopsis', 'queue', 'inRemindMeList',
+      'episodeCount', 'maturity', 'runtime', 'seasonCount', 'availability', 'trackIds',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
-      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo', 'availability', 'itemSummary']],
-    [['genres', 'tags', 'creators', 'directors', 'cast'],
-     {'from': 0, 'to': 10}, ['id', 'name']]
-] + ART_PARTIAL_PATHS
+      'delivery', 'availability', 'itemSummary']]
+    #,[['genres', 'tags', 'creators', 'directors', 'cast'],
+    # {'from': 0, 'to': 10}, ['id', 'name']]
+]# + ART_PARTIAL_PATHS
 
 VIDEO_LIST_BASIC_PARTIAL_PATHS = [
-    [['title', 'queue', 'watched', 'summary', 'type', 'id']]
+    [['queue', 'summary']]
 ]
 
 GENRE_PARTIAL_PATHS = [
@@ -70,20 +70,20 @@ GENRE_PARTIAL_PATHS = [
 SEASONS_PARTIAL_PATHS = [
     ['seasonList', RANGE_PLACEHOLDER, 'summary'],
     ['title']
-] + ART_PARTIAL_PATHS
+]# + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
-    [['requestId', 'summary', 'synopsis', 'regularSynopsis', 'title', 'runtime', 'releaseYear', 'queue',
-      'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
-      'watched', 'delivery', 'trackIds', 'availability']],
-    [['genres', 'tags', 'creators', 'directors', 'cast'],
+    [['summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
+      'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
+      'delivery', 'trackIds', 'availability']],
+    [['genres', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
-] + ART_PARTIAL_PATHS
+]# + ART_PARTIAL_PATHS
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'regularSynopsis', 'title', 'trackIds', 'delivery', 'runtime',
+    [['availability', 'summary', 'synopsis', 'title', 'trackIds', 'delivery', 'runtime',
       'bookmarkPosition', 'creditsOffset']]
-] + ART_PARTIAL_PATHS
+]# + ART_PARTIAL_PATHS
 
 EVENT_PATHS = [
     [['requestId', 'title', 'runtime', 'queue', 'bookmarkPosition', 'watched', 'trackIds']]

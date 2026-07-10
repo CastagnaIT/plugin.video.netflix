@@ -77,12 +77,13 @@ ENDPOINTS = {
          'use_default_params': False,
          'add_auth_url': None,
          'accept': '*/*'},
-    'activate_profile':
-        {'address': '/api/shakti/mre/profiles/switch',
-         'is_api_call': False,
-         'use_default_params': False,
-         'add_auth_url': None,
-         'accept': '*/*'},
+    # **** 07/2026 not working anymore ****
+    # 'activate_profile':
+    #     {'address': '/api/shakti/mre/profiles/switch',
+    #      'is_api_call': False,
+    #      'use_default_params': False,
+    #      'add_auth_url': None,
+    #      'accept': '*/*'},
     'profile_lock':
         {'address': '/api/shakti/mre/profileLock',
          'is_api_call': False,
