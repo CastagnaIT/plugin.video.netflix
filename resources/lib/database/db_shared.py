@@ -210,7 +210,8 @@ def get_shareddb_class(use_mysql=False):
             """Return True if a movie id exists"""
             query = 'SELECT EXISTS(SELECT 1 FROM video_lib_movies WHERE MovieID = ?)'
             cur = self._execute_query(query, (movieid,))
-            return bool(cur.fetchone()[0])
+            result = cur.fetchone()
+            return bool(result and result[0])
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
@@ -218,7 +219,8 @@ def get_shareddb_class(use_mysql=False):
             """Return True if a tvshow id exists"""
             query = 'SELECT EXISTS(SELECT 1 FROM video_lib_tvshows WHERE TvShowID = ?)'
             cur = self._execute_query(query, (tvshowid,))
-            return bool(cur.fetchone()[0])
+            result = cur.fetchone()
+            return bool(result and result[0])
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
@@ -231,7 +233,8 @@ def get_shareddb_class(use_mysql=False):
                  'ON video_lib_seasons.TvShowID = video_lib_tvshows.TvShowID '
                  'WHERE video_lib_tvshows.TvShowID = ? AND video_lib_seasons.SeasonID = ?)')
             cur = self._execute_query(query, (tvshowid, seasonid))
-            return bool(cur.fetchone()[0])
+            result = cur.fetchone()
+            return bool(result and result[0])
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection
@@ -248,7 +251,8 @@ def get_shareddb_class(use_mysql=False):
                  'video_lib_seasons.SeasonID = ? AND '
                  'video_lib_episodes.EpisodeID = ?)')
             cur = self._execute_query(query, (tvshowid, seasonid, episodeid))
-            return bool(cur.fetchone()[0])
+            result = cur.fetchone()
+            return bool(result and result[0])
 
         @db_base_mysql.handle_connection
         @db_base_sqlite.handle_connection

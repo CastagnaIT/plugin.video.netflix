@@ -18,6 +18,8 @@ from resources.lib.utils.logging import LOG, measure_exec_time_decorator
 from .misc_utils import run_threaded
 
 IPC_TIMEOUT_SECS = 20
+# The login can wait the user that gets the one-time code sent by Netflix
+IPC_TIMEOUT_SECS_LOGIN = 600
 
 # IPC over HTTP endpoints
 IPC_ENDPOINT_CACHE = '/netflix_service/cache'
@@ -75,7 +77,7 @@ def _send_signal(signal, data):
 
 
 @measure_exec_time_decorator()
-def make_call(func_name, data=None, endpoint=IPC_ENDPOINT_NFSESSION):
+def make_call(func_name, data=None, endpoint=IPC_ENDPOINT_NFSESSION, timeout=IPC_TIMEOUT_SECS):
     """
     Make an IPC call
     :param func_name: function name
@@ -91,11 +93,11 @@ def make_call(func_name, data=None, endpoint=IPC_ENDPOINT_NFSESSION):
     #         https://github.com/xbmc/xbmc/issues/19332
     #         https://github.com/CastagnaIT/script.module.addon.connector
     if G.IPC_OVER_HTTP:
-        return make_http_call(endpoint, func_name, data)
-    return make_addonsignals_call(func_name, data)
+        return make_http_call(endpoint, func_name, data, timeout)
+    return make_addonsignals_call(func_name, data, timeout)
 
 
-def make_http_call(endpoint, func_name, data=None):
+def make_http_call(endpoint, func_name, data=None, timeout=IPC_TIMEOUT_SECS):
     """
     Make an IPC call via HTTP and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function.
@@ -109,7 +111,7 @@ def make_http_call(endpoint, func_name, data=None):
     try:
         with urlopen(url=url,
                      data=pickle.dumps(data, protocol=pickle.HIGHEST_PROTOCOL),
-                     timeout=IPC_TIMEOUT_SECS) as f:
+                     timeout=timeout) as f:
             received_data = f.read()
             if received_data:
                 _data = pickle.loads(received_data)
@@ -127,7 +129,7 @@ def make_http_call(endpoint, func_name, data=None):
         raise exceptions.BackendNotReady(err_msg) from exc
 
 
-def make_addonsignals_call(callname, data):
+def make_addonsignals_call(callname, data, timeout=IPC_TIMEOUT_SECS):
     """
     Make an IPC call via AddonSignals and wait for it to return.
     The contents of data will be expanded to kwargs and passed into the target function.
@@ -138,7 +140,7 @@ def make_addonsignals_call(callname, data):
         source_id=G.ADDON_ID,
         signal=callname,
         data=_data,
-        timeout_ms=IPC_TIMEOUT_SECS * 1000,
+        timeout_ms=timeout * 1000,
         use_timeout_exception=True)
     _result = pickle.loads(b64decode(result))
     if isinstance(_result, Exception):

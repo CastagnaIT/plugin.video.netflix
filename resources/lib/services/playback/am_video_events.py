@@ -8,10 +8,12 @@
     See LICENSES/MIT.md for more information.
 """
 from typing import TYPE_CHECKING
+import time
 
 from resources.lib import common
 from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_COMMON, CACHE_MANIFESTS
 from resources.lib.common.exceptions import InvalidVideoListTypeError
+import requests.exceptions as req_exceptions
 from resources.lib.globals import G
 from resources.lib.services.nfsession.msl.msl_utils import EVENT_ENGAGE, EVENT_START, EVENT_STOP, EVENT_KEEP_ALIVE
 from resources.lib.utils.api_paths import build_paths, EVENT_PATHS
@@ -54,7 +56,13 @@ class AMVideoEvents(ActionManager):
             return
         if (not data['is_played_from_strm'] or
                 (data['is_played_from_strm'] and G.ADDON.getSettingBool('sync_watched_status_library'))):
-            self.event_data = self._get_event_data(self.videoid)
+            try:
+                self.event_data = self._get_event_data(self.videoid)
+            except req_exceptions.HTTPError as exc:
+                if getattr(exc.response, 'status_code', None) != 404:
+                    raise
+                LOG.warn('AMVideoEvents: falling back to metadata endpoint because video event metadata path returned 404')
+                self.event_data = self._get_event_data_metadata(self.videoid)
             self.event_data['videoid'] = self.videoid
             self.event_data['is_played_by_library'] = data['is_played_from_strm']
         else:
@@ -67,7 +75,7 @@ class AMVideoEvents(ActionManager):
         try:
             videoid_exists, list_id = self.directory_builder.get_continuewatching_videoid_exists(
                 str(self.videoid_parent.value))
-            if not videoid_exists:
+            if not videoid_exists and list_id:
                 # Delete the cache of continueWatching list
                 G.CACHE.delete(CACHE_COMMON, list_id, including_suffixes=True)
                 # When the continueWatching context is invalidated from a refreshListByContext call
@@ -201,6 +209,33 @@ class AMVideoEvents(ActionManager):
         else:
             event_data['track_id'] = videoid_data['trackIds']['value']['trackId_jaw']
         return event_data
+
+    def _get_event_data_metadata(self, videoid):
+        parent_id = videoid.tvshowid if videoid.mediatype == common.VideoId.EPISODE else videoid.value
+        metadata_data = self.nfsession.get_safe(
+            endpoint='metadata',
+            params={'movieid': parent_id, '_': int(time.time() * 1000)})
+        item = metadata_data.get('video', {})
+        if videoid.mediatype == common.VideoId.EPISODE:
+            for season in item.get('seasons', []):
+                for episode in season.get('episodes', []):
+                    if str(episode.get('id')) == videoid.value:
+                        item = episode
+                        break
+                else:
+                    continue
+                break
+        bookmark = item.get('bookmark') or {}
+        bookmark_position = bookmark.get('offset') or item.get('bookmarkPosition') or 0
+        return {
+            'resume_position': bookmark_position if bookmark_position and bookmark_position > -1 else None,
+            'runtime': item.get('runtime') or 0,
+            'request_id': item.get('requestId') or '',
+            'watched': bool(bookmark.get('watchedDate') or item.get('watched')),
+            'is_in_mylist': False,
+            'track_id': (item.get('trackIds') or {}).get('trackId_jawEpisode') or
+                        (item.get('trackIds') or {}).get('trackId_jaw') or 0
+        }
 
     def _get_video_raw_data(self, videoids):
         """Retrieve raw data for specified video id's"""

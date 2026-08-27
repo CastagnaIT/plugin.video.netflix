@@ -35,7 +35,7 @@ LENGTH_ATTRIBUTES = {
 
 """Predefined lambda expressions that return the number of video results within a path response dict"""
 
-ART_PARTIAL_PATHS = [ # art moved to graphql endpoint
+ART_PARTIAL_PATHS = [
     ['boxarts', [ART_SIZE_SD, ART_SIZE_FHD, ART_SIZE_POSTER], 'jpg', 'value'],
     ['interestingMoment', [ART_SIZE_SD, ART_SIZE_FHD], 'jpg', 'value'],
     ['artWorkByType', 'LOGO_BRANDED_HORIZONTAL', '_550x124', 'png', 'value'],  # 11/05/2020 same img of bb2OGLogo
@@ -48,16 +48,16 @@ ART_PARTIAL_PATHS = [ # art moved to graphql endpoint
 
 
 VIDEO_LIST_PARTIAL_PATHS = [
-    [['summary', 'title', 'synopsis', 'queue', 'inRemindMeList',
-      'episodeCount', 'maturity', 'runtime', 'seasonCount', 'availability', 'trackIds',
+    [['requestId', 'summary', 'title', 'synopsis', 'regularSynopsis', 'evidence', 'queue', 'inRemindMeList',
+      'episodeCount', 'info', 'maturity', 'runtime', 'seasonCount', 'availability', 'trackIds',
       'releaseYear', 'userRating', 'numSeasonsLabel', 'bookmarkPosition', 'creditsOffset',
-      'delivery', 'availability', 'itemSummary']]
-    #,[['genres', 'tags', 'creators', 'directors', 'cast'],
-    # {'from': 0, 'to': 10}, ['id', 'name']]
-]# + ART_PARTIAL_PATHS
+      'dpSupplementalMessage', 'watched', 'delivery', 'sequiturEvidence', 'promoVideo', 'availability', 'itemSummary']],
+    [['genres', 'tags', 'creators', 'directors', 'cast'],
+     {'from': 0, 'to': 10}, ['id', 'name']]
+] + ART_PARTIAL_PATHS
 
 VIDEO_LIST_BASIC_PARTIAL_PATHS = [
-    [['queue', 'summary']]
+    [['title', 'queue', 'watched', 'summary', 'type', 'id']]
 ]
 
 GENRE_PARTIAL_PATHS = [
@@ -70,20 +70,20 @@ GENRE_PARTIAL_PATHS = [
 SEASONS_PARTIAL_PATHS = [
     ['seasonList', RANGE_PLACEHOLDER, 'summary'],
     ['title']
-]# + ART_PARTIAL_PATHS
+] + ART_PARTIAL_PATHS
 
 EPISODES_PARTIAL_PATHS = [
-    [['summary', 'synopsis', 'title', 'runtime', 'releaseYear', 'queue',
-      'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
-      'delivery', 'trackIds', 'availability']],
-    [['genres', 'creators', 'directors', 'cast'],
+    [['requestId', 'summary', 'synopsis', 'regularSynopsis', 'title', 'runtime', 'releaseYear', 'queue',
+      'info', 'maturity', 'userRating', 'bookmarkPosition', 'creditsOffset',
+      'watched', 'delivery', 'trackIds', 'availability']],
+    [['genres', 'tags', 'creators', 'directors', 'cast'],
      {'from': 0, 'to': 10}, ['id', 'name']]
-]# + ART_PARTIAL_PATHS
+] + ART_PARTIAL_PATHS
 
 TRAILER_PARTIAL_PATHS = [
-    [['availability', 'summary', 'synopsis', 'title', 'trackIds', 'delivery', 'runtime',
+    [['availability', 'summary', 'synopsis', 'regularSynopsis', 'title', 'trackIds', 'delivery', 'runtime',
       'bookmarkPosition', 'creditsOffset']]
-]# + ART_PARTIAL_PATHS
+] + ART_PARTIAL_PATHS
 
 EVENT_PATHS = [
     [['requestId', 'title', 'runtime', 'queue', 'bookmarkPosition', 'watched', 'trackIds']]
@@ -112,7 +112,9 @@ INFO_MAPPINGS = [
     ('Duration', ['runtime', 'value']),
     # 'trailer' add the trailer button support to 'Information' window of ListItem, can be used from custom Kodi skins
     #   to reproduce a background promo video when a ListItem is selected
+    ('Trailer', ['trailerUrl', 'value']),
     ('Trailer', ['promoVideo', 'value', 'id']),
+    ('Trailer', ['promoVideo', 'value', 'videoId']),
     # ListItem.DateAdded: Removed for now, the actual use of this property for tvshow ListItem type is not clear,
     #                     the documentation says "date of adding in the library", but kodi developers say that
     #                     is used as the latest update date
@@ -124,8 +126,7 @@ INFO_TRANSFORMATIONS = {
     'Season': lambda s_value: _convert_season(s_value),
     'Rating': lambda r: r / 10,
     'PlayCount': lambda w: int(w),
-    'Trailer': lambda video_id: common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(video_id)],
-                                                 mode=G.MODE_PLAY),
+    'Trailer': lambda video_id: _convert_trailer(video_id),
     'DateAdded': lambda ats: common.strf_timestamp(int(ats / 1000), '%Y-%m-%d %H:%M:%S')
 }
 
@@ -142,6 +143,13 @@ def _convert_season(value):
         return value
     # isdigit is needed to filter out non numeric characters from 'shortName' key
     return int(''.join([n for n in value if n.isdigit()] or '0'))
+
+
+def _convert_trailer(value):
+    if isinstance(value, str) and (value.startswith('http') or value.startswith('plugin://')):
+        return value
+    return common.build_url(pathitems=[common.VideoId.SUPPLEMENTAL, str(value)],
+                            mode=G.MODE_PLAY)
 
 
 def build_paths(base_path, partial_paths):

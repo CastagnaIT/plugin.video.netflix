@@ -18,6 +18,22 @@ from .logging import LOG, measure_exec_time_decorator
 from ..database.db_utils import TABLE_SESSION
 
 
+MY_LIST_GRAPHQL_MUTATIONS = {
+    'add': {
+        'operation_name': 'AddToPlaylist',
+        'operation_id': '8d985f07-2117-4add-980c-b83895549d1c',
+        'response_key': 'addEntityToPlaylist',
+        'expected_state': True
+    },
+    'remove': {
+        'operation_name': 'RemoveFromPlaylist',
+        'operation_id': '11403da1-d6fd-4cd7-9ad7-892554b70047',
+        'response_key': 'removeEntityFromPlaylist',
+        'expected_state': False
+    }
+}
+
+
 def logout():
     """Logout of the current account"""
     common.make_call('logout')
@@ -36,19 +52,11 @@ def login(ask_credentials=True):
             is_login_with_credentials = ui.show_yesno_dialog('Login', common.get_local_string(30340),
                                                              yeslabel=common.get_local_string(30341),
                                                              nolabel=common.get_local_string(30342))
-            # if is_login_with_credentials:
-            #     credentials = {'credentials': ui.ask_credentials()}
-        if is_login_with_credentials:
-            # The login page is changed now part of HTML seem protected by reCaptcha
-            # in the HTML page the reactContext data is added after the reCaptcha checks so at the moment
-            # it is not accessible by requesting the login page through python script,
-            # this prevents us to get the authURL code needed to perform the login request
-            ui.show_ok_dialog('Login',
-                              'Due to new website protections at moment the login with credentials is not available.')
-            is_login_with_credentials = False
+            if is_login_with_credentials:
+                credentials = {'credentials': ui.ask_credentials()}
 
         if is_login_with_credentials:
-            if common.make_call('login', credentials):
+            if common.make_call('login', credentials, timeout=common.IPC_TIMEOUT_SECS_LOGIN):
                 is_success = True
         else:
             data = common.run_nf_authentication_key()
@@ -152,20 +160,26 @@ def update_remindme(operation, videoid, trackid):
 @measure_exec_time_decorator()
 def update_my_list(videoid, operation, params):
     """Call API to add / remove videos to my list"""
-    if params['trackid'] == 'None':
-        raise ErrorMsg('Unable update my list, trackid not found.')
+    mutation = MY_LIST_GRAPHQL_MUTATIONS.get(operation)
+    if not mutation:
+        raise APIError(f'Unsupported my list operation: {operation}')
+
     LOG.debug('My List: {} {}', operation, videoid)
+    variables = {'entityId': str(videoid.value)}
+    trackid = params.get('trackid')
+    if trackid and trackid != 'None':
+        variables['trackId'] = str(trackid)
+
     response = common.make_call(
-        'post_safe',
-        {'endpoint': 'playlistop',
-         'data': {
-             'lolomoId': 'unknown',
-             'operation': operation,
-             'videoId': int(videoid.value),
-             'trackId': int(params['trackid']),
-             'skipRootInvalidation': True,
-         }})
-    if response.get('status') != 'success':
+        'post_graphql',
+        {'operation_name': mutation['operation_name'],
+         'operation_id': mutation['operation_id'],
+         'variables': variables,
+         'referer': f'https://www.netflix.com/title/{videoid.value}'})
+    entity = (response.get('data', {})
+              .get(mutation['response_key'], {})
+              .get('entity', {}))
+    if entity.get('isInPlaylist') != mutation['expected_state']:
         LOG.debug('update_my_list response: {}', response)
         raise APIError('Unable update my list, an error occurred in the request.')
     _update_mylist_cache(videoid, operation, params)
@@ -192,12 +206,11 @@ def _update_mylist_cache(videoid, operation, params):
         except CacheMiss:
             pass
     else:
-        common.make_call('add_videoids_to_video_list_cache', {'cache_bucket': cache_utils.CACHE_MYLIST,
-                                                              'cache_identifier': mylist_identifier,
-                                                              'video_ids': [videoid.value]})
+        G.CACHE.delete(cache_utils.CACHE_MYLIST, mylist_identifier)
         try:
             my_list_videoids = G.CACHE.get(cache_utils.CACHE_MYLIST, 'my_list_items')
-            my_list_videoids.append(videoid)
+            if videoid not in my_list_videoids:
+                my_list_videoids.append(videoid)
             G.CACHE.add(cache_utils.CACHE_MYLIST, 'my_list_items', my_list_videoids)
         except CacheMiss:
             pass

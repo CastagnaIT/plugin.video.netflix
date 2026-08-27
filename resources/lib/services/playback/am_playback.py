@@ -13,6 +13,7 @@ import xbmc
 import xbmcvfs
 
 import resources.lib.common as common
+from resources.lib.common.cache_utils import CACHE_BOOKMARKS, CACHE_INFOLABELS
 from resources.lib.globals import G
 from resources.lib.utils.logging import LOG
 from .action_manager import ActionManager
@@ -92,12 +93,16 @@ class AMPlayback(ActionManager):
         # falls in the part that kodi recognizes as unwatched (playcountminimumpercent 90% + no-mans land 2%)
         # https://kodi.wiki/view/HOW-TO:Modify_automatic_watch_and_resume_points#Settings_explained
         # In these cases we try change/fix manually the watched status of the video by using netflix offset data
-        if int(player_state['percentage']) > 92:
-            return
-        if not self.watched_threshold or not player_state['current_pts'] > self.watched_threshold:
+        watched_by_percent = int(player_state['percentage']) > 92
+        watched_by_threshold = self.watched_threshold and player_state['current_pts'] > self.watched_threshold
+        if not watched_by_percent and not watched_by_threshold:
             return
         if G.ADDON.getSettingBool('sync_watched_status') and not self.is_played_from_strm:
-            # This have not to be applied with our custom watched status of Netflix sync, within the addon
+            profile_guid = G.LOCAL_DB.get_active_profile_guid()
+            G.SHARED_DB.set_watched_status(profile_guid, self.videoid.value, True)
+            G.CACHE.delete(CACHE_INFOLABELS, f'{self.videoid.value}_{G.LOCAL_DB.get_profile_config("language", "")}')
+            G.CACHE.delete(CACHE_BOOKMARKS, self.videoid.value)
+            LOG.info('Has been fixed the local watched status of the video: {}', self.videoid)
             return
         if self.is_played_from_strm:
             # The current video played is a STRM, then generate the path of a STRM file

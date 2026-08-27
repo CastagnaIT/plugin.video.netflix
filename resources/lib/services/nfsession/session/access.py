@@ -8,12 +8,15 @@
     SPDX-License-Identifier: MIT
     See LICENSES/MIT.md for more information.
 """
+import json
 import re
+from urllib.parse import quote
 
 import resources.lib.utils.website as website
 import resources.lib.common as common
 import resources.lib.utils.cookies as cookies
 import resources.lib.kodi.ui as ui
+import resources.lib.services.nfsession.session.endpoints as ep
 from resources.lib.common.exceptions import (LoginValidateError, NotConnected, NotLoggedInError,
                                              MbrStatusNeverMemberError, MbrStatusFormerMemberError, LoginError,
                                              MissingCredentialsError, MbrStatusAnonymousError, WebsiteParsingError)
@@ -22,6 +25,59 @@ from resources.lib.globals import G
 from resources.lib.services.nfsession.session.cookie import SessionCookie
 from resources.lib.services.nfsession.session.http_requests import SessionHTTPRequests
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
+
+CLCS_GRAPHQL_URL = ep.BASE_URL + '/graphql'
+CLCS_SCREEN_UPDATE_ID = '0ed5cd22-de4e-4883-bf7a-ed255ab88664'
+CLCS_QUERY_VERSION = 102
+# Time waited by the website for the reCAPTCHA script before submitting the sign in with the error
+RECAPTCHA_TIMEOUT_MS = 2730
+
+# The website serves the CLCS login flow only to recent browsers,
+# with an outdated user agent it falls back to a static form protected by reCAPTCHA
+BROWSER_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0'
+BROWSER_HEADERS = {
+    'User-Agent': BROWSER_USER_AGENT,
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Sec-GPC': '1'
+}
+
+
+# Cipher list used by Firefox, the default one of python is recognizable as a non browser client
+FIREFOX_CIPHERS = (
+    'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:'
+    'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:'
+    'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:'
+    'ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:'
+    'ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:'
+    'AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA:AES256-SHA'
+)
+
+
+def _mount_browser_tls(session):
+    """Use the TLS settings of a browser for the login requests"""
+    try:
+        import ssl
+        from requests.adapters import HTTPAdapter
+        from urllib3.poolmanager import PoolManager
+
+        class _BrowserTLSAdapter(HTTPAdapter):
+            def init_poolmanager(self, connections, maxsize, block=False, **pool_kwargs):
+                context = ssl.create_default_context()
+                context.set_ciphers(FIREFOX_CIPHERS)
+                context.options |= getattr(ssl, 'OP_NO_COMPRESSION', 0)
+                pool_kwargs['ssl_context'] = context
+                self.poolmanager = PoolManager(num_pools=connections, maxsize=maxsize,
+                                               block=block, **pool_kwargs)
+
+        session.mount('https://www.netflix.com', _BrowserTLSAdapter())
+    except Exception as exc:  # pylint: disable=broad-except
+        LOG.warn('Cannot set the browser TLS settings ({})', exc)
 
 
 class SessionAccess(SessionCookie, SessionHTTPRequests):
@@ -140,7 +196,14 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             if exc.response.status_code == 500:
                 # This endpoint raise HTTP error 500 when the password is wrong
                 raise LoginError(common.get_local_string(12344)) from exc
-            raise
+            if exc.response.status_code not in (404, 410):
+                raise
+            # The legacy profilehub endpoint has been removed for some accounts.
+            # The Auth Key cookies were already validated above, so allow login to
+            # continue while retaining the supplied password for MSL compatibility.
+            LOG.warn('Password verification endpoint is unavailable (HTTP {}); '
+                     'continuing Auth Key login without password verification',
+                     exc.response.status_code)
         common.set_credentials({'email': email, 'password': password})
         LOG.info('Login successful')
         ui.show_notification(common.get_local_string(30109))
@@ -149,19 +212,31 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
 
     @measure_exec_time_decorator(is_immediate=True)
     def login(self, credentials=None):
-        """Perform account login with credentials"""
+        """Perform account login with credentials by driving the website CLCS login flow"""
         try:
-            # First we get the authentication url without logging in, required for login API call
             self.session.cookies.clear()
-            react_context = website.extract_json(self.get('login'), 'reactContext')
-            auth_url = website.extract_api_data(react_context)['auth_url']
+            credentials = credentials or common.get_credentials()
             LOG.debug('Logging in with credentials')
-            login_response = self.post(
-                'login',
-                headers={'Accept-Language': _get_accept_language_string(react_context)},
-                data=_login_payload(credentials or common.get_credentials(), auth_url, react_context))
+            _mount_browser_tls(self.session)
+            page = self._get_login_page()
+            server_state, server_screen_update, country, action_fields, app_version = _extract_clcs_bootstrap(page)
+            # Send the same fields of the website, the password is not sent to let the website
+            # choose the verification method for the account (e.g. the one-time code by e-mail)
+            input_fields = [
+                _clcs_field('userLoginId', 'stringValue', credentials['email']),
+                _clcs_field('countryCode', 'stringValue', country['code']),
+                _clcs_field('countryIsoCode', 'stringValue', country['iso'])
+            ]
+            input_fields += _clcs_recaptcha_fields(action_fields)
+            self._clcs_app_version = app_version
+            # The website submits the sign in after having waited the reCAPTCHA script,
+            # send it with the same delay that is declared to the website
+            import time
+            time.sleep(RECAPTCHA_TIMEOUT_MS / 1000)
+            result = self._clcs_screen_update(server_state, server_screen_update, input_fields)
+            self._clcs_complete_login(result, credentials, country)
 
-            website.extract_session_data(login_response, validate=True, update_profiles=True)
+            website.extract_session_data(self.get('browse'), validate=True, update_profiles=True)
             if credentials:
                 # Save credentials only when login has succeeded
                 common.set_credentials(credentials)
@@ -182,6 +257,67 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
             import traceback
             LOG.error(traceback.format_exc())
             raise
+
+    def _get_login_page(self):
+        """Request the login page with modern browser headers, needed to get the CLCS login flow"""
+        response = self.session.get(url=ep.BASE_URL + '/login', headers=BROWSER_HEADERS, timeout=8)
+        response.raise_for_status()
+        return response.text
+
+    def _clcs_screen_update(self, server_state, server_screen_update, input_fields):
+        """Send a single step of the CLCS login flow to the website GraphQL gateway"""
+        payload = {
+            'operationName': 'CLCSScreenUpdate',
+            'variables': {
+                'format': 'HTML',
+                'imageFormat': 'PNG',
+                'locale': 'en-US',
+                'serverState': server_state,
+                'serverScreenUpdate': server_screen_update,
+                'inputFields': input_fields
+            },
+            'extensions': {'persistedQuery': {'id': CLCS_SCREEN_UPDATE_ID, 'version': CLCS_QUERY_VERSION}}
+        }
+        # Use separators with dumps because Netflix rejects spaces
+        data = json.dumps(payload, separators=(',', ':'))
+        response = self.session.post(
+            url=CLCS_GRAPHQL_URL,
+            data=data.encode('utf-8'),
+            headers=_graphql_login_headers(server_state, getattr(self, '_clcs_app_version', '')),
+            timeout=8)
+        response.raise_for_status()
+        decoded = response.json() if response.content else {}
+        if decoded.get('errors'):
+            raise LoginError(decoded['errors'][0].get('message', 'GraphQL error'))
+        return decoded
+
+    def _clcs_complete_login(self, result, credentials, country):
+        """Walk the CLCS screens (password / one-time code) until the login succeeds"""
+        password_submitted = False
+        for _ in range(6):
+            data = (result or {}).get('data', {}).get('result', {})
+            typename = data.get('__typename')
+            if typename == 'CLCSScreenUpdateEffect':
+                if data.get('status') == 'SUCCESS':
+                    return
+                raise LoginError(_find_clcs_message(data) or common.get_local_string(30008))
+            if typename != 'CLCSScreenUpdateTransition':
+                raise LoginError(_find_clcs_message(data) or common.get_local_string(30008))
+            screen = data.get('screen') or {}
+            server_state = screen.get('serverState')
+            action, kind = _select_clcs_action(screen)
+            if not action:
+                _log_clcs_screen_diagnostics(screen)
+                raise LoginError(_find_clcs_message(screen) or common.get_local_string(30008))
+            if kind == 'password':
+                if password_submitted:
+                    # The password screen is asked again, the credentials have been refused
+                    _log_clcs_screen_diagnostics(screen)
+                    raise LoginError(_find_clcs_message(screen) or common.get_local_string(30008))
+                password_submitted = True
+            input_fields = _build_clcs_fields(action['inputFieldRequirements'], credentials, kind, screen, country)
+            result = self._clcs_screen_update(server_state, action['serverScreenUpdate'], input_fields)
+        raise LoginError(common.get_local_string(30008))
 
     @measure_exec_time_decorator(is_immediate=True)
     def logout(self):
@@ -227,46 +363,235 @@ class SessionAccess(SessionCookie, SessionHTTPRequests):
         common.container_update(G.BASE_URL, True)
 
 
-def _login_payload(credentials, auth_url, react_context):
-    country_id = react_context['models']['signupContext']['data']['geo']['requestCountry']['id']
-    country_codes = react_context['models']['countryCodes']['data']['codes']
-    try:
-        country_code = '+' + next(dict_item for dict_item in country_codes if dict_item["id"] == country_id)['code']
-    except StopIteration:
-        country_code = ''
-    # 25/08/2020 since a few days there are login problems, by returning the "incorrect password" error even
-    #   when it is correct, it seems that setting 'rememberMe' to 'false' increases a bit the probabilities of success
-    return {
-        'userLoginId': credentials.get('email'),
-        'password': credentials.get('password'),
-        'rememberMe': 'false',
-        'flow': 'websiteSignUp',
-        'mode': 'login',
-        'action': 'loginAction',
-        'withFields': 'rememberMe,nextPage,userLoginId,password,countryCode,countryIsoCode',
-        'authURL': auth_url,
-        'nextPage': '',
-        'showPassword': '',
-        'countryCode': country_code,
-        'countryIsoCode': country_id
+def _extract_clcs_bootstrap(content):
+    """Read the initial CLCS screen state embedded in the login page"""
+    html = content.decode('utf-8') if isinstance(content, bytes) else content
+    server_state = _find_page_value(html, 'serverState')
+    # Get the sign in action, that provides the screen update value and the fields to be sent
+    actions = re.findall(r'"inputFieldRequirements":\[(.*?)\],"preload":[^,]*,"serverScreenUpdate":"([^"]+)"',
+                         html, re.DOTALL)
+    screen_updates = [website.decode_javascript_string(value) for _, value in actions]
+    if not screen_updates:
+        screen_updates = [website.decode_javascript_string(value)
+                          for value in re.findall(r'"serverScreenUpdate":"([^"]+)"', html)]
+    if not server_state or not screen_updates:
+        _log_login_page_diagnostics(html)
+        raise WebsiteParsingError('CLCS login state not found in the login page')
+    action_fields = re.findall(r'"id":"(\w+)"', actions[-1][0]) if actions else []
+    build_match = re.search(r'"BUILD_IDENTIFIER":"([^"]+)"', html)
+    app_version = build_match.group(1) if build_match else ''
+    LOG.debug('CLCS login, sign in action fields {}', action_fields)
+    iso_match = re.search(r'"requestCountry":\{[^{}]*?"id":"([A-Z]{2})"', html)
+    country = {'iso': iso_match.group(1) if iso_match else 'US', 'code': '1'}
+    return server_state, screen_updates[-1], country, action_fields, app_version
+
+
+def _graphql_login_headers(server_state=None, app_version=''):
+    """Set the same headers of the website, needed to get the request accepted"""
+    import uuid
+    page_url = ep.BASE_URL + '/login'
+    if server_state:
+        page_url += '?serverState=' + quote(server_state, safe='')
+    headers = {
+        'Accept': '*/*',
+        'Content-Type': 'application/json',
+        'Origin': ep.BASE_URL,
+        'Referer': page_url,
+        'x-netflix.request.originating.url': page_url,
+        'x-netflix.request.id': uuid.uuid4().hex,
+        'x-netflix.request.toplevel.uuid': str(uuid.uuid4()),
+        'x-netflix.request.attempt': '1',
+        'x-netflix.request.clcs.bucket': 'high',
+        'x-netflix.request.client.context': '{"appView":"identification","action":"Submitted","appstate":"foreground"}',
+        'x-netflix.context.ui-flavor': 'akira',
+        'x-netflix.context.operation-name': 'CLCSScreenUpdate',
+        'x-netflix.context.locales': 'en-us',
+        'x-netflix.context.hawkins-version': '5.26.0',
+        'x-netflix.context.app-version': app_version,
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin'
     }
+    headers.update({key: value for key, value in BROWSER_HEADERS.items()
+                    if key in ('User-Agent', 'Accept-Language', 'Sec-GPC')})
+    return headers
 
 
-def _get_accept_language_string(react_context):
-    # pylint: disable=consider-using-f-string
-    # Set the HTTP header 'Accept-Language' allow to get http strings in the right language,
-    # and also influence the reactContext data (locale data and messages strings).
-    # Locale is usually automatically determined by the browser,
-    # we try get the locale code by reading the locale set as default in the reactContext.
-    supported_locales = react_context['models']['signupContext']['data']['geo']['supportedLocales']
-    try:
-        locale = next(dict_item for dict_item in supported_locales if dict_item["default"] is True)['locale']
-    except StopIteration:
-        locale = ''
-    locale_fallback = 'en-US'
-    if locale and locale != locale_fallback:
-        return '{loc},{loc_l};q=0.9,{loc_fb};q=0.8,{loc_fb_l};q=0.7'.format(
-            loc=locale, loc_l=locale[:2],
-            loc_fb=locale_fallback, loc_fb_l=locale_fallback[:2])
-    return '{loc},{loc_l};q=0.9'.format(
-        loc=locale_fallback, loc_l=locale_fallback[:2])
+def _find_page_value(html, key):
+    match = re.search(r'"' + key + r'":"([^"]*)"', html)
+    return website.decode_javascript_string(match.group(1)) if match else None
+
+
+def _log_login_page_diagnostics(html):
+    """Dump the login form so the form-post login can be rebuilt from real data"""
+    LOG.error('LOGIN diagnostics: page length {}', len(html))
+    for form in re.findall(r'<form[^>]*>', html):
+        LOG.error('LOGIN diagnostics: form {}', form)
+    for input_tag in re.findall(r'<input[^>]*>', html):
+        LOG.error('LOGIN diagnostics: input {}', input_tag)
+    for assignment in re.findall(r"nonmemberStaticFramework[^\n;]{0,120}=\s*[^\n;]{0,500};", html):
+        LOG.error('LOGIN diagnostics: data {}', assignment.strip())
+    for marker in ['authURL', 'nonmemberStaticFramework.data', 'recaptcha', 'useEnterprise', 'action']:
+        index = html.find(marker)
+        if index != -1:
+            LOG.error('LOGIN diagnostics: context [{}] {}', marker, html[max(0, index - 80):index + 320])
+
+
+def _clcs_field(name, value_type, value):
+    return {'name': name, 'value': {value_type: value}}
+
+
+def _iter_clcs_nodes(node):
+    if isinstance(node, dict):
+        yield node
+        for value in node.values():
+            yield from _iter_clcs_nodes(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _iter_clcs_nodes(value)
+
+
+def _select_clcs_action(screen):
+    """Pick the screen action that asks for a one-time code or the password"""
+    otp_action = None
+    password_action = None
+    for node in _iter_clcs_nodes(screen):
+        if node.get('__typename') != 'CLCSRequestScreenUpdate':
+            continue
+        requirements = node.get('inputFieldRequirements')
+        if not requirements or not node.get('serverScreenUpdate'):
+            continue
+        field_ids = [(req.get('field') or {}).get('id', '') for req in requirements]
+        kind = _classify_clcs_fields(field_ids)
+        if kind == 'otp' and not otp_action:
+            otp_action = node
+        elif kind == 'password' and not password_action:
+            password_action = node
+    if otp_action:
+        return otp_action, 'otp'
+    if password_action:
+        return password_action, 'password'
+    return None, None
+
+
+def _classify_clcs_fields(field_ids):
+    lowered = [field_id.lower() for field_id in field_ids]
+    if any('otp' in fid or 'pin' in fid or 'challenge' in fid for fid in lowered):
+        return 'otp'
+    if any('password' in fid or 'passcode' in fid or fid == 'credential' for fid in lowered):
+        return 'password'
+    return None
+
+
+def _build_clcs_fields(requirements, credentials, kind, screen, country):
+    input_fields = []
+    for requirement in requirements:
+        field = requirement.get('field') or {}
+        field_id = field.get('id')
+        if not field_id:
+            continue
+        lowered = field_id.lower()
+        if 'otp' in lowered or 'pin' in lowered or 'challenge' in lowered:
+            code = ui.ask_for_input(_find_clcs_title(screen) or 'Enter the code Netflix sent you')
+            if not code:
+                raise MissingCredentialsError
+            value = code.strip()
+        elif 'password' in lowered or 'passcode' in lowered or field_id == 'credential':
+            value = credentials['password']
+        elif field_id == 'userLoginId':
+            value = credentials['email']
+        elif field_id == 'countryCode':
+            value = country['code']
+        elif field_id == 'countryIsoCode':
+            value = country['iso']
+        elif field_id == 'rememberMe':
+            value = True
+        else:
+            # The reCaptcha fields are optional, the other fields keep their initial value
+            if not lowered.startswith('recaptcha'):
+                LOG.warn('CLCS login, unhandled required field {} ({})', field_id, field.get('fieldType'))
+            value = field.get('initialStringValue') or ''
+        input_fields.append(_clcs_typed_field(field, field_id, value))
+    if kind == 'password' and not any(fld['name'] == 'password' for fld in input_fields):
+        input_fields.append(_clcs_field('password', 'stringValue', credentials['password']))
+    return input_fields
+
+
+def _clcs_recaptcha_fields(field_ids):
+    """The reCaptcha token can be produced only by the Google script in a web browser,
+    report the same timeout error of the website when the script cannot be executed,
+    the token must not be sent otherwise the request is refused"""
+    input_fields = []
+    if 'recaptchaError' in field_ids:
+        input_fields.append(_clcs_field('recaptchaError', 'stringValue', 'RESPONSE_TIMED_OUT'))
+    if 'recaptchaResponseTime' in field_ids:
+        input_fields.append(_clcs_field('recaptchaResponseTime', 'intValue', RECAPTCHA_TIMEOUT_MS))
+    return input_fields
+
+
+def _clcs_typed_field(field, field_id, value):
+    """Build an input field with the value type declared by the screen"""
+    field_type = field.get('fieldType') or ''
+    if 'Boolean' in field_type:
+        return _clcs_field(field_id, 'boolValue', bool(value))
+    if 'Integer' in field_type or 'Number' in field_type:
+        try:
+            return _clcs_field(field_id, 'intValue', int(value))
+        except (TypeError, ValueError):
+            return _clcs_field(field_id, 'intValue', 0)
+    return _clcs_field(field_id, 'stringValue', '' if value is None else str(value))
+
+
+def _find_clcs_title(screen):
+    for node in _iter_clcs_nodes(screen):
+        if node.get('__typename') == 'CLCSText' and node.get('testId') == 'title':
+            return (node.get('plainContent') or {}).get('value')
+    return None
+
+
+def _find_clcs_message(node):
+    """Get the message shown by the screen, the alerts of the actions are a generic fallback text"""
+    for item in _iter_clcs_nodes(node):
+        if item.get('__typename') != 'CLCSText':
+            continue
+        test_id = (item.get('testId') or '').lower()
+        value = (item.get('plainContent') or {}).get('value')
+        if value and ('error' in test_id or 'message' in test_id):
+            return value
+    return _find_clcs_title(node)
+
+
+def _log_clcs_screen_diagnostics(screen):
+    """Dump the received screen to understand which step the login flow is asking for"""
+    LOG.debug('CLCS screen: title {}', _find_clcs_title(screen))
+    texts = []
+    actions = []
+    for node in _iter_clcs_nodes(screen):
+        typename = node.get('__typename')
+        if typename == 'CLCSText':
+            value = (node.get('plainContent') or {}).get('value')
+            if value:
+                texts.append(f"[{node.get('testId')}] {value}")
+        elif typename == 'CLCSRequestScreenUpdate' and node.get('inputFieldRequirements'):
+            field_ids = [(req.get('field') or {}).get('id') for req in node['inputFieldRequirements']]
+            actions.append(field_ids)
+    for text in texts[:25]:
+        LOG.debug('CLCS screen text: {}', text)
+    # The messages are not always in a text component, get every localized string of the screen
+    strings = []
+    for node in _iter_clcs_nodes(screen):
+        if node.get('__typename') in ('GrowthLocalizedString', 'GrowthLocalizedFormattedString'):
+            value = node.get('value')
+            if value and value not in strings:
+                strings.append(value)
+    for value in strings[:30]:
+        LOG.debug('CLCS screen string: {}', value)
+    for node in _iter_clcs_nodes(screen):
+        test_id = node.get('testId') or ''
+        if any(key in test_id for key in ('alert', 'error', 'message')):
+            LOG.debug('CLCS screen alert node [{}]: {}', test_id, json.dumps(node)[:1200])
+    for field_ids in actions:
+        LOG.debug('CLCS screen action fields: {}', field_ids)
+    components = sorted({node.get('__typename') for node in _iter_clcs_nodes(screen)
+                         if isinstance(node.get('__typename'), str)})
+    LOG.debug('CLCS screen components: {}', components)

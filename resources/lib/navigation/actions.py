@@ -9,6 +9,8 @@
 """
 import xbmc
 import xbmcgui
+import xbmcplugin
+from urllib.parse import unquote, urlparse
 
 import resources.lib.common as common
 import resources.lib.kodi.ui as ui
@@ -114,9 +116,10 @@ class AddonActionExecutor:
         operation = pathitems[1]
         api.update_my_list(videoid, operation, self.params)
         sync_library(videoid, operation)
-        if operation == 'remove' and common.WndHomeProps[common.WndHomeProps.CURRENT_DIRECTORY_MENU_ID] == 'myList':
+        is_mylist = common.WndHomeProps[common.WndHomeProps.CURRENT_DIRECTORY_MENU_ID] == 'myList'
+        if operation == 'remove' and is_mylist:
             common.json_rpc('Input.Down')  # Avoids selection back to the top
-        common.container_refresh()
+            common.container_refresh()
 
     @common.inject_video_id(path_offset=1)
     def remind_me(self, videoid):
@@ -142,14 +145,75 @@ class AddonActionExecutor:
                                                      'video_id_dict': video_id_dict,
                                                      'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS
                                                  })
-        if list_data:
+        if list_data or self._direct_trailer_url(videoid):
             url = common.build_url(['supplemental'],
                                    params={'video_id_dict': dumps(video_id_dict),
                                            'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS},
                                    mode=G.MODE_DIRECTORY)
             common.container_update(url)
-        else:
-            ui.show_notification(common.get_local_string(30111))
+            return
+        ui.show_notification(common.get_local_string(30111))
+
+    @common.inject_video_id(path_offset=1)
+    @measure_exec_time_decorator()
+    def play_trailer(self, videoid):
+        """Resolve the first trailer for the Kodi info dialog trailer button."""
+        trailer_videoid = self._first_trailer_videoid(videoid)
+        if trailer_videoid:
+            from resources.lib.navigation.player import _play  # pylint: disable=protected-access,import-outside-toplevel
+            _play(trailer_videoid, False)
+            return
+        self._resolve_direct_trailer(videoid)
+
+    @common.inject_video_id(path_offset=1)
+    @measure_exec_time_decorator()
+    def play_direct_trailer(self, videoid):
+        """Resolve only the direct metadata trailer selected from the trailer menu."""
+        self._resolve_direct_trailer(videoid)
+
+    def _resolve_direct_trailer(self, videoid):
+        trailer_url = self._direct_trailer_url(videoid)
+        if trailer_url:
+            title = xbmc.getInfoLabel('ListItem.Title') or xbmc.getInfoLabel('ListItem.Label')
+            list_item = xbmcgui.ListItem(title, path=trailer_url, offscreen=True)
+            if title:
+                list_item.setInfo('video', {'Title': title})
+            list_item.setProperty('isPlayable', 'true')
+            list_item.setContentLookup(False)
+            xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=True, listitem=list_item)
+            return True
+        xbmcplugin.setResolvedUrl(handle=G.PLUGIN_HANDLE, succeeded=False, listitem=xbmcgui.ListItem())
+        return False
+
+    @staticmethod
+    def _first_trailer_videoid(videoid):
+        menu_data = {'path': ['is_context_menu_item', 'is_context_menu_item'],
+                     'title': common.get_local_string(30179)}
+        list_data, _extra_data = common.make_call('get_video_list_supplemental',
+                                                  {
+                                                      'menu_data': menu_data,
+                                                      'video_id_dict': videoid.to_dict(),
+                                                      'supplemental_type': SUPPLEMENTAL_TYPE_TRAILERS
+                                                  })
+        for url, list_item, is_folder in list_data or []:
+            if is_folder:
+                continue
+            videoid_path = list_item.getProperty('nf_videoid')
+            if videoid_path:
+                return common.VideoId.from_path(videoid_path.split('/'))
+            parsed_path = _plugin_pathitems(url)
+            if parsed_path[:1] == [G.MODE_PLAY]:
+                return common.VideoId.from_path(parsed_path[1:])
+        return None
+
+    @staticmethod
+    def _direct_trailer_url(videoid):
+        try:
+            direct_trailer = common.make_call('get_direct_trailer', videoid) or {}
+        except Exception as exc:  # pylint: disable=broad-except
+            LOG.warn('Trailer info lookup failed for {}: {}', videoid, exc)
+            return ''
+        return direct_trailer.get('url', '')
 
     @measure_exec_time_decorator()
     def purge_cache(self, pathitems=None):  # pylint: disable=unused-argument
@@ -293,3 +357,8 @@ def change_watched_status_locally(videoid):
         G.SHARED_DB.set_watched_status(profile_guid, videoid.value, True)
     ui.show_notification(common.get_local_string(30237).split('|')[txt_index])
     common.container_refresh()
+
+
+def _plugin_pathitems(url):
+    path = unquote(urlparse(url).path).strip('/')
+    return [part for part in path.split('/') if part]

@@ -22,10 +22,10 @@ def get_path(path, search_space, include_key=False):
 
 def get_path_safe(path, search_space, include_key=False, default=None):
     """Retrieve a value from a nested dict by following the path.
-    Returns default if any key in the path does not exist."""
+    Returns default if the path is missing or cannot be traversed."""
     try:
         return get_path(path, search_space, include_key)
-    except (KeyError, IndexError):
+    except (KeyError, IndexError, TypeError):
         return default
 
 

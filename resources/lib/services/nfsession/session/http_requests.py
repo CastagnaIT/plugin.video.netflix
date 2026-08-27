@@ -23,7 +23,11 @@ from resources.lib.kodi import ui
 from resources.lib.services.nfsession.session.base import SessionBase
 from resources.lib.services.nfsession.session.endpoints import ENDPOINTS, BASE_URL
 from resources.lib.utils import cookies
+from resources.lib.utils.esn import get_website_esn
 from resources.lib.utils.logging import LOG, measure_exec_time_decorator
+
+
+GRAPHQL_URL = 'https://web.prod.cloud.netflix.com/graphql'
 
 
 class SessionHTTPRequests(SessionBase):
@@ -42,6 +46,30 @@ class SessionHTTPRequests(SessionBase):
             method='POST',
             endpoint=endpoint,
             **kwargs)
+
+    @measure_exec_time_decorator(is_immediate=True)
+    def post_graphql(self, operation_name, variables, operation_id, referer=None):
+        """Execute a persisted GraphQL request against the website GraphQL gateway."""
+        self.assert_logged_in()
+        payload = {
+            'operationName': operation_name,
+            'variables': variables,
+            'extensions': {'persistedQuery': {'id': operation_id, 'version': 102}}
+        }
+        LOG.debug('Executing GraphQL request: {}', operation_name)
+        start = time.perf_counter()
+        response = self.session.post(
+            url=GRAPHQL_URL,
+            json=payload,
+            headers=_graphql_headers(referer),
+            timeout=8)
+        LOG.debug('Request took {}s', time.perf_counter() - start)
+        LOG.debug('Request returned status code {}', response.status_code)
+        response.raise_for_status()
+        decoded_response = response.json() if response.content else {}
+        if decoded_response.get('errors'):
+            raise APIError(decoded_response['errors'][0].get('message'))
+        return decoded_response
 
     @measure_exec_time_decorator(is_immediate=True)
     def _request_call(self, method, endpoint, **kwargs):
@@ -161,6 +189,8 @@ class SessionHTTPRequests(SessionBase):
             headers['x-netflix.request.client.user.guid'] = G.LOCAL_DB.get_active_profile_guid()
         if endpoint_conf.get('content_type'):
             headers['Content-Type'] = endpoint_conf['content_type']
+        if endpoint_conf['address'] == '/pathEvaluator':
+            _add_path_evaluator_headers(headers)
         headers.update(custom_headers)  # If needed override headers
         # Meanings parameters known:
         # drmSystem       DRM used
@@ -170,10 +200,15 @@ class SessionHTTPRequests(SessionBase):
         #                   it is still added in an 'empty' form in the response
         if endpoint_conf['use_default_params']:
             params = {
+                'webp': 'false',
                 'drmSystem': 'widevine',
+                'isVolatileBillboardsEnabled': 'true',
+                'isTop10Supported': 'true',
+                'hasVideoMerchInBob': 'false',
+                'hasVideoMerchInJaw': 'false',
                 'falcor_server': '0.1.0',
-                'withSize': 'false',
-                'materialize': 'false',
+                'withSize': 'true',
+                'materialize': 'true',
                 'original_path': '/shakti/mre/pathEvaluator'
             }
         if endpoint_conf['add_auth_url'] == 'to_params':
@@ -206,6 +241,70 @@ def _document_url(endpoint_address, kwargs):
 def _api_url(endpoint_address):
     baseurl = G.LOCAL_DB.get_value('api_endpoint_url', table=TABLE_SESSION)
     return f'{baseurl}{endpoint_address}'
+
+
+def _add_path_evaluator_headers(headers):
+    """Add browser-equivalent metadata required by current website pathEvaluator requests."""
+    headers.update({
+        'Origin': BASE_URL,
+        'Referer': f'{BASE_URL}/browse',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+        'X-Netflix.browserName': 'Firefox',
+        'X-Netflix.clientType': 'akira',
+        'x-netflix.request.attempt': '1',
+        'x-netflix.request.client.context': 'www.netflix.com'
+    })
+    _set_header_if_value(
+        headers, 'X-Netflix.browserVersion',
+        G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'X-Netflix.osName',
+        G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'X-Netflix.osVersion',
+        G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'X-Netflix.uiVersion',
+        G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'x-netflix.request.id',
+        G.LOCAL_DB.get_value('request_id', '', table=TABLE_SESSION))
+    website_esn = get_website_esn()
+    if website_esn:
+        headers['X-Netflix.esn'] = website_esn
+        headers['X-Netflix.esnPrefix'] = website_esn.rsplit('-', 1)[0] if '-' in website_esn else website_esn
+
+
+def _graphql_headers(referer=None):
+    """Add browser-equivalent metadata required by current website GraphQL requests."""
+    headers = {
+        'Accept': '*/*',
+        'Content-Type': 'application/json',
+        'Origin': BASE_URL,
+        'Referer': referer or f'{BASE_URL}/browse',
+        'x-netflix.nq.stack': 'prod',
+        'x-netflix.request.client.user.guid': G.LOCAL_DB.get_active_profile_guid()
+    }
+    _set_header_if_value(
+        headers, 'X-Netflix.browserVersion',
+        G.LOCAL_DB.get_value('browser_info_version', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'X-Netflix.osName',
+        G.LOCAL_DB.get_value('browser_info_os_name', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'X-Netflix.osVersion',
+        G.LOCAL_DB.get_value('browser_info_os_version', '', table=TABLE_SESSION))
+    _set_header_if_value(
+        headers, 'X-Netflix.uiVersion',
+        G.LOCAL_DB.get_value('ui_version', '', table=TABLE_SESSION))
+    return headers
+
+
+def _set_header_if_value(headers, name, value):
+    if value:
+        headers[name] = value
 
 
 def _raise_api_error(decoded_response):

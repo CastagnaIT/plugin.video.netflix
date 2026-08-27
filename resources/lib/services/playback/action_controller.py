@@ -52,6 +52,7 @@ class ActionController(xbmc.Monitor):
         self._last_player_state = {}
         self._is_pause_called = False
         self._is_av_started = False
+        self._is_playback_started_notified = False
         self._av_change_last_ts = None
         self._is_delayed_seek = False
         self._is_ads_plan = G.LOCAL_DB.get_value('is_ads_plan', None, table=TABLE_SESSION)
@@ -70,6 +71,7 @@ class ActionController(xbmc.Monitor):
     def _initialize_am(self):
         self._last_player_state = {}
         self._is_pause_called = False
+        self._is_playback_started_notified = False
         self._av_change_last_ts = None
         self._is_delayed_seek = False
         if not self._init_data:
@@ -163,6 +165,7 @@ class ActionController(xbmc.Monitor):
             LOG.error(traceback.format_exc())
             self.is_tracking_enabled = False
             self._is_av_started = False
+            self._is_playback_started_notified = False
             if self._playback_tick and self._playback_tick.is_alive():
                 self._playback_tick.stop_join()
                 self._playback_tick = None
@@ -176,6 +179,8 @@ class ActionController(xbmc.Monitor):
             player_state = self._get_player_state()
             if not player_state:
                 return
+            if not self._is_playback_started_notified:
+                self._notify_playback_started(player_state)
             # If we are waiting for OnAVChange events, dont send call_on_tick otherwise will mix old/new player_state info
             if not self._av_change_last_ts:
                 self._notify_all(ActionManager.call_on_tick, player_state)
@@ -195,10 +200,18 @@ class ActionController(xbmc.Monitor):
 
     def _on_playback_started(self):
         player_id = _get_player_id()
-        self._notify_all(ActionManager.call_on_playback_started, self._get_player_state(player_id))
+        self.active_player_id = player_id
+        player_state = self._get_player_state(player_id)
+        if not player_state:
+            LOG.warn('ActionController: delayed playback-start manager notifications until player state is available')
+            return
+        self._notify_playback_started(player_state)
+
+    def _notify_playback_started(self, player_state):
+        self._notify_all(ActionManager.call_on_playback_started, player_state)
+        self._is_playback_started_notified = True
         if LOG.is_enabled and G.ADDON.getSettingBool('show_codec_info'):
             common.json_rpc('Input.ExecuteAction', {'action': 'codecinfo'})
-        self.active_player_id = player_id
 
     def _on_playback_seek(self, time_override):
         if self.active_player_id is not None:
@@ -228,11 +241,15 @@ class ActionController(xbmc.Monitor):
         self.active_player_id = None
         # Immediately send the request to release the license
         common.run_threaded(True, self.msl_handler.release_license)
-        self._notify_all(ActionManager.call_on_playback_stopped,
-                         self._last_player_state)
+        if self._is_playback_started_notified and self._last_player_state:
+            self._notify_all(ActionManager.call_on_playback_stopped,
+                             self._last_player_state)
+        else:
+            LOG.warn('ActionController: skipped playback-stop manager notifications due to missing player state')
         self.action_managers = None
         self.init_count -= 1
         self._is_av_started = False
+        self._is_playback_started_notified = False
 
     def _notify_all(self, notification, data=None):
         LOG.debug('Notifying all action managers of {} (data={})', notification.__name__, data)
@@ -280,10 +297,12 @@ class ActionController(xbmc.Monitor):
         except IOError as exc:
             LOG.warn('_get_player_state: {}', exc)
             return {}
-        if not player_state['currentaudiostream'] and player_state['audiostreams']:
+        if not player_state.get('currentaudiostream') and player_state.get('audiostreams'):
             return {}  # if audio stream has not been loaded yet, there is empty currentaudiostream
-        if not player_state['currentsubtitle'] and player_state['subtitles']:
+        if not player_state.get('currentsubtitle') and player_state.get('subtitles'):
             return {}  # if subtitle stream has not been loaded yet, there is empty currentsubtitle
+        if not player_state.get('videostreams') or not player_state.get('time') or 'percentage' not in player_state:
+            return {}  # if video stream details have not been loaded yet
         try:
             player_state['playerid'] = self.active_player_id if player_id is None else player_id
             # convert time dict to elapsed seconds

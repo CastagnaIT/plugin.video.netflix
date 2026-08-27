@@ -55,8 +55,19 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
         cache_entry = G.CACHE.get(CACHE_INFOLABELS, cache_identifier)
         infos = cache_entry['infos']
         quality_infos = cache_entry['quality_infos']
+        updated = False
+        updated = _refresh_missing_plot(infos, item) or updated
+        updated = _refresh_missing_atomic_infos(infos, item, ('Trailer', 'Year')) or updated
+        if videoid.mediatype == common.VideoId.EPISODE:
+            updated = _refresh_episode_numbers(infos, item) or updated
+        updated = _refresh_missing_referenced_infos(infos, item, raw_data) or updated
+        updated = _refresh_missing_profile_cast(infos, videoid, profile_language_code) or updated
+        if updated:
+            G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos},
+                        delayed_db_op=delayed_db_op)
     except CacheMiss:
         infos, quality_infos = parse_info(videoid, item, raw_data, common_data)
+        _refresh_missing_profile_cast(infos, videoid, profile_language_code)
         G.CACHE.add(CACHE_INFOLABELS, cache_identifier, {'infos': infos, 'quality_infos': quality_infos},
                     delayed_db_op=delayed_db_op)
     # Use a deepcopy of dict to not reflect changes of the dictionary also to the cache
@@ -68,10 +79,88 @@ def get_info(videoid, item, raw_data, profile_language_code='', delayed_db_op=Fa
     return infos_copy, quality_infos
 
 
+
+def _refresh_missing_plot(infos, item):
+    if infos.get('Plot') or infos.get('PlotOutline'):
+        return False
+    synopsis = common.get_path_safe(['synopsis', 'value'], item)
+    if not synopsis:
+        synopsis = common.get_path_safe(['regularSynopsis', 'value'], item)
+    if not synopsis:
+        return False
+    infos['Plot'] = synopsis
+    infos['PlotOutline'] = synopsis
+    return True
+
+
+def _refresh_missing_referenced_infos(infos, item, raw_data):
+    if not item or not raw_data:
+        return False
+    updated = False
+    referenced_infos = _parse_referenced_infos(item, raw_data)
+    for key, value in referenced_infos.items():
+        if value and not infos.get(key):
+            infos[key] = value
+            updated = True
+    return updated
+
+
+def _refresh_missing_atomic_infos(infos, item, targets):
+    if not item:
+        return False
+    updated = False
+    atomic_infos = _parse_atomic_infos(item)
+    for key in targets:
+        value = atomic_infos.get(key)
+        if value and not infos.get(key):
+            infos[key] = value
+            updated = True
+    return updated
+
+
+def _refresh_episode_numbers(infos, item):
+    """Refresh episode number infolabels from a newer episode item."""
+    if not item:
+        return False
+    summary = item.get('summary', {}).get('value', {})
+    if not isinstance(summary, dict):
+        return False
+    updated = False
+    for key, source in (('Season', 'season'), ('Episode', 'episode')):
+        value = summary.get(source)
+        if value is None:
+            continue
+        value = _transform_value(key, value)
+        if infos.get(key) != value:
+            infos[key] = value
+            updated = True
+    return updated
+
+
+def _refresh_missing_profile_cast(infos, videoid, profile_language_code):
+    """Reuse language-independent cast names from another infolabel cache key."""
+    if infos.get('Cast'):
+        return False
+    active_language = G.LOCAL_DB.get_profile_config('language', '')
+    for language_code in (active_language, ''):
+        if language_code == profile_language_code:
+            continue
+        try:
+            cached_infos = G.CACHE.get(
+                CACHE_INFOLABELS, f'{videoid.value}_{language_code}')['infos']
+        except (CacheMiss, KeyError, TypeError):
+            continue
+        if cached_infos.get('Cast'):
+            infos['Cast'] = copy.deepcopy(cached_infos['Cast'])
+            return True
+    return False
+
+
 def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_mylist, common_data, art_item=None,
                        is_in_remind_me=False):
     """Add infolabels and art to a ListItem"""
     infos, quality_infos = get_info(videoid, item, raw_data, delayed_db_op=True, common_data=common_data)
+    _add_trailer_fallback(infos, videoid)
     list_item.addStreamInfoFromDict(quality_infos)
     if is_in_mylist and common_data.get('mylist_titles_color'):
         # Highlight ListItem title when the videoid is contained in "My list"
@@ -85,6 +174,12 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
     list_item.setInfo('video', infos)
     list_item.setArt(get_art(videoid, art_item or item or {}, common_data['profile_language_code'],
                              delayed_db_op=True))
+
+
+def _add_trailer_fallback(infos, videoid):
+    if infos.get('Trailer') or videoid.mediatype not in (common.VideoId.MOVIE, common.VideoId.SHOW):
+        return
+    infos['Trailer'] = common.build_url(['play_trailer'], videoid=videoid, mode=G.MODE_ACTION)
 
 
 def _add_supplemental_plot_info(infos, item, common_data):
@@ -132,11 +227,70 @@ def get_art(videoid, item, profile_language_code='', delayed_db_op=False):
     cache_identifier = f'{videoid.value}_{profile_language_code}'
     try:
         art = G.CACHE.get(CACHE_ARTINFO, cache_identifier)
+        parsed_art = parse_art(videoid, item)
+        if _refresh_cached_art(art, parsed_art, item):
+            G.CACHE.add(CACHE_ARTINFO, cache_identifier, art,
+                        delayed_db_op=delayed_db_op)
     except CacheMiss:
         art = parse_art(videoid, item)
         G.CACHE.add(CACHE_ARTINFO, cache_identifier, art,
                     delayed_db_op=delayed_db_op)
     return art
+
+
+def _refresh_cached_art(art, parsed_art, item):
+    updated = False
+    for key in ('poster', 'fanart', 'thumb', 'landscape', 'clearlogo'):
+        if parsed_art.get(key) and not art.get(key):
+            art[key] = parsed_art[key]
+            updated = True
+    if _repair_browser_boxart_wide_cache(art, parsed_art, item):
+        updated = True
+    return updated
+
+
+def _repair_browser_boxart_wide_cache(art, parsed_art, item):
+    fallback = common.get_path_safe(['itemSummary', 'value', 'boxArt', 'url'], item)
+    updated = False
+    if fallback:
+        portrait_poster = parsed_art.get('poster')
+        if portrait_poster and portrait_poster != fallback:
+            for key in ('poster', 'thumb'):
+                if parsed_art.get(key) == portrait_poster and art.get(key) != portrait_poster:
+                    art[key] = portrait_poster
+                    updated = True
+        for key in ('fanart', 'thumb', 'landscape'):
+            if art.get(key) == fallback and parsed_art.get(key) != fallback:
+                art[key] = parsed_art.get(key, '')
+                updated = True
+        if art.get('poster') == fallback and parsed_art.get('poster') != fallback:
+            art['poster'] = parsed_art.get('poster', '')
+            updated = True
+    parsed_poster = parsed_art.get('poster')
+    if parsed_poster and parsed_poster != fallback and art.get('poster') != parsed_poster:
+        if not art.get('poster') or art.get('poster') in (art.get('landscape'), art.get('fanart'), fallback):
+            art['poster'] = parsed_poster
+            updated = True
+        elif art.get('thumb') == parsed_poster:
+            art['poster'] = parsed_poster
+            updated = True
+    elif parsed_poster and art.get('poster') and art['poster'] != parsed_poster:
+        if art['poster'] in (art.get('thumb'), art.get('landscape'), art.get('fanart')):
+            old_poster = art['poster']
+            art['poster'] = parsed_poster
+            if art.get('thumb') == old_poster:
+                art['thumb'] = parsed_poster
+            updated = True
+    parsed_thumb = parsed_art.get('thumb')
+    if (parsed_thumb and parsed_thumb == parsed_poster and parsed_thumb != fallback
+            and art.get('thumb') != parsed_thumb):
+        art['thumb'] = parsed_thumb
+        updated = True
+    elif parsed_thumb and art.get('thumb') and art['thumb'] != parsed_thumb:
+        if art['thumb'] in (art.get('landscape'), art.get('fanart'), fallback):
+            art['thumb'] = parsed_thumb
+            updated = True
+    return updated
 
 
 def get_resume_info_from_library(videoid):
@@ -265,15 +419,20 @@ def parse_art(videoid, item):
 
 def _assign_art(videoid, **kwargs):
     """Assign the art available from Netflix to appropriate Kodi art"""
-    art = {'poster': _best_art([kwargs['poster'], kwargs['fallback']]),
-           'fanart': _best_art([kwargs['fanart'],
-                                kwargs['interesting_moment'],
-                                kwargs['boxart_large'],
-                                kwargs['boxart_small']]),
-           'thumb': ((kwargs['interesting_moment']
-                      if videoid.mediatype in (common.VideoId.EPISODE, common.VideoId.SUPPLEMENTAL) else '')
-                     or kwargs['boxart_large'] or kwargs['boxart_small'])}
-    art['landscape'] = art['thumb']
+    poster = _best_art([kwargs['poster'], kwargs['fallback']])
+    wide_art = _best_art([kwargs['interesting_moment'], kwargs['boxart_large'], kwargs['boxart_small']])
+    if videoid.mediatype in (common.VideoId.EPISODE, common.VideoId.SUPPLEMENTAL):
+        thumb = wide_art
+    elif videoid.mediatype == common.VideoId.UNSPECIFIED:
+        # Video-list/category folders may only have a landscape preview from the
+        # browser-shaped response. Kodi skins commonly render these folders via thumb.
+        thumb = poster or wide_art
+    else:
+        thumb = poster
+    art = {'poster': poster,
+           'fanart': _best_art([kwargs['fanart'], wide_art]),
+           'thumb': thumb}
+    art['landscape'] = wide_art or thumb
     if videoid.mediatype != common.VideoId.UNSPECIFIED:
         art['clearlogo'] = _best_art([kwargs['clearlogo']])
     return art
@@ -317,32 +476,42 @@ def set_watched_status(list_item: ListItemW, video_data, common_data):
     resume_time = 0
     video_runtime = video_data.get('runtime', {}).get('value', 0)
     if is_watched_user_overrided is None:
-        # Note to shakti properties:
-        # 'watched':  unlike the name this value is used to other purposes, so not to set a video as watched
-        # 'watchedToEndOffset':  this value is used to determine if a video is watched but
-        #                        is available only with the metadata api and only for "episode" video type
-        # 'creditsOffset' :  this value is used as position where to show the (play) "Next" (episode) button
-        #                    on the website, but it may not be always available with the "movie" video type
-        credits_offset_val = video_data.get('creditsOffset', {}).get('value', 0)
-        if credits_offset_val > 0:
-            # To better ensure that a video is marked as watched also when a user do not reach the ending credits
-            # we generally lower the watched threshold by 50 seconds for 50 minutes of video (3000 secs)
-            lower_value = video_runtime / 3000 * 50
-            watched_threshold = credits_offset_val - lower_value
-        else:
-            # When missing the value should be only a video of movie type,
-            # then we simulate the default Kodi playcount behaviour (playcountminimumpercent)
-            watched_threshold = video_runtime / 100 * 90
-        # To avoid asking to the server again the entire list of titles (after watched a video)
-        # to get the updated value, we override the value with the value saved in memory (see am_video_events.py)
+        # Cached bookmarks are written by AMVideoEvents while playback is active. They must
+        # override list data, including GraphQL fallback items, which remains stale until the
+        # server response and directory caches are refreshed.
+        has_cached_bookmark = True
         try:
             bookmark_position = G.CACHE.get(CACHE_BOOKMARKS, video_id)
         except CacheMiss:
+            has_cached_bookmark = False
             # NOTE shakti 'bookmarkPosition' tag when it is not set have -1 value
-            bookmark_position = video_data['bookmarkPosition'].get('value', 0)
-        playcount = 1 if 0 < watched_threshold <= bookmark_position else 0
-        if playcount == 0 and bookmark_position > 0:
-            resume_time = bookmark_position
+            bookmark_position = video_data.get('bookmarkPosition', {}).get('value', 0)
+        graphql_playcount = video_data.get('_graphql_playcount', {}).get('value')
+        if graphql_playcount is not None and not has_cached_bookmark:
+            playcount = int(graphql_playcount)
+            if playcount == 0 and bookmark_position > 0:
+                resume_time = bookmark_position
+        else:
+            # Note to shakti properties:
+            # 'watched':  unlike the name this value is used to other purposes, so not to set a video as watched
+            # 'watchedToEndOffset':  this value is used to determine if a video is watched but
+            #                        is available only with the metadata api and only for "episode" video type
+            # 'creditsOffset' :  this value is used as position where to show the (play) "Next" (episode) button
+            #                    on the website, but it may not be always available with the "movie" video type
+            credits_offset_val = (video_data.get('creditsOffset', {}).get('value', 0) or
+                                  video_data.get('watchedToEndOffset', {}).get('value', 0))
+            if credits_offset_val > 0:
+                # To better ensure that a video is marked as watched also when a user do not reach the ending credits
+                # we generally lower the watched threshold by 50 seconds for 50 minutes of video (3000 secs)
+                lower_value = video_runtime / 3000 * 50
+                watched_threshold = credits_offset_val - lower_value
+            else:
+                # When missing the value should be only a video of movie type,
+                # then we simulate the default Kodi playcount behaviour (playcountminimumpercent)
+                watched_threshold = video_runtime / 100 * 90
+            playcount = 1 if 0 < watched_threshold <= bookmark_position else 0
+            if playcount == 0 and bookmark_position > 0:
+                resume_time = bookmark_position
     else:
         playcount = 1 if is_watched_user_overrided else 0
     # We have to set playcount with setInfo(), because the setProperty('PlayCount', ) have a bug

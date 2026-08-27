@@ -557,11 +557,6 @@
                         <dependency type="visible" setting="show_menu_assistiveaudio">true</dependency>
                     </dependencies>
                 </setting>
-                <setting id="show_menu_recommendations" type="boolean" label="30001" help="">
-                    <level>0</level>
-                    <default>true</default>
-                    <control type="toggle"/>
-                </setting>
                 <setting id="show_menu_tvshowsgenres" type="boolean" label="30174" help="">
                     <level>0</level>
                     <default>true</default>

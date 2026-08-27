@@ -335,10 +335,13 @@ def _get_titles(videos):
 
 def _filterout_loco_contexts(root_id, data, contexts):
     """Deletes from the data all records related to the specified contexts"""
-    if not data:
-        return
-    lists = data['lists']
-    for key in list(lists.keys()):
-        context = lists[key].get('componentSummary', {}).get('value', {}).get('context')
-        if context in contexts:
-            del lists[key]
+    total_items = data['locos'][root_id]['componentSummary'].get('value', {}).get('length', 0)
+    for index in range(total_items - 1, -1, -1):
+        row = data['locos'][root_id].get(str(index))
+        if not row:
+            continue
+        list_id = row['value'][1]
+        if not data['lists'][list_id]['componentSummary'].get('value', {}).get('context') in contexts:
+            continue
+        del data['lists'][list_id]
+        del data['locos'][root_id][str(index)]

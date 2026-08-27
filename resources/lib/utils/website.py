@@ -278,6 +278,72 @@ def validate_login(react_context):
             raise WebsiteParsingError(error_msg) from exc
 
 
+def decode_javascript_string(value):
+    """Decode a JavaScript string literal without corrupting decoded Unicode."""
+    decoded = []
+    index = 0
+    value_length = len(value)
+    simple_escapes = {
+        "'": "'", '"': '"', '\\': '\\', '/': '/',
+        'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t', 'v': '\v', '0': '\0'
+    }
+    while index < value_length:
+        character = value[index]
+        if character != '\\':
+            decoded.append(character)
+            index += 1
+            continue
+        index += 1
+        if index >= value_length:
+            decoded.append('\\')
+            break
+        escape = value[index]
+        if escape == 'u' and index + 4 < value_length:
+            hex_value = value[index + 1:index + 5]
+            try:
+                codepoint = int(hex_value, 16)
+            except ValueError:
+                pass
+            else:
+                index += 5
+                if (0xD800 <= codepoint <= 0xDBFF and
+                        index + 5 < value_length and value[index:index + 2] == '\\u'):
+                    low_hex_value = value[index + 2:index + 6]
+                    try:
+                        low_codepoint = int(low_hex_value, 16)
+                    except ValueError:
+                        pass
+                    else:
+                        if 0xDC00 <= low_codepoint <= 0xDFFF:
+                            codepoint = 0x10000 + ((codepoint - 0xD800) << 10) + (low_codepoint - 0xDC00)
+                            index += 6
+                decoded.append(chr(codepoint))
+                continue
+        elif escape == 'x' and index + 2 < value_length:
+            hex_value = value[index + 1:index + 3]
+            try:
+                decoded.append(chr(int(hex_value, 16)))
+                index += 3
+                continue
+            except ValueError:
+                pass
+        elif escape in simple_escapes:
+            decoded.append(simple_escapes[escape])
+            index += 1
+            continue
+        elif escape == '\n':
+            index += 1
+            continue
+        elif escape == '\r':
+            index += 1
+            if index < value_length and value[index] == '\n':
+                index += 1
+            continue
+        decoded.append(escape)
+        index += 1
+    return ''.join(decoded)
+
+
 @measure_exec_time_decorator(is_immediate=True)
 def extract_json(content, name):
     """Extract json from netflix content page"""
@@ -292,7 +358,7 @@ def extract_json(content, name):
         json_str_replace = json_str_replace.replace(r'\n', r'\\n')  # Escape line feed
         json_str_replace = json_str_replace.replace(r'\t', r'\\t')  # Escape tab
         json_str_replace = json_str_replace.replace(r'\p', r'/p')  # Unicode property not supported, we change slash to avoid unescape it
-        json_str_replace = json_str_replace.encode().decode('unicode_escape')  # Decode the string as unicode
+        json_str_replace = decode_javascript_string(json_str_replace)
         json_str_replace = sub(r'\\(?!["])', r'\\\\', json_str_replace)  # Escape backslash (only when is not followed by double quotation marks \")
         return json.loads(json_str_replace)
     except Exception as exc:  # pylint: disable=broad-except

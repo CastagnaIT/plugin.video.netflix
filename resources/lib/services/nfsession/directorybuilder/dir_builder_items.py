@@ -50,12 +50,23 @@ def build_mainmenu_listing(loco_list):
             continue
         if data['loco_known']:
             list_id, video_list = loco_list.find_by_context(data['loco_contexts'][0])
-            if not list_id:
+            if list_id:
+                menu_title = video_list['displayName']
+                directory_item = _create_videolist_item(list_id, video_list, data, common_data, static_lists=True)
+                directory_item[1].addContextMenuItems(generate_context_menu_mainmenu(menu_id))
+                directory_items.append(directory_item)
+            elif data.get('label_id'):
+                menu_title = common.get_local_string(data['label_id'])
+                menu_description = (common.get_local_string(data['description_id'])
+                                    if data.get('description_id') is not None
+                                    else '')
+                list_item = ListItemW(label=menu_title)
+                list_item.setArt({'icon': data.get('icon', 'DefaultFolder.png')})
+                list_item.setInfo('video', {'Plot': menu_description})
+                list_item.addContextMenuItems(generate_context_menu_mainmenu(menu_id))
+                directory_items.append((common.build_url(data['path'], mode=G.MODE_DIRECTORY), list_item, True))
+            else:
                 continue
-            menu_title = video_list['displayName']
-            directory_item = _create_videolist_item(list_id, video_list, data, common_data, static_lists=True)
-            directory_item[1].addContextMenuItems(generate_context_menu_mainmenu(menu_id))
-            directory_items.append(directory_item)
         else:
             menu_title = common.get_local_string(data['label_id']) if data.get('label_id') else 'Missing menu title'
             menu_description = (common.get_local_string(data['description_id'])
@@ -213,6 +224,11 @@ def build_loco_listing(loco_list, menu_data, force_use_videolist_id=False):
         sub_menu_data['force_use_videolist_id'] = force_use_videolist_id
         sub_menu_data['title'] = video_list['displayName']
         sub_menu_data['initial_menu_id'] = menu_data.get('initial_menu_id', menu_data['path'][1])
+        if menu_data.get('path', [None])[0] == 'genres' and len(menu_data['path']) > 2:
+            sub_menu_data['browser_genre_id'] = (
+                str(video_list['genreId'])
+                if video_list['context'] == 'genre'
+                else str(menu_data['path'][2]))
         # Do not use the cache with 'Top 10' menus, so that you always get up-to-date data.
         sub_menu_data['no_use_cache'] = video_list['context'] == 'mostWatched'
         G.LOCAL_DB.set_value(list_id, sub_menu_data, TABLE_MENU_DATA)
@@ -262,7 +278,8 @@ def build_video_listing(video_list, menu_data, sub_genre_id=None, pathitems=None
         'active_profile_guid': G.LOCAL_DB.get_active_profile_guid(),
         'marks_tvshow_started': G.ADDON.getSettingBool('marks_tvshow_started'),
         'trackid': trackid,
-        'is_supplemental_type': video_list.__class__.__name__ == 'VideoListSupplemental'
+        'is_supplemental_type': (getattr(video_list, 'is_supplemental_type', False) or
+                                 video_list.__class__.__name__ == 'VideoListSupplemental')
     })
     directory_items = [_create_video_item(videoid_value, video, video_list, perpetual_range_start, common_data)
                        for videoid_value, video

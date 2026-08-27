@@ -101,18 +101,10 @@ def search_add():
             row_id = _search_add_bygenreid(SEARCH_TYPES[type_index], genre_id)
     else:
         raise NotImplementedError(f'Search type index {type_index} not implemented')
-    # Redirect to "search" endpoint (otherwise no results in JSON-RPC)
-    # Rewrite path history using dir_update_listing + container_update
-    # (otherwise will retrigger input dialog on Back or Container.Refresh)
-    if row_id is not None and search_query(row_id, 0, False):
-        url = common.build_url(['search', 'search', row_id], mode=G.MODE_DIRECTORY, params={'dir_update_listing': True})
-        from time import sleep
-        # The forced sleep its needed because seem that change the container path too fast
-        # make problems in Kodi core and the GUI fails to update, when this happens cause side effects to context menus
-        # like "add/remove from my list" that when used ask again to make a new search because re-open the initial path
-        sleep(1)
-        common.container_update(url, False)
-        return True
+    # Replace the current listing synchronously. An asynchronous Container.Update
+    # races the still-open /add directory and Kodi can discard the results.
+    if row_id is not None:
+        return search_query(str(row_id), 0, True)
     return False
 
 
