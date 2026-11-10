@@ -83,8 +83,11 @@ def add_info_list_item(list_item: ListItemW, videoid, item, raw_data, is_in_myli
     if videoid.mediatype == common.VideoId.SHOW and not common_data['marks_tvshow_started']:
         infos.pop('PlayCount', None)
     list_item.setInfo('video', infos)
-    list_item.setArt(get_art(videoid, art_item or item or {}, common_data['profile_language_code'],
-                             delayed_db_op=True))
+    # Experimental GraphQL artwork enrichment, preserving existing artwork
+    from resources.lib.kodi.renetrox_artwork_cache import enrich_art
+    existing_art = get_art(videoid, art_item or item or {},
+                           common_data['profile_language_code'], delayed_db_op=True)
+    list_item.setArt(enrich_art(videoid, existing_art, common_data['profile_language_code']))
 
 
 def _add_supplemental_plot_info(infos, item, common_data):

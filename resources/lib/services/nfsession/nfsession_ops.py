@@ -47,7 +47,8 @@ class NFSessionOperations(SessionPathRequests):
             self.activate_profile,
             self.parental_control_data,
             self.get_metadata,
-            self.get_videoid_info
+            self.get_videoid_info,
+            self.rnx_graphql_art  # Experimental artwork IPC slot
         ]
         # Share the activate profile function to SessionBase class
         self.external_func_activate_profile = self.activate_profile
@@ -62,6 +63,11 @@ class NFSessionOperations(SessionPathRequests):
                 self.dt_initial_page_prefetch = datetime.now()
             except Exception as exc:  # pylint: disable=broad-except
                 LOG.warn('Prefetch initial page failed: {}', exc)
+
+    def rnx_graphql_art(self, video_id):
+        """Optional GraphQL artwork; does not affect login or playback."""
+        from resources.lib.services.nfsession.renetrox_artwork_graphql import fetch_art
+        return fetch_art(self, video_id)
 
     @measure_exec_time_decorator(is_immediate=True)
     def fetch_initial_page(self):
