@@ -1,0 +1,11 @@
+--- a/resources/lib/services/nfsession/session/access.py
++++ b/resources/lib/services/nfsession/session/access.py
+@@ -140,5 +140,7 @@
+             if exc.response.status_code == 500:
+                 # This endpoint raise HTTP error 500 when the password is wrong
+                 raise LoginError(common.get_local_string(12344)) from exc
+-            raise
++            if exc.response.status_code != 404:
++                raise
++            LOG.warn('profile_hub 404: obsolete secondary verification unavailable')
+         common.set_credentials({'email': email, 'password': password})
