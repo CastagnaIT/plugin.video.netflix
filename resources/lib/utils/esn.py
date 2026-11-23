@@ -25,6 +25,12 @@ class WidevineForceSecLev:  # pylint: disable=no-init, disable=too-few-public-me
 
 def get_esn():
     """Get the ESN currently in use"""
+    # An optional device-bound session pins the exact identity its tokens were
+    # minted for; a generated or rotated ESN cannot authenticate with them.
+    from resources.lib.services.nfsession.msl.device_session import load as load_device_session
+    device_session = load_device_session()
+    if device_session:
+        return device_session['esn']
     return G.LOCAL_DB.get_value('esn', '', table=TABLE_SESSION)
 
 
@@ -64,6 +70,10 @@ def regen_esn(esn):
     # Netflix limits the resolution to 540p. The reasons behind this are unknown, there are no changes on website
     # or Android apps. Moreover, if you set the full-length ESN of android app on the add-on, also the original app
     # will be downgraded to 540p without any kind of message.
+    from resources.lib.services.nfsession.msl.device_session import load as load_device_session
+    if load_device_session():
+        # Never rotate a pinned identity: the tail is part of the token binding.
+        return esn
     if not G.LOCAL_DB.get_value('esn_auto_generate', True):
         return esn
     from resources.lib.common.device_utils import get_system_platform

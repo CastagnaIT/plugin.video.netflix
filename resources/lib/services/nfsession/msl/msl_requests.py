@@ -20,6 +20,7 @@ from resources.lib.common import get_system_platform, is_device_l1_enabled
 from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 
+from resources.lib.services.nfsession.msl.device_session import load as load_device_session
 from resources.lib.services.nfsession.msl.msl_request_builder import MSLRequestBuilder
 from resources.lib.services.nfsession.msl.msl_utils import (ENDPOINTS, create_req_params, generate_logblobs_params,
                                                             MSL_AUTH_NETFLIXID, MSL_AUTH_USER_ID_TOKEN,
@@ -157,8 +158,13 @@ class MSLRequests(MSLRequestBuilder):
         self._mastertoken_checks()
 
         # Define the default auth scheme
+        device_session = load_device_session()
         if msl_auth_scheme:
             auth_scheme = msl_auth_scheme
+        elif device_session:
+            # Optional device-bound session (device_session.json): the website
+            # cookies belong to another entity and are rejected with MSL 205032.
+            auth_scheme = MSL_AUTH_DEVICE_SESSION
         elif get_system_platform() == 'android':
             # On android, we have a different ESN from the login then use NETFLIXID auth may cause MSL errors,
             # (usually on L3 devices) because the identity do not match, so we need to use User id token auth
@@ -180,6 +186,9 @@ class MSLRequests(MSLRequestBuilder):
         # Define the user authentication scheme to be used on the MSL HTTP requests
         # https://github.com/Netflix/msl/wiki/User-Authentication-%28Configuration%29
         auth_data = {'auth_scheme': auth_scheme}
+        if auth_scheme == MSL_AUTH_DEVICE_SESSION:
+            auth_data.update({'mastertoken': device_session['mastertoken'],
+                              'user_id_token': device_session['useridtoken']})
 
         if auth_scheme == MSL_AUTH_USER_ID_TOKEN:
             auth_data.update(self._get_user_auth_data())

@@ -37,6 +37,7 @@ ENDPOINTS = {
 MSL_AUTH_NETFLIXID = 'NETFLIXID'  # Netflix ID cookies user authentication
 MSL_AUTH_EMAIL_PASSWORD = 'EMAIL_PASSWORD'  # Email password user authentication
 MSL_AUTH_USER_ID_TOKEN = 'USER_ID_TOKEN'  # User ID token user authentication
+MSL_AUTH_DEVICE_SESSION = 'DEVICE_SESSION'  # Device-bound mastertoken + useridtoken pair
 
 MSL_DATA_FILENAME = 'msl_data.json'
 
