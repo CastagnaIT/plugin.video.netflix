@@ -123,9 +123,15 @@ def get_inputstream_listitem(videoid):
         key='inputstream.adaptive.stream_headers',
         value=f'user-agent={common.get_user_agent()}')
 
-    # Set PSSH/KID to pre-initialize the DRM to get challenge/session ID data in the ISA manifest proxy callback
+    # Set PSSH/KID to pre-initialize the DRM, so ISA generates a challenge and a session ID
+    # and sends them to the manifest proxy callback. The licensed manifest request needs the
+    # device-CDM challenge: without it the server has no security-level information for this
+    # session and falls back to the lowest rendition ladder.
+    # On Android this is limited to Widevine L1 devices. The manifest-bundled license is not
+    # used there (see MSLHandler.get_manifest): ISA opens its own DRM session for playback and
+    # cannot reuse the pre-init session, so the normal license request keeps doing the work.
     pre_init_data = ''
-    if common.get_system_platform() != 'android':
+    if common.get_system_platform() != 'android' or common.is_device_l1_enabled():
         pre_init_data = PSSH_KID
 
     if G.KODI_VERSION < '22':
@@ -141,7 +147,7 @@ def get_inputstream_listitem(videoid):
         list_item.setProperty(
             key='inputstream.adaptive.server_certificate',
             value=INPUTSTREAM_SERVER_CERTIFICATE)
-        if common.get_system_platform() != 'android':
+        if pre_init_data:
             list_item.setProperty(
                 key='inputstream.adaptive.pre_init_data',
                 value=pre_init_data)

@@ -133,7 +133,7 @@ class MSLHandler:
 
     @measure_exec_time_decorator(is_immediate=True)
     def _get_manifest(self, viewable_id, esn, challenge, sid):
-        if common.get_system_platform() != 'android' and (not challenge or not sid):
+        if not challenge or not sid:
             LOG.error('DRM session data not valid (Session ID: {}, Challenge: {})', challenge, sid)
 
         from pprint import pformat
@@ -166,11 +166,13 @@ class MSLHandler:
                  hdcp_version,
                  pformat(profiles, indent=2))
         xid = str(time.time_ns())[:18]
-        # On non-Android systems, we pre-initialize the DRM with default PSSH/KID, this allows to obtain Challenge/SID
-        # to achieve 1080p resolution.
-        # On Android, pre-initialize DRM is possible but cannot keep the same DRM session, will result in an error
-        # because the manifest license data do not match the current DRM session, then we do not use it and
-        # we still make the license requests.
+        # The DRM pre-init (default PSSH/KID) lets ISA generate a challenge and session ID that
+        # travel in the licensed manifest request. The server uses that device-CDM challenge to
+        # pick the rendition ladder; without it the lowest ladder is served.
+        # On Android the manifest-bundled license is not used: ISA opens its own DRM session for
+        # playback and cannot reuse the pre-init session, so a license minted for the pre-init
+        # session would fail with "manifest license data do not match the current DRM session".
+        # The normal license request keeps doing the decryption license there.
         if manifest_ver == 'v1':
             endpoint_url, request_data = self._build_manifest_v1(viewable_id=viewable_id, hdcp_version=hdcp_version,
                                                                  profiles=profiles, challenge=challenge)
@@ -183,7 +185,13 @@ class MSLHandler:
         # The xid must be used also for each future MSL requests, until playback stops
         G.LOCAL_DB.set_value('xid', xid, TABLE_SESSION)
 
-        if manifest_ver == 'default' and 'license' in manifest['video_tracks'][0]:
+        has_manifest_license = manifest_ver == 'default' and 'license' in manifest['video_tracks'][0]
+        if has_manifest_license and common.get_system_platform() == 'android':
+            # ISA cannot reuse the pre-init DRM session, so a license minted for that session
+            # cannot be installed. Ignore it and keep the normal license request path.
+            LOG.debug('Ignoring manifest-bundled license on Android (pre-init session cannot be reused by ISA)')
+            has_manifest_license = False
+        if has_manifest_license:
             self.needs_license_request = False
             self.licenses_xid.insert(0, xid)
             self.licenses_session_id.insert(0, manifest['video_tracks'][0]['license']['drmSessionId'])
