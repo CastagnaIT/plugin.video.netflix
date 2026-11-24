@@ -93,9 +93,10 @@ def _set_codec_profiles():
             # Ask to enable HDR10
             if 'hdr10' in supported_hdr_types:
                 is_hdr10_enabled = ask_for_confirmation('Netflix', get_local_string(30742))
-            # Ask to enable Dolby Vision
-            if is_hdr10_enabled and 'dolbyvision' in supported_hdr_types:
-                is_dv_enabled = ask_for_confirmation('Netflix', get_local_string(30743))
+            # Dolby Vision stays opt-in from the settings: the display can
+            # advertise DV while the player cannot decode the profile (the
+            # codec is released and video stays black with audio), and the
+            # add-on cannot verify decoder support in advance.
             G.ADDON.setSettingBool('enable_hdr_profiles', is_hdr10_enabled)
             G.ADDON.setSettingBool('enable_dolbyvision_profiles', is_dv_enabled)
     G.ADDON.setSettingBool('enable_vp9_profiles', enable_vp9_profiles)

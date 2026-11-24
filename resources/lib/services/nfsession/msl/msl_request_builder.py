@@ -17,7 +17,7 @@ from resources.lib.common.exceptions import MSLError
 from resources.lib.globals import G
 import resources.lib.common as common
 from resources.lib.services.nfsession.msl.msl_utils import (MSL_AUTH_USER_ID_TOKEN, MSL_AUTH_EMAIL_PASSWORD,
-                                                            MSL_AUTH_NETFLIXID)
+                                                            MSL_AUTH_NETFLIXID, MSL_AUTH_DEVICE_SESSION)
 from resources.lib.utils.logging import measure_exec_time_decorator
 
 if TYPE_CHECKING:  # This variable/imports are used only by the editor, so not at runtime
@@ -150,6 +150,17 @@ class MSLRequestBuilder:
                 }
             else:
                 header_data['useridtoken'] = auth_data['user_id_token']
+        elif auth_data['auth_scheme'] == MSL_AUTH_DEVICE_SESSION:
+            # Device-bound session: the mastertoken and useridtoken were minted
+            # for the pinned ESN in device_session.json; send them together, the
+            # same shape the platform client uses.
+            header_data['userauthdata'] = {
+                'scheme': 'USER_ID_TOKEN',
+                'authdata': {
+                    'mastertoken': auth_data['mastertoken'],
+                    'useridtoken': auth_data['user_id_token']
+                }
+            }
         elif auth_data['auth_scheme'] == MSL_AUTH_EMAIL_PASSWORD:
             # Authentication scheme with: Email password
             # Make requests by using main netflix profile only (you cannot update continue watching to other profiles)
