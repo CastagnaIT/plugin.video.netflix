@@ -26,3 +26,11 @@ When the file is present and valid:
 
 Without the file nothing changes. The tokens and the ESN must belong together;
 removing the file returns the add-on to the normal login path.
+
+## Trade-off: the ESN pin disables the 20-hour rotation
+
+The add-on normally regenerates the last part of the ESN every 20 hours because
+Netflix limits an ESN that stays in use for longer than about 20 hours to 540p.
+A pinned device session cannot rotate its ESN, so that cap returns: playback
+keeps working, but the ladder drops. Refresh the session (and the ESN it is
+bound to) when full resolution matters.
